@@ -1,0 +1,45 @@
+{
+  "name": "health-tracker",
+  "version": "0.1.0",
+  "description": "A modern, privacy-first Progressive Web App for tracking daily health metrics and habits",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Development server - to be implemented in Phase 0'",
+    "build": "echo 'Build script - to be implemented in Phase 0'",
+    "preview": "echo 'Preview build - to be implemented in Phase 0'",
+    "test": "echo 'Tests - to be implemented in Phase 0'",
+    "test:unit": "echo 'Unit tests - to be implemented in Phase 0'",
+    "test:e2e": "echo 'E2E tests - to be implemented in Phase 0'",
+    "test:iphone": "echo 'iPhone 13 tests - to be implemented in Phase 0'",
+    "lint": "echo 'Linting - to be implemented in Phase 0'",
+    "format": "echo 'Formatting - to be implemented in Phase 0'",
+    "prepare": "echo 'Git hooks setup - to be implemented in Phase 0'"
+  },
+  "keywords": [
+    "health",
+    "tracker",
+    "habits",
+    "pwa",
+    "mobile",
+    "wellness"
+  ],
+  "author": {
+    "name": "Monique Dubbelman",
+    "url": "https://github.com/mdubbelm"
+  },
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mdubbelm/habittracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mdubbelm/habittracker/issues"
+  },
+  "homepage": "https://github.com/mdubbelm/habittracker#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}

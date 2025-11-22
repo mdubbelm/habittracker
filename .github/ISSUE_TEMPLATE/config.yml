@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 Documentation
+    url: https://github.com/mdubbelm/habittracker/blob/main/README.md
+    about: Check out our documentation for setup and usage guides
+  - name: 💬 Discussions
+    url: https://github.com/mdubbelm/habittracker/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 🚀 Roadmap
+    url: https://github.com/mdubbelm/habittracker/blob/main/ROADMAP.md
+    about: View our product roadmap and upcoming features

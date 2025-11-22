@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Tracker - iPhone 13 Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .device-frame {
+            width: 390px;
+            height: 844px;
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow:
+                0 0 0 2px #2c2c2c,
+                0 0 0 6px #1a1a1a,
+                0 20px 60px rgba(0,0,0,0.6);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .device-frame.landscape {
+            width: 844px;
+            height: 390px;
+        }
+
+        .notch {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 28px;
+            background: #1a1a1a;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .device-frame.landscape .notch {
+            display: none;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 30px;
+            background: white;
+        }
+
+        .controls {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            min-width: 280px;
+        }
+
+        .controls h3 {
+            margin: 0 0 20px 0;
+            color: #1a1a1a;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .controls button {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .controls button:active {
+            transform: translateY(0);
+        }
+
+        .info-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .info-item strong {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #10b981;
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .device-frame {
+                width: 350px;
+                height: 756px;
+            }
+
+            .device-frame.landscape {
+                width: 756px;
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            body {
+                padding: 10px;
+            }
+
+            .device-frame {
+                width: 100%;
+                max-width: 390px;
+                height: 80vh;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div style="width: 100%; max-width: 1400px;">
+        <div class="header">
+            <h1>📱 iPhone 13 Preview</h1>
+            <p>Real-time development preview voor mobile testing</p>
+        </div>
+
+        <div class="container">
+            <div class="device-frame" id="device">
+                <div class="notch"></div>
+                <iframe src="./habittracker.html" id="preview"></iframe>
+            </div>
+
+            <div class="controls">
+                <h3>🛠️ Development Tools</h3>
+
+                <div class="button-group">
+                    <button onclick="reloadPreview()">
+                        🔄 Reload Preview
+                    </button>
+                    <button onclick="toggleOrientation()">
+                        🔄 Rotate Device
+                    </button>
+                    <button onclick="openDevTools()">
+                        🛠️ Open DevTools
+                    </button>
+                    <button onclick="copyUrl()">
+                        📋 Copy URL
+                    </button>
+                    <button onclick="testTouch()">
+                        👆 Test Touch Events
+                    </button>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-item">
+                        <span>Device</span>
+                        <strong id="deviceName">iPhone 13</strong>
+                    </div>
+                    <div class="info-item">
+                        <span>Viewport</span>
+                        <strong id="viewport">390 × 844</strong>
+                    </div>
+                    <div class="info-item">
+                        <span>DPR</span>
+                        <strong>3x</strong>
+                    </div>
+                    <div class="info-item">
+                        <span>Status</span>
+                        <span class="status">Live</span>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h4 style="margin-bottom: 10px; font-size: 14px; color: #1a1a1a;">📝 Quick Notes</h4>
+                    <ul style="font-size: 12px; color: #64748b; line-height: 1.6; padding-left: 20px;">
+                        <li>Safe area insets active</li>
+                        <li>Touch events enabled</li>
+                        <li>3x retina display</li>
+                        <li>Auto-reload on save</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isLandscape = false;
+
+        function reloadPreview() {
+            const iframe = document.getElementById('preview');
+            iframe.src = iframe.src;
+
+            // Show feedback
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '✓ Reloaded';
+            button.style.background = '#10b981';
+
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = '';
+            }, 1000);
+        }
+
+        function toggleOrientation() {
+            const device = document.getElementById('device');
+            const viewportEl = document.getElementById('viewport');
+            const deviceNameEl = document.getElementById('deviceName');
+
+            isLandscape = !isLandscape;
+
+            if (isLandscape) {
+                device.classList.add('landscape');
+                viewportEl.textContent = '844 × 390';
+                deviceNameEl.textContent = 'iPhone 13 (Landscape)';
+            } else {
+                device.classList.remove('landscape');
+                viewportEl.textContent = '390 × 844';
+                deviceNameEl.textContent = 'iPhone 13';
+            }
+        }
+
+        function openDevTools() {
+            alert('💡 Tip: Press F12 or Cmd+Opt+I to open DevTools\n\nThen inspect the iframe element to debug the app.');
+        }
+
+        function copyUrl() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                const button = event.target;
+                const originalText = button.innerHTML;
+                button.innerHTML = '✓ URL Copied';
+                button.style.background = '#10b981';
+
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = '';
+                }, 1500);
+            });
+        }
+
+        function testTouch() {
+            alert('👆 Touch Testing Tips:\n\n1. Use DevTools Device Mode\n2. Enable "Touch" simulation\n3. Test swipe gestures\n4. Verify tap targets (min 44×44px)\n5. Check for hover states (avoid on mobile)');
+        }
+
+        // Auto-reload on file changes (for development)
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('📱 iPhone 13 Preview Mode Active');
+            console.log('💡 Watching for file changes...');
+
+            // Optional: Add live reload here if using a dev server
+        }
+
+        // Display viewport info in console
+        window.addEventListener('load', () => {
+            console.log('📱 Device Info:');
+            console.log('  Viewport:', window.innerWidth, '×', window.innerHeight);
+            console.log('  Device Pixel Ratio:', window.devicePixelRatio);
+            console.log('  Touch Support:', 'ontouchstart' in window ? 'Yes' : 'No');
+        });
+    </script>
+</body>
+</html>

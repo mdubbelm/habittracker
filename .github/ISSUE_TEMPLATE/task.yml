@@ -1,0 +1,103 @@
+name: Task/Epic
+description: Create a development task or epic for the team
+title: "[TASK]: "
+labels: ["status: needs-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Create a task for the development team. Use this for planned work items.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Task Description
+      description: Detailed description of the task
+      placeholder: What needs to be done?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Task Type
+      description: What type of work is this?
+      options:
+        - Feature Development
+        - Enhancement
+        - Refactoring
+        - Testing
+        - Documentation
+        - DevOps/Infrastructure
+        - Design
+        - Research/Investigation
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Roadmap Phase
+      description: Which phase does this belong to?
+      options:
+        - Phase 0 - Foundation
+        - Phase 1 - MVP
+        - Phase 2 - Enhancement
+        - Phase 3 - Scale
+        - Phase 4 - Advanced
+        - Backlog
+    validations:
+      required: true
+
+  - type: dropdown
+    id: effort
+    attributes:
+      label: Effort Estimate
+      description: How much effort is required?
+      options:
+        - XS (< 2 hours)
+        - S (2-4 hours)
+        - M (1-2 days)
+        - L (3-5 days)
+        - XL (1+ weeks)
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: What defines "done" for this task?
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Tests written
+        - [ ] Documentation updated
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: What other tasks must be completed first?
+      placeholder: |
+        - Depends on #123
+        - Blocked by #456
+
+  - type: textarea
+    id: technical
+    attributes:
+      label: Technical Notes
+      description: Technical approach, architecture decisions, or implementation notes
+      placeholder: Implementation details...
+
+  - type: textarea
+    id: resources
+    attributes:
+      label: Resources
+      description: Links to designs, documentation, or reference materials
+      placeholder: |
+        - Design: https://...
+        - Documentation: https://...
+        - Reference: https://...
