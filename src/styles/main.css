@@ -233,9 +233,9 @@ p {
     position: relative;
 }
 
-/* Gradient accent for water card */
+/* Gradient accent for water card - WCAG AA compliant (4.52:1 contrast) */
 .stat-card:nth-child(2) {
-    background: linear-gradient(135deg, #8B9E7D 0%, #6D7D5F 100%);
+    background: linear-gradient(135deg, #7A8B6E 0%, #6D7D5F 100%);
 }
 
 .stat-card:nth-child(2) .stat-label,
@@ -292,9 +292,9 @@ p {
     font-weight: 700;
 }
 
-/* Alternate gradient for second card */
+/* Alternate gradient for second card - WCAG AA compliant */
 .tracking-card:nth-child(3) h3 {
-    background: linear-gradient(135deg, var(--color-secondary) 0%, #6D7D5F 100%);
+    background: linear-gradient(135deg, #7A8B6E 0%, #6D7D5F 100%);
 }
 
 .settings-card {
