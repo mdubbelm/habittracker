@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Privacy-first gezondheids- en gewoontetracker. Al je data blijft op jouw apparaat.">
+    <meta name="theme-color" content="#C17A5C">
+
+    <!-- Security Headers (will be enforced by server in production) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+
+    <!-- PWA Manifest (future) -->
+    <!-- <link rel="manifest" href="./manifest.json"> -->
+
+    <title>Health Tracker - Privacy-First Gezondheidsapp</title>
+
+    <link rel="stylesheet" href="./styles/main.css">
+</head>
+<body>
+    <!-- Privacy Notice (First Time) -->
+    <div id="privacy-notice" class="privacy-notice hidden">
+        <div class="privacy-content">
+            <h2>🔐 Jouw Privacy Telt</h2>
+            <p><strong>Welkom bij Health Tracker!</strong></p>
+            <p>Deze app is ontworpen met jouw privacy in gedachten:</p>
+            <ul>
+                <li>✅ Alle data blijft op JOUW apparaat (localStorage)</li>
+                <li>✅ Geen cloud, geen servers, geen tracking</li>
+                <li>✅ Exporteer je data wanneer je wilt</li>
+                <li>✅ Verwijder alles met één klik</li>
+            </ul>
+            <p><small>Lees onze <a href="#" id="view-security">Beveiligings- en Privacyverklaring</a></small></p>
+            <button id="accept-privacy" class="btn-primary">Begrepen! Laten we starten</button>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>Health Tracker</h1>
+            <p class="subtitle">Jouw gezondheid, jouw data, jouw controle</p>
+        </header>
+
+        <!-- Health Score Visualization -->
+        <section class="health-score-section">
+            <div class="score-container">
+                <!-- Circular Progress SVG - Clean & Minimal -->
+                <svg class="health-circle" viewBox="0 0 200 200">
+                    <!-- Background circle -->
+                    <circle cx="100" cy="100" r="80" fill="none" stroke="#E8E3DD" stroke-width="16"/>
+                    <!-- Progress circle -->
+                    <circle
+                        id="progress-circle"
+                        cx="100"
+                        cy="100"
+                        r="80"
+                        fill="none"
+                        stroke="#C17A5C"
+                        stroke-width="16"
+                        stroke-linecap="round"
+                        stroke-dasharray="502.65"
+                        stroke-dashoffset="502.65"
+                        transform="rotate(-90 100 100)"
+                    />
+                    <!-- Percentage Text -->
+                    <text x="100" y="100" text-anchor="middle" dominant-baseline="middle"
+                          font-size="48" font-weight="700" fill="#2C2822" id="svg-score-value">0%</text>
+                </svg>
+            </div>
+
+            <div class="score-message" id="score-message">Start met tracken!</div>
+
+            <!-- Quick Stats - 2x2 Grid -->
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-label">😴 Slaap</div>
+                    <!-- Partial circular progress -->
+                    <svg class="stat-progress" viewBox="0 0 100 60">
+                        <!-- Background arc -->
+                        <path d="M 10 50 A 40 40 0 0 1 90 50"
+                              fill="none"
+                              stroke="#E8E3DD"
+                              stroke-width="8"
+                              stroke-linecap="round"/>
+                        <!-- Progress arc -->
+                        <path id="stat-sleep-progress"
+                              d="M 10 50 A 40 40 0 0 1 90 50"
+                              fill="none"
+                              stroke="#C17A5C"
+                              stroke-width="8"
+                              stroke-linecap="round"
+                              stroke-dasharray="125.66"
+                              stroke-dashoffset="125.66"/>
+                    </svg>
+                    <div class="stat-value" id="stat-sleep">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">💧 Water</div>
+                    <!-- Partial circular progress -->
+                    <svg class="stat-progress" viewBox="0 0 100 60">
+                        <!-- Background arc -->
+                        <path d="M 10 50 A 40 40 0 0 1 90 50"
+                              fill="none"
+                              stroke="#E8E3DD"
+                              stroke-width="8"
+                              stroke-linecap="round"/>
+                        <!-- Progress arc -->
+                        <path id="stat-water-progress"
+                              d="M 10 50 A 40 40 0 0 1 90 50"
+                              fill="none"
+                              stroke="#8B9E7D"
+                              stroke-width="8"
+                              stroke-linecap="round"
+                              stroke-dasharray="125.66"
+                              stroke-dashoffset="125.66"/>
+                    </svg>
+                    <div class="stat-value" id="stat-water">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🚶 Lopen</div>
+                    <!-- Partial circular progress -->
+                    <svg class="stat-progress" viewBox="0 0 100 60">
+                        <!-- Background arc -->
+                        <path d="M 10 50 A 40 40 0 0 1 90 50"
+                              fill="none"
+                              stroke="#E8E3DD"
+                              stroke-width="8"
+                              stroke-linecap="round"/>
+                        <!-- Progress arc -->
+                        <path id="stat-walked-progress"
+                              d="M 10 50 A 40 40 0 0 1 90 50"
+                              fill="none"
+                              stroke="#C17A5C"
+                              stroke-width="8"
+                              stroke-linecap="round"
+                              stroke-dasharray="125.66"
+                              stroke-dashoffset="125.66"/>
+                    </svg>
+                    <div class="stat-value" id="stat-walked">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">💊 Rugpijn</div>
+                    <!-- Partial circular progress -->
+                    <svg class="stat-progress" viewBox="0 0 100 60">
+                        <!-- Background arc -->
+                        <path d="M 10 50 A 40 40 0 0 1 90 50"
+                              fill="none"
+                              stroke="#E8E3DD"
+                              stroke-width="8"
+                              stroke-linecap="round"/>
+                        <!-- Progress arc -->
+                        <path id="stat-pain-progress"
+                              d="M 10 50 A 40 40 0 0 1 90 50"
+                              fill="none"
+                              stroke="#D89A82"
+                              stroke-width="8"
+                              stroke-linecap="round"
+                              stroke-dasharray="125.66"
+                              stroke-dashoffset="125.66"/>
+                    </svg>
+                    <div class="stat-value" id="stat-pain">-</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tracking Form (will be in separate view) -->
+        <section id="tracker-view" class="view active">
+            <h2>Tracking van Vandaag</h2>
+            <p class="date" id="current-date"></p>
+
+            <!-- Sleep & Wellbeing -->
+            <div class="tracking-card">
+                <h3>😴 Slaap & Welzijn</h3>
+
+                <div class="form-group">
+                    <label for="sleep-score">Slaapcijfer</label>
+                    <input type="range" id="sleep-score" min="1" max="10" value="7" class="slider">
+                    <output id="sleep-output">7</output>
+                </div>
+
+                <div class="form-group">
+                    <label for="back-pain">Rugpijn Niveau</label>
+                    <input type="range" id="back-pain" min="0" max="10" value="0" class="slider">
+                    <output id="pain-output">0</output>
+                </div>
+
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="dreamed">
+                    <label for="dreamed">Ik heb afgelopen nacht gedroomd</label>
+                </div>
+            </div>
+
+            <!-- Hydration & Activity -->
+            <div class="tracking-card">
+                <h3>💧 Hydratatie & Activiteit</h3>
+
+                <div class="form-group">
+                    <label for="water-intake">Water (glazen)</label>
+
+                    <!-- Visual glass indicators -->
+                    <div class="water-glasses" id="water-glasses">
+                        <div class="glass-icon" data-glass="1">💧</div>
+                        <div class="glass-icon" data-glass="2">💧</div>
+                        <div class="glass-icon" data-glass="3">💧</div>
+                        <div class="glass-icon" data-glass="4">💧</div>
+                        <div class="glass-icon" data-glass="5">💧</div>
+                        <div class="glass-icon" data-glass="6">💧</div>
+                        <div class="glass-icon" data-glass="7">💧</div>
+                        <div class="glass-icon" data-glass="8">💧</div>
+                    </div>
+
+                    <div class="water-control">
+                        <button type="button" class="btn-control btn-minus" id="water-minus" title="Verwijder een glas">−</button>
+                        <input type="number" id="water-intake" min="0" max="20" value="0" readonly>
+                        <button type="button" class="btn-control btn-plus" id="water-add" title="Voeg een glas toe">+</button>
+                    </div>
+                </div>
+
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="walked">
+                    <label for="walked">Ik heb vandaag gelopen</label>
+                </div>
+            </div>
+
+            <!-- Consumption -->
+            <div class="tracking-card">
+                <h3>🍬 Consumptie</h3>
+
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="sugar-consumed">
+                    <label for="sugar-consumed">Suiker geconsumeerd</label>
+                </div>
+
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="alcohol-consumed">
+                    <label for="alcohol-consumed">Alcohol geconsumeerd</label>
+                </div>
+
+                <div class="form-group" id="alcohol-type-group" style="display: none;">
+                    <label>Type drankje</label>
+                    <div class="alcohol-pills">
+                        <button type="button" class="pill-button" data-type="bier">
+                            <span class="pill-icon">🍺</span>
+                            <span class="pill-label">Bier</span>
+                        </button>
+                        <button type="button" class="pill-button" data-type="wijn">
+                            <span class="pill-icon">🍷</span>
+                            <span class="pill-label">Wijn</span>
+                        </button>
+                        <button type="button" class="pill-button" data-type="whisky">
+                            <span class="pill-icon">🥃</span>
+                            <span class="pill-label">Whisky</span>
+                        </button>
+                        <button type="button" class="pill-button" data-type="port">
+                            <span class="pill-icon">🍷</span>
+                            <span class="pill-label">Port</span>
+                        </button>
+                        <button type="button" class="pill-button" data-type="vermouth">
+                            <span class="pill-icon">🍸</span>
+                            <span class="pill-label">Vermouth</span>
+                        </button>
+                        <button type="button" class="pill-button" data-type="gin">
+                            <span class="pill-icon">🍸</span>
+                            <span class="pill-label">Gin</span>
+                        </button>
+                    </div>
+                    <input type="hidden" id="alcohol-type" value="">
+                </div>
+
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="caffeine-consumed">
+                    <label for="caffeine-consumed">Cafeïne geconsumeerd</label>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <button id="save-data" class="btn-primary btn-large">
+                💾 Bewaar Data van Vandaag
+            </button>
+        </section>
+
+        <!-- Stats View (placeholder) -->
+        <section id="stats-view" class="view">
+            <h2>📊 Statistieken</h2>
+            <p>Binnenkort beschikbaar...</p>
+        </section>
+
+        <!-- History View (placeholder) -->
+        <section id="history-view" class="view">
+            <h2>📅 Geschiedenis</h2>
+            <p>Binnenkort beschikbaar...</p>
+        </section>
+
+        <!-- Settings View -->
+        <section id="settings-view" class="view">
+            <h2>⚙️ Instellingen</h2>
+
+            <div class="settings-card">
+                <h3>🔐 Privacy & Data</h3>
+                <button id="export-data" class="btn-secondary">📥 Exporteer Alle Data (CSV)</button>
+                <button id="delete-all-data" class="btn-danger">🗑️ Verwijder Alle Data</button>
+                <a href="../SECURITY.md" target="_blank" class="link">Bekijk Beveiligings- en Privacyverklaring</a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-view="tracker-view">
+            <span class="nav-icon">📝</span>
+            <span class="nav-label">Tracken</span>
+        </button>
+        <button class="nav-item" data-view="stats-view">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Stats</span>
+        </button>
+        <button class="nav-item" data-view="history-view">
+            <span class="nav-icon">📅</span>
+            <span class="nav-label">Historie</span>
+        </button>
+        <button class="nav-item" data-view="settings-view">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">Opties</span>
+        </button>
+    </nav>
+
+    <!-- Scripts -->
+    <script src="./js/utils/sanitize.js"></script>
+    <script src="./js/services/storage.js"></script>
+    <script src="./js/services/healthScore.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+</html>
