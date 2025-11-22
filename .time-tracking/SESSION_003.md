@@ -1,5 +1,5 @@
 # Session 003 - Testing & QA
-**Datum**: 22 November 2024
+**Datum**: 22 November 2025
 **Tijd**: 22:00 - 23:30 (1.5 uur)
 **Focus**: Testing Milestone + Accessibility Audit
 
@@ -15,7 +15,7 @@
 ## ✅ Voltooid
 
 ### 1. Sprint Review Process (30 min)
-- ✅ Sprint review document gemaakt (`.sprint-review/2024-11-22-design-improvements.md`)
+- ✅ Sprint review document gemaakt (`.sprint-review/2025-11-22-design-improvements.md`)
 - ✅ Alle team expertises aangesproken (@PO, @UX, @LeadFrontend, @QALead, @PM)
 - ✅ Design work approved (maar blocked by testing)
 - ✅ Issues geupdatet (#9 closed, #15 created, #16 created)

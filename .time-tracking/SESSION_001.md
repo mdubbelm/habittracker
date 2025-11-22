@@ -1,6 +1,6 @@
 # Time Tracking - Session 001
 
-**Datum**: 22 November 2024
+**Datum**: 22 November 2025
 **Sessie**: Initial Project Setup
 **Doel**: Van idee naar werkende project foundation
 
@@ -183,6 +183,6 @@
 
 ---
 
-*Time tracking gestart: 22 Nov 2024*
+*Time tracking gestart: 22 Nov 2025*
 *Methode: Handmatige schatting op basis van complexity*
 *Accuracy: ±10% (geen exacte timer, maar realistische schattingen)*

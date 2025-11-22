@@ -383,7 +383,7 @@ De Health Tracker app combineert modern design met praktische functionaliteit. D
 
 ---
 
-**Ontwikkeld**: November 2024  
+**Ontwikkeld**: November 2025  
 **Versie**: 1.0  
 **Platform**: Web (Progressive Web App ready)  
 **Licentie**: Voor persoonlijk gebruik

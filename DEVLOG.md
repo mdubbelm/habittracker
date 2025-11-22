@@ -36,7 +36,7 @@ En blijkbaar is dat genoeg.
 
 ## 📅 Dag 1: Van Idee naar Project Foundation
 
-**Datum**: 22 November 2024
+**Datum**: 22 November 2025
 **Tijd besteed**: 15 minuten (ja, echt)
 **AI tijd**: ~5 uur werk
 **Ratio**: 1:20 🤯
@@ -638,5 +638,5 @@ Claude kan code schrijven, tests maken, docs schrijven. Maar:
 
 ---
 
-**Last Updated:** 22 November 2024, 23:30
+**Last Updated:** 22 November 2025, 23:30
 **Next Session:** Testing Milestone completion + accessibility fixes

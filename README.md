@@ -296,4 +296,4 @@ Zie [TEAM.md](./TEAM.md) voor volledige team structuur.
 
 **Built with ❤️ for a healthier lifestyle**
 
-*Last updated: November 2024*
+*Last updated: November 2025*

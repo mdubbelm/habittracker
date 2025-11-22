@@ -386,6 +386,6 @@ Phase 4: Advanced Features (Week 15+)  ░░░░░░░░░░░░░�
 
 ---
 
-**Laatst bijgewerkt**: November 2024
+**Laatst bijgewerkt**: November 2025
 **Versie**: 1.0
 **Next Review**: Start Phase 1

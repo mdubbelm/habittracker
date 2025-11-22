@@ -1,5 +1,5 @@
 # Screenshots - Design Improvements
-**Date**: 22 November 2024
+**Date**: 22 November 2025
 **Version**: Post-design improvements
 **Related Issues**: #15 (Design Improvements), #16 (Testing), #17 (Contrast fix)
 

@@ -159,7 +159,7 @@ function calculateHealthScore(data) {
 ```javascript
 localStorage.trackerData = [
   {
-    date: "2024-11-22",           // ISO date string
+    date: "2025-11-22",           // ISO date string
     sleepScore: 8,                // 0-10
     backPain: 3,                  // 0-10
     weight: 75.5,                 // kg (optional, time-gated)
@@ -493,6 +493,6 @@ See `CONTRIBUTING.md` for:
 
 ---
 
-**Last Updated:** November 2024
+**Last Updated:** November 2025
 **Project Phase:** 0 (Foundation)
 **Primary Developer:** @mdubbelm

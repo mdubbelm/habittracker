@@ -1,5 +1,5 @@
 # 🎨 Sprint Review - Design Verbeteringen
-**Datum**: 22 November 2024
+**Datum**: 22 November 2025
 **Sprint**: Design Improvements Milestone
 **Status**: ⏳ In Review
 

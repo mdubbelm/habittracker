@@ -233,5 +233,5 @@ Je project is volledig opgezet en klaar voor development. De structuur ondersteu
 
 **Veel success met de Health Tracker! 🏃‍♀️💪**
 
-*Setup completed: November 2024*
+*Setup completed: November 2025*
 *Ready for Phase 0: Foundation & Setup*

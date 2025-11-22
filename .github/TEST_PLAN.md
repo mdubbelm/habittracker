@@ -1,7 +1,7 @@
 # Test Plan - Design Improvements
 **Issue**: #16
 **Milestone**: Design Improvements Testing & QA
-**Datum**: 22 November 2024
+**Datum**: 22 November 2025
 **Status**: In Progress
 
 ---
@@ -260,7 +260,7 @@ describe('updateQuickStats', () => {
 ## 📸 Visual Testing
 
 ### Screenshots Needed
-**Location**: `screenshots/2024-11-22_design-improvements/`
+**Location**: `screenshots/2025-11-22_design-improvements/`
 
 **Captures**:
 1. `01_quick-stats-empty.png` - Quick stats without data
@@ -340,4 +340,4 @@ Testing is DONE when:
 
 **Test Lead**: @QALead
 **Execution**: @AutomationQA (unit), @MobileQA (manual)
-**Target Completion**: 25 November 2024
+**Target Completion**: 25 November 2025

@@ -599,5 +599,5 @@ jobs:
 
 ---
 
-**Laatst bijgewerkt**: November 2024
+**Laatst bijgewerkt**: November 2025
 **Test Coverage**: iPhone 13 (iOS 17+)
