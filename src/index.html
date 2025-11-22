@@ -198,16 +198,19 @@
                 <div class="form-group">
                     <label for="water-intake">Water (glazen)</label>
 
-                    <!-- Visual glass indicators -->
-                    <div class="water-glasses" id="water-glasses">
-                        <div class="glass-icon" data-glass="1">💧</div>
-                        <div class="glass-icon" data-glass="2">💧</div>
-                        <div class="glass-icon" data-glass="3">💧</div>
-                        <div class="glass-icon" data-glass="4">💧</div>
-                        <div class="glass-icon" data-glass="5">💧</div>
-                        <div class="glass-icon" data-glass="6">💧</div>
-                        <div class="glass-icon" data-glass="7">💧</div>
-                        <div class="glass-icon" data-glass="8">💧</div>
+                    <!-- Visual glass indicators with screen reader support -->
+                    <div class="water-glasses" id="water-glasses" role="status" aria-live="polite">
+                        <!-- Screen reader announcement (updated dynamically) -->
+                        <span class="sr-only" id="water-status" aria-atomic="true">Water: 0 van 8 glazen</span>
+                        <!-- Visual indicators (decorative for screen readers) -->
+                        <div class="glass-icon" data-glass="1" aria-hidden="true">💧</div>
+                        <div class="glass-icon" data-glass="2" aria-hidden="true">💧</div>
+                        <div class="glass-icon" data-glass="3" aria-hidden="true">💧</div>
+                        <div class="glass-icon" data-glass="4" aria-hidden="true">💧</div>
+                        <div class="glass-icon" data-glass="5" aria-hidden="true">💧</div>
+                        <div class="glass-icon" data-glass="6" aria-hidden="true">💧</div>
+                        <div class="glass-icon" data-glass="7" aria-hidden="true">💧</div>
+                        <div class="glass-icon" data-glass="8" aria-hidden="true">💧</div>
                     </div>
 
                     <div class="water-control">
@@ -240,27 +243,27 @@
                 <div class="form-group" id="alcohol-type-group" style="display: none;">
                     <label>Type drankje</label>
                     <div class="alcohol-pills">
-                        <button type="button" class="pill-button" data-type="bier">
+                        <button type="button" class="pill-button" data-type="bier" aria-pressed="false">
                             <span class="pill-icon">🍺</span>
                             <span class="pill-label">Bier</span>
                         </button>
-                        <button type="button" class="pill-button" data-type="wijn">
+                        <button type="button" class="pill-button" data-type="wijn" aria-pressed="false">
                             <span class="pill-icon">🍷</span>
                             <span class="pill-label">Wijn</span>
                         </button>
-                        <button type="button" class="pill-button" data-type="whisky">
+                        <button type="button" class="pill-button" data-type="whisky" aria-pressed="false">
                             <span class="pill-icon">🥃</span>
                             <span class="pill-label">Whisky</span>
                         </button>
-                        <button type="button" class="pill-button" data-type="port">
+                        <button type="button" class="pill-button" data-type="port" aria-pressed="false">
                             <span class="pill-icon">🍷</span>
                             <span class="pill-label">Port</span>
                         </button>
-                        <button type="button" class="pill-button" data-type="vermouth">
+                        <button type="button" class="pill-button" data-type="vermouth" aria-pressed="false">
                             <span class="pill-icon">🍸</span>
                             <span class="pill-label">Vermouth</span>
                         </button>
-                        <button type="button" class="pill-button" data-type="gin">
+                        <button type="button" class="pill-button" data-type="gin" aria-pressed="false">
                             <span class="pill-icon">🍸</span>
                             <span class="pill-label">Gin</span>
                         </button>

@@ -130,10 +130,11 @@ function loadTodayData() {
     if (data.alcoholType !== undefined && data.alcoholType) {
         document.getElementById('alcohol-type').value = data.alcoholType;
         document.getElementById('alcohol-type-group').style.display = 'block';
-        // Set active pill
+        // Set active pill and aria-pressed state
         const pillButton = document.querySelector(`.pill-button[data-type="${data.alcoholType}"]`);
         if (pillButton) {
             pillButton.classList.add('active');
+            pillButton.setAttribute('aria-pressed', 'true');
         }
     }
 }
@@ -195,10 +196,14 @@ function setupEventListeners() {
     // Alcohol type pill buttons
     document.querySelectorAll('.pill-button').forEach(button => {
         button.addEventListener('click', function() {
-            // Remove active from all
-            document.querySelectorAll('.pill-button').forEach(btn => btn.classList.remove('active'));
-            // Add active to clicked
+            // Remove active from all and set aria-pressed to false
+            document.querySelectorAll('.pill-button').forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-pressed', 'false');
+            });
+            // Add active to clicked and set aria-pressed to true
             this.classList.add('active');
+            this.setAttribute('aria-pressed', 'true');
             // Set hidden input value
             document.getElementById('alcohol-type').value = this.getAttribute('data-type');
         });
@@ -376,6 +381,12 @@ function updateWaterGlasses(count) {
             glass.classList.remove('filled');
         }
     });
+
+    // Update screen reader announcement
+    const waterStatus = document.getElementById('water-status');
+    if (waterStatus) {
+        waterStatus.textContent = `Water: ${count} van 8 glazen`;
+    }
 }
 
 /**
