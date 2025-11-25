@@ -2,6 +2,7 @@
 
 > A modern, privacy-first Progressive Web App for tracking daily health metrics and habits, optimized for mobile devices.
 
+[![CI](https://github.com/mdubbelm/habittracker/actions/workflows/ci.yml/badge.svg)](https://github.com/mdubbelm/habittracker/actions/workflows/ci.yml)
 [![Phase](https://img.shields.io/badge/Phase-0%20Foundation-yellow)]()
 [![Platform](https://img.shields.io/badge/Platform-Mobile%20First-blue)]()
 [![Device](https://img.shields.io/badge/Optimized%20for-iPhone%2013-black)]()
