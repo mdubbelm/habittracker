@@ -311,7 +311,9 @@ function getStorageStats() {
 }
 
 // Export for module use (or global if not using modules)
+// eslint-disable-next-line no-undef
 if (typeof module !== 'undefined' && module.exports) {
+    // eslint-disable-next-line no-undef
     module.exports = {
         getAllData,
         getDataForDate,

@@ -9,9 +9,8 @@
 
 import { chromium, firefox, webkit } from 'playwright';
 import fs from 'fs';
-import path from 'path';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -30,7 +29,7 @@ const BROWSERS = [
 const TESTS = [
     {
         name: 'Page loads correctly',
-        test: async (page) => {
+        test: async page => {
             await page.goto(`${CONFIG.baseURL}/src/index.html`);
             await page.waitForSelector('#app', { state: 'visible' });
 
@@ -46,7 +45,7 @@ const TESTS = [
     },
     {
         name: 'Health score circle renders',
-        test: async (page) => {
+        test: async page => {
             const circle = await page.locator('.health-circle').isVisible();
             const scoreText = await page.locator('#svg-score-value').textContent();
             return {
@@ -57,7 +56,7 @@ const TESTS = [
     },
     {
         name: 'Quick stats grid displays (2x2)',
-        test: async (page) => {
+        test: async page => {
             const stats = await page.locator('.stat-card').count();
             return {
                 passed: stats === 4,
@@ -67,7 +66,7 @@ const TESTS = [
     },
     {
         name: 'Water glasses render (8 icons)',
-        test: async (page) => {
+        test: async page => {
             const glasses = await page.locator('.glass-icon').count();
             return {
                 passed: glasses === 8,
@@ -77,7 +76,7 @@ const TESTS = [
     },
     {
         name: 'Water + button works',
-        test: async (page) => {
+        test: async page => {
             const before = await page.locator('#water-intake').inputValue();
             await page.click('#water-add');
             await page.waitForTimeout(200);
@@ -90,7 +89,7 @@ const TESTS = [
     },
     {
         name: 'Gradient headers visible',
-        test: async (page) => {
+        test: async page => {
             const headers = await page.locator('.tracking-card h3').count();
             return {
                 passed: headers >= 2,
@@ -100,7 +99,7 @@ const TESTS = [
     },
     {
         name: 'Bottom navigation works',
-        test: async (page) => {
+        test: async page => {
             // Click stats view
             await page.click('[data-view="stats-view"]');
             await page.waitForTimeout(300);
@@ -119,7 +118,7 @@ const TESTS = [
     },
     {
         name: 'Save button works',
-        test: async (page) => {
+        test: async page => {
             await page.click('#save-data');
             await page.waitForTimeout(500);
 
@@ -135,7 +134,7 @@ const TESTS = [
     },
     {
         name: 'Alcohol pills have aria-pressed',
-        test: async (page) => {
+        test: async page => {
             // Show alcohol section
             await page.check('#alcohol-consumed');
             await page.waitForTimeout(300);
@@ -156,7 +155,7 @@ const TESTS = [
     },
     {
         name: 'Screen reader water status exists',
-        test: async (page) => {
+        test: async page => {
             const srText = await page.locator('#water-status').textContent();
             return {
                 passed: srText && srText.includes('Water:'),
@@ -229,7 +228,6 @@ async function runTests() {
             });
 
             await browserInstance.close();
-
         } catch (error) {
             console.log(`  ❌ Browser failed to launch: ${error.message}`);
             results[browser.name].error = error.message;
@@ -250,8 +248,12 @@ async function runTests() {
             const total = result.passed + result.failed;
             const percentage = Math.round((result.passed / total) * 100);
             const status = result.failed === 0 ? '✅' : '⚠️';
-            console.log(`${browserName}: ${status} ${result.passed}/${total} tests passed (${percentage}%)`);
-            if (result.failed > 0) allPassed = false;
+            console.log(
+                `${browserName}: ${status} ${result.passed}/${total} tests passed (${percentage}%)`
+            );
+            if (result.failed > 0) {
+                allPassed = false;
+            }
         }
     }
 
@@ -264,10 +266,7 @@ async function runTests() {
     }
 
     // Save results to JSON
-    fs.writeFileSync(
-        path.join(outputDir, 'results.json'),
-        JSON.stringify(results, null, 2)
-    );
+    fs.writeFileSync(path.join(outputDir, 'results.json'), JSON.stringify(results, null, 2));
 
     console.log(`📁 Screenshots saved to: screenshots/cross-browser-test/`);
 

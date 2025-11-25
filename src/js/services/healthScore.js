@@ -12,11 +12,11 @@
  * Total should add up to 100 for easy percentage calculation
  */
 const WEIGHTS = {
-    sleep: 30,          // Sleep is VERY important
-    pain: 20,           // Pain management crucial
-    hydration: 15,      // Water intake
-    activity: 15,       // Walking/movement
-    consumption: 20     // Sugar/alcohol/caffeine (negative impact)
+    sleep: 30, // Sleep is VERY important
+    pain: 20, // Pain management crucial
+    hydration: 15, // Water intake
+    activity: 15, // Walking/movement
+    consumption: 20 // Sugar/alcohol/caffeine (negative impact)
 };
 
 /**
@@ -75,15 +75,22 @@ function calculateHealthScore(data) {
 
     // Consumption (sugar, alcohol, caffeine)
     // Each "bad" thing reduces the score
-    if (data.sugarConsumed !== undefined ||
+    if (
+        data.sugarConsumed !== undefined ||
         data.alcoholConsumed !== undefined ||
-        data.caffeineConsumed !== undefined) {
-
+        data.caffeineConsumed !== undefined
+    ) {
         let consumptionScore = 100; // Start at 100%
 
-        if (data.sugarConsumed) consumptionScore -= 40;
-        if (data.alcoholConsumed) consumptionScore -= 40;
-        if (data.caffeineConsumed) consumptionScore -= 20;
+        if (data.sugarConsumed) {
+            consumptionScore -= 40;
+        }
+        if (data.alcoholConsumed) {
+            consumptionScore -= 40;
+        }
+        if (data.caffeineConsumed) {
+            consumptionScore -= 20;
+        }
 
         consumptionScore = Math.max(consumptionScore, 0); // Don't go below 0
 
@@ -103,12 +110,24 @@ function calculateHealthScore(data) {
  * @returns {string} Motivational message
  */
 function getScoreMessage(score) {
-    if (score === 0) return 'Start met tracken!';
-    if (score < 30) return 'Zware dag? Morgen is een nieuwe kans!';
-    if (score < 50) return 'Er is ruimte voor verbetering!';
-    if (score < 70) return 'Je komt er!';
-    if (score < 85) return 'Goed bezig!';
-    if (score < 95) return 'Geweldig! Ga zo door!';
+    if (score === 0) {
+        return 'Start met tracken!';
+    }
+    if (score < 30) {
+        return 'Zware dag? Morgen is een nieuwe kans!';
+    }
+    if (score < 50) {
+        return 'Er is ruimte voor verbetering!';
+    }
+    if (score < 70) {
+        return 'Je komt er!';
+    }
+    if (score < 85) {
+        return 'Goed bezig!';
+    }
+    if (score < 95) {
+        return 'Geweldig! Ga zo door!';
+    }
     return 'Perfecte dag! 🎉';
 }
 
@@ -118,11 +137,21 @@ function getScoreMessage(score) {
  * @returns {string} Color name or hex
  */
 function getScoreColor(score) {
-    if (score === 0) return '#94A3B8'; // Slate (no data)
-    if (score < 30) return '#EF4444'; // Red
-    if (score < 50) return '#F59E0B'; // Orange
-    if (score < 70) return '#EAB308'; // Yellow
-    if (score < 85) return '#84CC16'; // Lime
+    if (score === 0) {
+        return '#94A3B8';
+    } // Slate (no data)
+    if (score < 30) {
+        return '#EF4444';
+    } // Red
+    if (score < 50) {
+        return '#F59E0B';
+    } // Orange
+    if (score < 70) {
+        return '#EAB308';
+    } // Yellow
+    if (score < 85) {
+        return '#84CC16';
+    } // Lime
     return '#10B981'; // Green
 }
 
@@ -177,14 +206,21 @@ function getScoreBreakdown(data) {
     }
 
     // Consumption
-    if (data.sugarConsumed !== undefined ||
+    if (
+        data.sugarConsumed !== undefined ||
         data.alcoholConsumed !== undefined ||
-        data.caffeineConsumed !== undefined) {
-
+        data.caffeineConsumed !== undefined
+    ) {
         let score = 100;
-        if (data.sugarConsumed) score -= 40;
-        if (data.alcoholConsumed) score -= 40;
-        if (data.caffeineConsumed) score -= 20;
+        if (data.sugarConsumed) {
+            score -= 40;
+        }
+        if (data.alcoholConsumed) {
+            score -= 40;
+        }
+        if (data.caffeineConsumed) {
+            score -= 20;
+        }
         score = Math.max(score, 0);
 
         breakdown.consumption = {
@@ -230,20 +266,28 @@ function getScoreTrend(allData, days = 7) {
     }
 
     const scores = dates.map(date => calculateHealthScore(allData[date]));
-    const recentAvg = scores.slice(0, Math.floor(dates.length / 2))
-        .reduce((sum, s) => sum + s, 0) / Math.floor(dates.length / 2);
-    const olderAvg = scores.slice(Math.floor(dates.length / 2))
-        .reduce((sum, s) => sum + s, 0) / Math.ceil(dates.length / 2);
+    const recentAvg =
+        scores.slice(0, Math.floor(dates.length / 2)).reduce((sum, s) => sum + s, 0) /
+        Math.floor(dates.length / 2);
+    const olderAvg =
+        scores.slice(Math.floor(dates.length / 2)).reduce((sum, s) => sum + s, 0) /
+        Math.ceil(dates.length / 2);
 
     const difference = recentAvg - olderAvg;
 
-    if (difference > 5) return 'improving';
-    if (difference < -5) return 'declining';
+    if (difference > 5) {
+        return 'improving';
+    }
+    if (difference < -5) {
+        return 'declining';
+    }
     return 'stable';
 }
 
 // Export for module use (or global if not using modules)
+// eslint-disable-next-line no-undef
 if (typeof module !== 'undefined' && module.exports) {
+    // eslint-disable-next-line no-undef
     module.exports = {
         calculateHealthScore,
         getScoreMessage,

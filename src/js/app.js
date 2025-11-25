@@ -12,7 +12,7 @@ let currentView = 'tracker-view';
 /**
  * Initialize app on page load
  */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('🚀 Health Tracker starting...');
 
     // Check privacy acceptance
@@ -31,14 +31,14 @@ function showPrivacyNotice() {
     notice.classList.remove('hidden');
 
     // Accept button
-    document.getElementById('accept-privacy').addEventListener('click', function() {
+    document.getElementById('accept-privacy').addEventListener('click', function () {
         acceptPrivacy();
         notice.classList.add('hidden');
         initApp();
     });
 
     // View security link
-    document.getElementById('view-security').addEventListener('click', function(e) {
+    document.getElementById('view-security').addEventListener('click', function (e) {
         e.preventDefault();
         window.open('./SECURITY.md', '_blank');
     });
@@ -144,11 +144,11 @@ function loadTodayData() {
  */
 function setupEventListeners() {
     // Slider inputs (live update of output)
-    document.getElementById('sleep-score').addEventListener('input', function(e) {
+    document.getElementById('sleep-score').addEventListener('input', function (e) {
         document.getElementById('sleep-output').textContent = e.target.value;
     });
 
-    document.getElementById('back-pain').addEventListener('input', function(e) {
+    document.getElementById('back-pain').addEventListener('input', function (e) {
         document.getElementById('pain-output').textContent = e.target.value;
     });
 
@@ -162,7 +162,7 @@ function setupEventListeners() {
     document.getElementById('delete-all-data').addEventListener('click', confirmDeleteAll);
 
     // Water +/- buttons
-    document.getElementById('water-add').addEventListener('click', function() {
+    document.getElementById('water-add').addEventListener('click', function () {
         const waterInput = document.getElementById('water-intake');
         const currentValue = parseInt(waterInput.value) || 0;
         if (currentValue < 20) {
@@ -171,7 +171,7 @@ function setupEventListeners() {
         }
     });
 
-    document.getElementById('water-minus').addEventListener('click', function() {
+    document.getElementById('water-minus').addEventListener('click', function () {
         const waterInput = document.getElementById('water-intake');
         const currentValue = parseInt(waterInput.value) || 0;
         if (currentValue > 0) {
@@ -181,7 +181,7 @@ function setupEventListeners() {
     });
 
     // Alcohol type conditional display
-    document.getElementById('alcohol-consumed').addEventListener('change', function(e) {
+    document.getElementById('alcohol-consumed').addEventListener('change', function (e) {
         const alcoholTypeGroup = document.getElementById('alcohol-type-group');
         if (e.target.checked) {
             alcoholTypeGroup.style.display = 'block';
@@ -189,13 +189,15 @@ function setupEventListeners() {
             alcoholTypeGroup.style.display = 'none';
             document.getElementById('alcohol-type').value = '';
             // Deselect all pills
-            document.querySelectorAll('.pill-button').forEach(btn => btn.classList.remove('active'));
+            document
+                .querySelectorAll('.pill-button')
+                .forEach(btn => btn.classList.remove('active'));
         }
     });
 
     // Alcohol type pill buttons
     document.querySelectorAll('.pill-button').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             // Remove active from all and set aria-pressed to false
             document.querySelectorAll('.pill-button').forEach(btn => {
                 btn.classList.remove('active');
@@ -329,8 +331,7 @@ function updateQuickStats(data) {
 
     // Sleep (0-10 scale)
     const sleepValue = data.sleepScore !== undefined ? data.sleepScore : 0;
-    document.getElementById('stat-sleep').textContent =
-        sleepValue > 0 ? sleepValue + '/10' : '-';
+    document.getElementById('stat-sleep').textContent = sleepValue > 0 ? sleepValue + '/10' : '-';
     updateArcProgress('stat-sleep-progress', sleepValue / 10);
 
     // Water (0-8 glasses target)
@@ -341,15 +342,13 @@ function updateQuickStats(data) {
 
     // Walk (boolean → 0% or 100%)
     const walkedValue = data.walked !== undefined ? data.walked : false;
-    document.getElementById('stat-walked').textContent =
-        walkedValue ? 'Ja ✓' : 'Nee';
+    document.getElementById('stat-walked').textContent = walkedValue ? 'Ja ✓' : 'Nee';
     updateArcProgress('stat-walked-progress', walkedValue ? 1 : 0);
 
     // Back Pain (0-10 scale, inverted - less pain is better)
     const painValue = data.backPain !== undefined ? data.backPain : 0;
-    document.getElementById('stat-pain').textContent =
-        painValue > 0 ? painValue + '/10' : '-';
-    updateArcProgress('stat-pain-progress', 1 - (painValue / 10));
+    document.getElementById('stat-pain').textContent = painValue > 0 ? painValue + '/10' : '-';
+    updateArcProgress('stat-pain-progress', 1 - painValue / 10);
 }
 
 /**
@@ -359,10 +358,12 @@ function updateQuickStats(data) {
  */
 function updateArcProgress(elementId, progress) {
     const arc = document.getElementById(elementId);
-    if (!arc) return;
+    if (!arc) {
+        return;
+    }
 
     const arcLength = 125.66;
-    const offset = arcLength - (progress * arcLength);
+    const offset = arcLength - progress * arcLength;
 
     arc.style.strokeDashoffset = offset;
 }
@@ -396,7 +397,7 @@ function setupNavigation() {
     const navButtons = document.querySelectorAll('.nav-item');
 
     navButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const targetView = this.getAttribute('data-view');
             switchView(targetView);
         });
@@ -455,10 +456,10 @@ function confirmDeleteAll() {
 
     const confirmed = confirm(
         `⚠️ WAARSCHUWING: Dit verwijdert ALLE data!\n\n` +
-        `Je hebt ${stats.totalEntries} dagen aan data.\n` +
-        `Van ${stats.oldestEntry} tot ${stats.newestEntry}\n\n` +
-        `Deze actie kan NIET ongedaan gemaakt worden!\n\n` +
-        `Weet je het zeker?`
+            `Je hebt ${stats.totalEntries} dagen aan data.\n` +
+            `Van ${stats.oldestEntry} tot ${stats.newestEntry}\n\n` +
+            `Deze actie kan NIET ongedaan gemaakt worden!\n\n` +
+            `Weet je het zeker?`
     );
 
     if (confirmed) {
@@ -492,7 +493,7 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
     console.log('🔧 Development mode');
 
     // Add some test data helper
-    window.addTestData = function() {
+    window.addTestData = function () {
         const today = getTodayDate();
         const testData = {
             sleepScore: 7,

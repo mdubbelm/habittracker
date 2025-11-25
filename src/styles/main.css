@@ -13,68 +13,68 @@
    ============================================ */
 :root {
     /* Colors - Primary Palette (Earthy Tones) */
-    --color-primary: #C17A5C; /* Terracotta */
-    --color-primary-dark: #A65D43;
-    --color-primary-light: #D89A82;
-    --color-secondary: #8B9E7D; /* Sage Green */
-    --color-secondary-dark: #6D7D5F;
-    --color-secondary-light: #A8B89C;
+    --color-primary: #c17a5c; /* Terracotta */
+    --color-primary-dark: #a65d43;
+    --color-primary-light: #d89a82;
+    --color-secondary: #8b9e7d; /* Sage Green */
+    --color-secondary-dark: #6d7d5f;
+    --color-secondary-light: #a8b89c;
 
     /* Warm Grays & Neutrals */
-    --color-gray-50: #F5F1ED;  /* Warm off-white */
-    --color-gray-100: #E8E3DD; /* Very light warm gray */
-    --color-gray-200: #D1CBC3; /* Light warm gray */
-    --color-gray-300: #9A9189; /* Medium warm gray */
-    --color-gray-400: #9A9189;
-    --color-gray-500: #5C574F; /* Dark warm gray */
-    --color-gray-600: #5C574F;
-    --color-gray-700: #2C2822; /* Almost black with warm tone */
-    --color-gray-800: #2C2822;
-    --color-gray-900: #2C2822;
+    --color-gray-50: #f5f1ed; /* Warm off-white */
+    --color-gray-100: #e8e3dd; /* Very light warm gray */
+    --color-gray-200: #d1cbc3; /* Light warm gray */
+    --color-gray-300: #9a9189; /* Medium warm gray */
+    --color-gray-400: #9a9189;
+    --color-gray-500: #5c574f; /* Dark warm gray */
+    --color-gray-600: #5c574f;
+    --color-gray-700: #2c2822; /* Almost black with warm tone */
+    --color-gray-800: #2c2822;
+    --color-gray-900: #2c2822;
 
     /* Semantic Colors (Earthy) */
-    --color-success: #6B8E5E; /* Natural green */
-    --color-success-light: #8AA67C;
-    --color-success-bg: #E8F0E5;
-    --color-warning: #D4A76A; /* Warm golden */
-    --color-warning-light: #E0BB8A;
-    --color-warning-bg: #F8F3EB;
-    --color-error: #C17A5C; /* Use terracotta (not aggressive red) */
-    --color-error-light: #D89A82;
-    --color-error-bg: #F9F0ED;
-    --color-info: #7D9BA6; /* Muted teal */
-    --color-info-light: #9DB3BC;
-    --color-info-bg: #EDF2F4;
+    --color-success: #6b8e5e; /* Natural green */
+    --color-success-light: #8aa67c;
+    --color-success-bg: #e8f0e5;
+    --color-warning: #d4a76a; /* Warm golden */
+    --color-warning-light: #e0bb8a;
+    --color-warning-bg: #f8f3eb;
+    --color-error: #c17a5c; /* Use terracotta (not aggressive red) */
+    --color-error-light: #d89a82;
+    --color-error-bg: #f9f0ed;
+    --color-info: #7d9ba6; /* Muted teal */
+    --color-info-light: #9db3bc;
+    --color-info-bg: #edf2f4;
 
     /* Background */
-    --bg-primary: #FFFFFF;
-    --bg-secondary: #F5F1ED; /* Warm off-white canvas */
-    --bg-card: #FFFFFF;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f1ed; /* Warm off-white canvas */
+    --bg-card: #ffffff;
 
     /* Text */
-    --text-primary: #2C2822; /* Almost black with warm undertone */
-    --text-secondary: #5C574F; /* Medium warm gray */
-    --text-muted: #9A9189; /* Light warm gray */
+    --text-primary: #2c2822; /* Almost black with warm undertone */
+    --text-secondary: #5c574f; /* Medium warm gray */
+    --text-muted: #9a9189; /* Light warm gray */
 
     /* Spacing */
-    --spacing-xs: 0.25rem;  /* 4px */
-    --spacing-sm: 0.5rem;   /* 8px */
-    --spacing-md: 1rem;     /* 16px */
-    --spacing-lg: 1.5rem;   /* 24px */
-    --spacing-xl: 2rem;     /* 32px */
-    --spacing-2xl: 3rem;    /* 48px */
+    --spacing-xs: 0.25rem; /* 4px */
+    --spacing-sm: 0.5rem; /* 8px */
+    --spacing-md: 1rem; /* 16px */
+    --spacing-lg: 1.5rem; /* 24px */
+    --spacing-xl: 2rem; /* 32px */
+    --spacing-2xl: 3rem; /* 48px */
 
     /* Border Radius */
-    --radius-sm: 0.375rem;  /* 6px */
-    --radius-md: 0.5rem;    /* 8px */
-    --radius-lg: 1rem;      /* 16px */
-    --radius-xl: 1.5rem;    /* 24px */
+    --radius-sm: 0.375rem; /* 6px */
+    --radius-md: 0.5rem; /* 8px */
+    --radius-lg: 1rem; /* 16px */
+    --radius-xl: 1.5rem; /* 24px */
     --radius-full: 9999px;
 
     /* Borders (NO SHADOWS - flat design) */
-    --border-subtle: 1px solid #E8E3DD;
-    --border-light: 1px solid #D1CBC3;
-    --border-medium: 1px solid #9A9189;
+    --border-subtle: 1px solid #e8e3dd;
+    --border-light: 1px solid #d1cbc3;
+    --border-medium: 1px solid #9a9189;
 
     /* Z-index */
     --z-base: 1;
@@ -102,7 +102,8 @@ html {
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     background-color: var(--bg-secondary);
     color: var(--text-primary);
     line-height: 1.6;
@@ -122,7 +123,10 @@ body {
 /* ============================================
    TYPOGRAPHY - Enhanced Hierarchy
    ============================================ */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
     font-weight: 700;
     line-height: 1.2;
     color: var(--text-primary);
@@ -202,7 +206,8 @@ p {
 }
 
 #svg-score-value {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .score-message {
@@ -235,7 +240,7 @@ p {
 
 /* Gradient accent for water card - WCAG AA compliant (4.52:1 contrast) */
 .stat-card:nth-child(2) {
-    background: linear-gradient(135deg, #7A8B6E 0%, #6D7D5F 100%);
+    background: linear-gradient(135deg, #7a8b6e 0%, #6d7d5f 100%);
 }
 
 .stat-card:nth-child(2) .stat-label,
@@ -294,7 +299,7 @@ p {
 
 /* Alternate gradient for second card - WCAG AA compliant */
 .tracking-card:nth-child(3) h3 {
-    background: linear-gradient(135deg, #7A8B6E 0%, #6D7D5F 100%);
+    background: linear-gradient(135deg, #7a8b6e 0%, #6d7d5f 100%);
 }
 
 .settings-card {
@@ -333,8 +338,8 @@ label {
 }
 
 /* Text/Number Inputs */
-input[type="number"],
-input[type="text"] {
+input[type='number'],
+input[type='text'] {
     width: 100%;
     padding: var(--spacing-md);
     border: 2px solid var(--color-gray-200);
@@ -343,8 +348,8 @@ input[type="text"] {
     transition: border-color 0.2s;
 }
 
-input[type="number"]:focus,
-input[type="text"]:focus {
+input[type='number']:focus,
+input[type='text']:focus {
     outline: none;
     border-color: var(--color-primary);
 }
@@ -481,7 +486,7 @@ output {
 }
 
 /* Checkboxes */
-input[type="checkbox"] {
+input[type='checkbox'] {
     width: 20px;
     height: 20px;
     accent-color: var(--color-primary);
@@ -624,7 +629,7 @@ button {
 }
 
 .btn-danger:hover {
-    background: #DC2626;
+    background: #dc2626;
 }
 
 /* ============================================
@@ -836,7 +841,7 @@ button {
 /* High contrast mode */
 @media (prefers-contrast: high) {
     :root {
-        --color-gray-200: #C0C0C0;
-        --color-gray-300: #A0A0A0;
+        --color-gray-200: #c0c0c0;
+        --color-gray-300: #a0a0a0;
     }
 }

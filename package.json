@@ -11,9 +11,24 @@
     "test:unit": "echo 'Unit tests - to be implemented in Phase 0'",
     "test:e2e": "echo 'E2E tests - to be implemented in Phase 0'",
     "test:iphone": "echo 'iPhone 13 tests - to be implemented in Phase 0'",
-    "lint": "echo 'Linting - to be implemented in Phase 0'",
-    "format": "echo 'Formatting - to be implemented in Phase 0'",
-    "prepare": "echo 'Git hooks setup - to be implemented in Phase 0'"
+    "lint": "eslint src/ scripts/",
+    "lint:fix": "eslint src/ scripts/ --fix",
+    "format": "prettier --write \"src/**/*.{js,css,html}\" \"scripts/**/*.js\"",
+    "format:check": "prettier --check \"src/**/*.{js,css,html}\" \"scripts/**/*.js\"",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "scripts/**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.{css,html}": [
+      "prettier --write"
+    ]
   },
   "keywords": [
     "health",
@@ -41,6 +56,13 @@
     "npm": ">=9.0.0"
   },
   "devDependencies": {
-    "playwright": "^1.56.1"
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "playwright": "^1.56.1",
+    "prettier": "^3.6.2"
   }
 }

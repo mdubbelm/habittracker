@@ -13,9 +13,8 @@
 
 import { chromium, devices } from 'playwright';
 import fs from 'fs';
-import path from 'path';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import { execSync } from 'child_process';
 
 // ES module __dirname equivalent
@@ -130,6 +129,7 @@ async function captureScreenshots() {
         console.log('📝 Filling test data...');
 
         // Use evaluate for range inputs (sliders)
+        /* eslint-disable no-undef */
         await page.evaluate(() => {
             document.getElementById('sleep-score').value = 8;
             document.getElementById('sleep-score').dispatchEvent(new Event('input'));
@@ -138,6 +138,7 @@ async function captureScreenshots() {
             document.getElementById('back-pain').value = 2;
             document.getElementById('back-pain').dispatchEvent(new Event('input'));
         });
+        /* eslint-enable no-undef */
 
         // Water intake via + button clicks (input is readonly)
         for (let i = 0; i < 6; i++) {
@@ -202,7 +203,6 @@ async function captureScreenshots() {
 
         // Create version README
         createVersionReadme(outputDir);
-
     } catch (error) {
         console.error('❌ Error capturing screenshots:', error.message);
         throw error;
