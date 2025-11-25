@@ -7,10 +7,12 @@
     "dev": "echo 'Development server - to be implemented in Phase 0'",
     "build": "echo 'Build script - to be implemented in Phase 0'",
     "preview": "echo 'Preview build - to be implemented in Phase 0'",
-    "test": "echo 'Tests - to be implemented in Phase 0'",
-    "test:unit": "echo 'Unit tests - to be implemented in Phase 0'",
-    "test:e2e": "echo 'E2E tests - to be implemented in Phase 0'",
-    "test:iphone": "echo 'iPhone 13 tests - to be implemented in Phase 0'",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:unit": "vitest run",
+    "test:e2e": "node scripts/cross-browser-test.js",
+    "test:iphone": "node scripts/capture-screenshots.js",
     "lint": "eslint src/ scripts/",
     "lint:fix": "eslint src/ scripts/ --fix",
     "format": "prettier --write \"src/**/*.{js,css,html}\" \"scripts/**/*.js\"",
@@ -57,12 +59,15 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@vitest/coverage-v8": "^4.0.14",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
+    "jsdom": "^27.2.0",
     "lint-staged": "^16.2.7",
     "playwright": "^1.56.1",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "vitest": "^4.0.14"
   }
 }
