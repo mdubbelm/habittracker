@@ -128,9 +128,23 @@ async function captureScreenshots() {
 
         // Fill in some test data for better screenshots
         console.log('📝 Filling test data...');
-        await page.fill('#sleep-score', '8');
-        await page.fill('#back-pain', '2');
-        await page.fill('#water-intake', '6');
+
+        // Use evaluate for range inputs (sliders)
+        await page.evaluate(() => {
+            document.getElementById('sleep-score').value = 8;
+            document.getElementById('sleep-score').dispatchEvent(new Event('input'));
+        });
+        await page.evaluate(() => {
+            document.getElementById('back-pain').value = 2;
+            document.getElementById('back-pain').dispatchEvent(new Event('input'));
+        });
+
+        // Water intake via + button clicks (input is readonly)
+        for (let i = 0; i < 6; i++) {
+            await page.click('#water-add');
+            await page.waitForTimeout(100);
+        }
+
         await page.check('#walked');
         await page.check('#dreamed');
 
