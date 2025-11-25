@@ -278,6 +278,12 @@ function updateHealthScore() {
         svgScoreEl.textContent = score + '%';
     }
 
+    // Update SVG accessible description for screen readers
+    const scoreDesc = document.getElementById('health-score-desc');
+    if (scoreDesc) {
+        scoreDesc.textContent = `Je huidige gezondheidscore is ${score}%`;
+    }
+
     document.getElementById('score-message').textContent = getScoreMessage(score);
 
     // Update circular progress

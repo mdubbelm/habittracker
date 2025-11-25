@@ -57,7 +57,14 @@
             <section class="health-score-section">
                 <div class="score-container">
                     <!-- Circular Progress SVG - Clean & Minimal -->
-                    <svg class="health-circle" viewBox="0 0 200 200">
+                    <svg
+                        class="health-circle"
+                        viewBox="0 0 200 200"
+                        role="img"
+                        aria-labelledby="health-score-title health-score-desc"
+                    >
+                        <title id="health-score-title">Gezondheidscore</title>
+                        <desc id="health-score-desc">Je huidige gezondheidscore is 0%</desc>
                         <!-- Background circle -->
                         <circle
                             cx="100"
@@ -91,6 +98,7 @@
                             font-weight="700"
                             fill="#2C2822"
                             id="svg-score-value"
+                            aria-hidden="true"
                         >
                             0%
                         </text>
@@ -103,8 +111,8 @@
                 <div class="quick-stats">
                     <div class="stat-card">
                         <div class="stat-label">😴 Slaap</div>
-                        <!-- Partial circular progress -->
-                        <svg class="stat-progress" viewBox="0 0 100 60">
+                        <!-- Partial circular progress (decorative) -->
+                        <svg class="stat-progress" viewBox="0 0 100 60" aria-hidden="true">
                             <!-- Background arc -->
                             <path
                                 d="M 10 50 A 40 40 0 0 1 90 50"
@@ -129,8 +137,8 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">💧 Water</div>
-                        <!-- Partial circular progress -->
-                        <svg class="stat-progress" viewBox="0 0 100 60">
+                        <!-- Partial circular progress (decorative) -->
+                        <svg class="stat-progress" viewBox="0 0 100 60" aria-hidden="true">
                             <!-- Background arc -->
                             <path
                                 d="M 10 50 A 40 40 0 0 1 90 50"
@@ -155,8 +163,8 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">🚶 Lopen</div>
-                        <!-- Partial circular progress -->
-                        <svg class="stat-progress" viewBox="0 0 100 60">
+                        <!-- Partial circular progress (decorative) -->
+                        <svg class="stat-progress" viewBox="0 0 100 60" aria-hidden="true">
                             <!-- Background arc -->
                             <path
                                 d="M 10 50 A 40 40 0 0 1 90 50"
@@ -181,8 +189,8 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">💊 Rugpijn</div>
-                        <!-- Partial circular progress -->
-                        <svg class="stat-progress" viewBox="0 0 100 60">
+                        <!-- Partial circular progress (decorative) -->
+                        <svg class="stat-progress" viewBox="0 0 100 60" aria-hidden="true">
                             <!-- Background arc -->
                             <path
                                 d="M 10 50 A 40 40 0 0 1 90 50"
