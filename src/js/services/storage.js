@@ -238,6 +238,28 @@ export function exportAsJSON() {
 }
 
 /**
+ * Import data from JSON object (merges with existing)
+ * @param {Object} data - Data to import
+ * @returns {boolean} Success status
+ */
+export function importFromJSON(data) {
+    if (!isLocalStorageAvailable()) {
+        return false;
+    }
+
+    try {
+        const existingData = getAllData();
+        const mergedData = { ...existingData, ...data };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedData));
+        console.log('✅ Data imported');
+        return true;
+    } catch (e) {
+        console.error('Import error:', e);
+        return false;
+    }
+}
+
+/**
  * Export all data as CSV
  * @returns {string} CSV string
  */

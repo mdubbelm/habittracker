@@ -613,17 +613,73 @@
 
             <!-- Settings View -->
             <section id="settings-view" class="view">
-                <h2>⚙️ Instellingen</h2>
+                <h2>Instellingen</h2>
 
+                <!-- Export Section -->
                 <div class="settings-card">
-                    <h3>🔐 Privacy & Data</h3>
-                    <button id="export-data" class="btn-secondary">
-                        📥 Exporteer Alle Data (CSV)
-                    </button>
-                    <button id="delete-all-data" class="btn-danger">🗑️ Verwijder Alle Data</button>
-                    <a href="../SECURITY.md" target="_blank" class="link"
-                        >Bekijk Beveiligings- en Privacyverklaring</a
-                    >
+                    <h3>Exporteren</h3>
+                    <p class="settings-desc">Download je data als backup of voor analyse.</p>
+                    <div class="settings-buttons">
+                        <button id="export-csv" class="btn-secondary">CSV Exporteren</button>
+                        <button id="export-json" class="btn-secondary">JSON Exporteren</button>
+                    </div>
+                </div>
+
+                <!-- Import Section -->
+                <div class="settings-card">
+                    <h3>Importeren</h3>
+                    <p class="settings-desc">Herstel data van een backup of importeer van CSV.</p>
+                    <div class="settings-buttons">
+                        <label class="btn-secondary file-input-label">
+                            CSV Importeren
+                            <input type="file" id="import-csv" accept=".csv" hidden />
+                        </label>
+                        <label class="btn-secondary file-input-label">
+                            JSON Importeren
+                            <input type="file" id="import-json" accept=".json" hidden />
+                        </label>
+                    </div>
+                    <p class="settings-note" id="import-status"></p>
+                </div>
+
+                <!-- Demo Data -->
+                <div class="settings-card">
+                    <h3>Demo Data</h3>
+                    <p class="settings-desc">Genereer voorbeelddata om de app te testen.</p>
+                    <div class="settings-buttons">
+                        <button id="generate-demo" class="btn-secondary">
+                            7 Dagen Demo Genereren
+                        </button>
+                        <button id="generate-demo-30" class="btn-secondary">
+                            30 Dagen Demo Genereren
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Data Management -->
+                <div class="settings-card">
+                    <h3>Data Beheer</h3>
+                    <p class="settings-desc">Beheer je opgeslagen data.</p>
+                    <div class="data-stats" id="data-stats">
+                        <span>Laden...</span>
+                    </div>
+                    <div class="settings-buttons">
+                        <button id="cleanup-old" class="btn-secondary">
+                            Data Ouder dan 90 Dagen Verwijderen
+                        </button>
+                        <button id="delete-all-data" class="btn-danger">
+                            Alle Data Verwijderen
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Privacy -->
+                <div class="settings-card">
+                    <h3>Privacy</h3>
+                    <p class="settings-desc">Al je data blijft lokaal op dit apparaat.</p>
+                    <a href="./SECURITY.md" target="_blank" class="link">
+                        Bekijk Beveiligings- en Privacyverklaring
+                    </a>
                 </div>
             </section>
         </div>

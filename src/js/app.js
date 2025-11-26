@@ -10,7 +10,6 @@ import {
     getTodayData,
     saveTodayData,
     getTodayDate,
-    exportAsCSV,
     deleteAllData,
     hasAcceptedPrivacy,
     acceptPrivacy,
@@ -19,6 +18,15 @@ import {
 
 import { calculateHealthScore, getScoreMessage, getScoreColor } from './services/healthScore.js';
 import { initStatistics, refreshStatistics } from './components/statisticsUI.js';
+import {
+    downloadJSON,
+    downloadCSV,
+    importJSON,
+    importCSV,
+    generateDemoData,
+    cleanupOldData,
+    getFormattedStats
+} from './services/dataManager.js';
 
 // State
 let currentView = 'tracker-view';
@@ -170,11 +178,27 @@ function setupEventListeners() {
     // Save button
     document.getElementById('save-data').addEventListener('click', saveData);
 
-    // Export data button
-    document.getElementById('export-data').addEventListener('click', exportData);
-
     // Delete all data button
     document.getElementById('delete-all-data').addEventListener('click', confirmDeleteAll);
+
+    // Settings: Export buttons
+    document.getElementById('export-csv')?.addEventListener('click', handleExportCSV);
+    document.getElementById('export-json')?.addEventListener('click', handleExportJSON);
+
+    // Settings: Import buttons
+    document.getElementById('import-csv')?.addEventListener('change', handleImportCSV);
+    document.getElementById('import-json')?.addEventListener('change', handleImportJSON);
+
+    // Settings: Demo data buttons
+    document
+        .getElementById('generate-demo')
+        ?.addEventListener('click', () => handleGenerateDemo(7));
+    document
+        .getElementById('generate-demo-30')
+        ?.addEventListener('click', () => handleGenerateDemo(30));
+
+    // Settings: Cleanup button
+    document.getElementById('cleanup-old')?.addEventListener('click', handleCleanupOld);
 
     // Water +/- buttons
     document.getElementById('water-add').addEventListener('click', function () {
@@ -459,27 +483,12 @@ function switchView(viewId) {
         }
     }
 
+    // Update data stats when switching to settings view
+    if (viewId === 'settings-view') {
+        updateDataStats();
+    }
+
     currentView = viewId;
-}
-
-/**
- * Export data as CSV
- */
-function exportData() {
-    console.log('📥 Data exporteren...');
-
-    const csv = exportAsCSV();
-
-    // Create download link
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `health-tracker-data-${getTodayDate()}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-
-    console.log('✅ Data geëxporteerd');
 }
 
 /**
@@ -516,8 +525,173 @@ function confirmDeleteAll() {
             updateHealthScore();
 
             alert('🗑️ Alle data verwijderd');
+            updateDataStats();
         }
     }
+}
+
+/**
+ * Handle CSV export
+ */
+function handleExportCSV() {
+    const result = downloadCSV();
+    showImportStatus(result.message, result.success);
+}
+
+/**
+ * Handle JSON export
+ */
+function handleExportJSON() {
+    const result = downloadJSON();
+    showImportStatus(result.message, result.success);
+}
+
+/**
+ * Handle CSV import
+ * @param {Event} e - Change event from file input
+ */
+async function handleImportCSV(e) {
+    const file = e.target.files[0];
+    if (!file) {
+        return;
+    }
+
+    showImportStatus('Importeren...', true);
+    const result = await importCSV(file);
+    showImportStatus(result.message, result.success);
+
+    if (result.success && result.count > 0) {
+        updateHealthScore();
+        updateDataStats();
+        if (statisticsInitialized) {
+            refreshStatistics();
+        }
+    }
+
+    // Reset file input
+    e.target.value = '';
+}
+
+/**
+ * Handle JSON import
+ * @param {Event} e - Change event from file input
+ */
+async function handleImportJSON(e) {
+    const file = e.target.files[0];
+    if (!file) {
+        return;
+    }
+
+    showImportStatus('Importeren...', true);
+    const result = await importJSON(file);
+    showImportStatus(result.message, result.success);
+
+    if (result.success && result.count > 0) {
+        updateHealthScore();
+        updateDataStats();
+        if (statisticsInitialized) {
+            refreshStatistics();
+        }
+    }
+
+    // Reset file input
+    e.target.value = '';
+}
+
+/**
+ * Handle demo data generation
+ * @param {number} days - Number of days to generate
+ */
+function handleGenerateDemo(days) {
+    const confirmed = confirm(
+        `Dit genereert ${days} dagen aan voorbeelddata. Bestaande data voor deze dagen wordt overschreven. Doorgaan?`
+    );
+
+    if (confirmed) {
+        const result = generateDemoData(days);
+        showImportStatus(result.message, result.success);
+
+        if (result.success) {
+            loadTodayData();
+            updateHealthScore();
+            updateDataStats();
+            if (statisticsInitialized) {
+                refreshStatistics();
+            }
+        }
+    }
+}
+
+/**
+ * Handle cleanup of old data
+ */
+function handleCleanupOld() {
+    const stats = getStorageStats();
+    const confirmed = confirm(
+        `Dit verwijdert alle data ouder dan 90 dagen.\nJe hebt momenteel ${stats.totalEntries} dagen aan data.\n\nDoorgaan?`
+    );
+
+    if (confirmed) {
+        const result = cleanupOldData(90);
+        showImportStatus(result.message, result.success);
+
+        if (result.count > 0) {
+            updateDataStats();
+            if (statisticsInitialized) {
+                refreshStatistics();
+            }
+        }
+    }
+}
+
+/**
+ * Show import/export status message
+ * @param {string} message - Status message
+ * @param {boolean} success - Whether operation was successful
+ */
+function showImportStatus(message, success) {
+    const statusEl = document.getElementById('import-status');
+    if (statusEl) {
+        statusEl.textContent = message;
+        statusEl.className = `settings-note ${success ? 'success' : 'error'}`;
+
+        // Clear after 5 seconds
+        setTimeout(() => {
+            statusEl.textContent = '';
+            statusEl.className = 'settings-note';
+        }, 5000);
+    }
+}
+
+/**
+ * Update data statistics display in settings
+ */
+function updateDataStats() {
+    const statsEl = document.getElementById('data-stats');
+    if (!statsEl) {
+        return;
+    }
+
+    const stats = getFormattedStats();
+
+    statsEl.innerHTML = `
+        <div class="data-stats-item">
+            <span class="data-stats-value">${stats.totalEntries}</span>
+            <span class="data-stats-label">Dagen</span>
+        </div>
+        <div class="data-stats-item">
+            <span class="data-stats-value">${stats.oldestEntry}</span>
+            <span class="data-stats-label">Eerste</span>
+        </div>
+        <div class="data-stats-item">
+            <span class="data-stats-value">${stats.newestEntry}</span>
+            <span class="data-stats-label">Laatste</span>
+        </div>
+        <div class="data-stats-item">
+            <span class="data-stats-value">${stats.storageSize}</span>
+            <span class="data-stats-label">Opslag</span>
+        </div>
+    `;
 }
 
 /**
