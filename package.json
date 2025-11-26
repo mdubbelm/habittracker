@@ -13,6 +13,7 @@
     "test:unit": "vitest run",
     "test:e2e": "node scripts/cross-browser-test.js",
     "test:iphone": "node scripts/capture-screenshots.js",
+    "generate:icons": "node scripts/generate-icons.js",
     "lint": "eslint src/ scripts/",
     "lint:fix": "eslint src/ scripts/ --fix",
     "format": "prettier --write \"src/**/*.{js,css,html}\" \"scripts/**/*.js\"",
@@ -68,7 +69,9 @@
     "lint-staged": "^16.2.7",
     "playwright": "^1.56.1",
     "prettier": "^3.6.2",
+    "sharp": "^0.34.5",
     "vite": "^7.2.4",
+    "vite-plugin-pwa": "^1.1.0",
     "vitest": "^4.0.14"
   }
 }

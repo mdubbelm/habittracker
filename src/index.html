@@ -9,20 +9,43 @@
         />
         <meta name="theme-color" content="#C17A5C" />
 
+        <!-- iOS PWA meta tags -->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Health Tracker" />
+
         <!-- Security Headers (will be enforced by server in production) -->
         <meta
             http-equiv="Content-Security-Policy"
             content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
         />
 
-        <!-- PWA Manifest (future) -->
-        <!-- <link rel="manifest" href="./manifest.json"> -->
+        <!-- PWA Icons -->
+        <link rel="icon" type="image/png" href="./favicon.png" />
+        <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
 
         <title>Health Tracker - Privacy-First Gezondheidsapp</title>
 
         <!-- Styles are loaded via main.js in development, bundled in production -->
     </head>
     <body>
+        <!-- PWA Install Banner -->
+        <div id="install-banner" class="install-banner hidden">
+            <div class="install-content">
+                <div class="install-icon">
+                    <img src="./icons/icon-96x96.png" alt="" width="48" height="48" />
+                </div>
+                <div class="install-text">
+                    <strong>Installeer Health Tracker</strong>
+                    <span>Voeg toe aan je beginscherm voor snelle toegang</span>
+                </div>
+                <div class="install-actions">
+                    <button id="install-button" class="btn-primary btn-small">Installeren</button>
+                    <button id="dismiss-install" class="btn-dismiss" aria-label="Sluiten">×</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Privacy Notice (First Time) -->
         <div id="privacy-notice" class="privacy-notice hidden">
             <div class="privacy-content">
