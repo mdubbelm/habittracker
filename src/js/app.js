@@ -6,13 +6,26 @@
  * @module app
  */
 
+import {
+    getTodayData,
+    saveTodayData,
+    getTodayDate,
+    exportAsCSV,
+    deleteAllData,
+    hasAcceptedPrivacy,
+    acceptPrivacy,
+    getStorageStats
+} from './services/storage.js';
+
+import { calculateHealthScore, getScoreMessage, getScoreColor } from './services/healthScore.js';
+
 // State
 let currentView = 'tracker-view';
 
 /**
- * Initialize app on page load
+ * Initialize app
  */
-document.addEventListener('DOMContentLoaded', function () {
+export function initializeApp() {
     console.log('🚀 Health Tracker starting...');
 
     // Check privacy acceptance
@@ -21,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
         initApp();
     }
-});
+}
 
 /**
  * Show privacy notice on first use
@@ -319,8 +332,6 @@ function updateCircularProgress(score) {
  * @param {Object} data - Today's tracker data
  */
 function updateQuickStats(data) {
-    const arcLength = 125.66; // Circumference of semicircle (π * r)
-
     if (!data) {
         document.getElementById('stat-sleep').textContent = '-';
         document.getElementById('stat-water').textContent = '-';
@@ -495,12 +506,11 @@ function confirmDeleteAll() {
 /**
  * Development helpers (remove in production)
  */
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+if (import.meta.env?.DEV) {
     console.log('🔧 Development mode');
 
     // Add some test data helper
     window.addTestData = function () {
-        const today = getTodayDate();
         const testData = {
             sleepScore: 7,
             backPain: 2,

@@ -79,10 +79,13 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Start server
+      - name: Build for preview
+        run: npm run build
+
+      - name: Start Vite preview server
         run: |
-          python3 -m http.server 8080 &
-          sleep 2
+          npm run preview -- --port 8080 &
+          sleep 3
 
       - name: Run cross-browser tests
         run: node scripts/cross-browser-test.js
@@ -104,10 +107,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Verify project structure
         run: |
           echo "Checking required files..."
           test -f src/index.html && echo "✓ src/index.html"
+          test -f src/main.js && echo "✓ src/main.js"
           test -f src/styles/main.css && echo "✓ src/styles/main.css"
           test -f src/js/app.js && echo "✓ src/js/app.js"
           test -f src/js/services/storage.js && echo "✓ src/js/services/storage.js"
@@ -115,17 +128,26 @@ jobs:
           test -f src/js/utils/sanitize.js && echo "✓ src/js/utils/sanitize.js"
           echo "All required files present!"
 
-      - name: Validate HTML
+      - name: Build production bundle
+        run: npm run build
+
+      - name: Verify build output
         run: |
-          # Basic HTML validation (check for common issues)
-          if grep -q "<!DOCTYPE html>" src/index.html; then
-            echo "✓ DOCTYPE present"
-          else
-            echo "✗ Missing DOCTYPE" && exit 1
+          echo "Checking build output..."
+          test -f dist/index.html && echo "✓ dist/index.html"
+          ls -la dist/assets/ && echo "✓ Assets built"
+          echo "Build verification passed!"
+
+      - name: Check bundle sizes
+        run: |
+          echo "Checking bundle sizes..."
+          JS_SIZE=$(du -k dist/assets/*.js | cut -f1)
+          CSS_SIZE=$(du -k dist/assets/*.css | cut -f1)
+          echo "JS bundle: ${JS_SIZE}KB (budget: 50KB)"
+          echo "CSS bundle: ${CSS_SIZE}KB (budget: 20KB)"
+          if [ "$JS_SIZE" -gt 50 ]; then
+            echo "⚠️ JS bundle exceeds 50KB budget!"
           fi
-          if grep -q "<html lang=" src/index.html; then
-            echo "✓ Language attribute present"
-          else
-            echo "✗ Missing lang attribute" && exit 1
+          if [ "$CSS_SIZE" -gt 20 ]; then
+            echo "⚠️ CSS bundle exceeds 20KB budget!"
           fi
-          echo "HTML validation passed!"

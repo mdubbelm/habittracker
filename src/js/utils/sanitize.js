@@ -16,7 +16,7 @@
  * sanitizeText("<script>alert('xss')</script>")
  * // Returns: "&lt;script&gt;alert('xss')&lt;/script&gt;"
  */
-function sanitizeText(input) {
+export function sanitizeText(input) {
     if (typeof input !== 'string') {
         return '';
     }
@@ -40,7 +40,7 @@ function sanitizeText(input) {
  * sanitizeNumber("999", 0, 10, 0) // Returns: 0 (out of range)
  * sanitizeNumber("abc", 0, 10, 0) // Returns: 0 (not a number)
  */
-function sanitizeNumber(input, min, max, defaultValue = 0) {
+export function sanitizeNumber(input, min, max, defaultValue = 0) {
     const num = Number(input);
 
     // Check if valid number
@@ -64,7 +64,7 @@ function sanitizeNumber(input, min, max, defaultValue = 0) {
  * @param {any} input - User input
  * @returns {boolean} Validated boolean
  */
-function sanitizeBoolean(input) {
+export function sanitizeBoolean(input) {
     return Boolean(input);
 }
 
@@ -75,7 +75,7 @@ function sanitizeBoolean(input) {
  * @param {string|Date} input - Date input
  * @returns {string|null} ISO date string or null
  */
-function sanitizeDate(input) {
+export function sanitizeDate(input) {
     try {
         const date = new Date(input);
         if (isNaN(date.getTime())) {
@@ -96,11 +96,11 @@ function sanitizeDate(input) {
  * @param {Array<string>} allowedKeys - List of allowed properties
  * @returns {Object} Sanitized object
  */
-function sanitizeObject(obj, allowedKeys) {
+export function sanitizeObject(obj, allowedKeys) {
     const sanitized = {};
 
     for (const key of allowedKeys) {
-        if (obj.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
             const value = obj[key];
 
             // Sanitize based on type
@@ -118,17 +118,4 @@ function sanitizeObject(obj, allowedKeys) {
     }
 
     return sanitized;
-}
-
-// Export for module use (or global if not using modules)
-// eslint-disable-next-line no-undef
-if (typeof module !== 'undefined' && module.exports) {
-    // eslint-disable-next-line no-undef
-    module.exports = {
-        sanitizeText,
-        sanitizeNumber,
-        sanitizeBoolean,
-        sanitizeDate,
-        sanitizeObject
-    };
 }

@@ -11,7 +11,7 @@
  * Weight configuration for each metric
  * Total should add up to 100 for easy percentage calculation
  */
-const WEIGHTS = {
+export const WEIGHTS = {
     sleep: 30, // Sleep is VERY important
     pain: 20, // Pain management crucial
     hydration: 15, // Water intake
@@ -37,7 +37,7 @@ const WEIGHTS = {
  * });
  * // Returns: 83 (example)
  */
-function calculateHealthScore(data) {
+export function calculateHealthScore(data) {
     if (!data || Object.keys(data).length === 0) {
         return 0;
     }
@@ -109,7 +109,7 @@ function calculateHealthScore(data) {
  * @param {number} score - Health score (0-100)
  * @returns {string} Motivational message
  */
-function getScoreMessage(score) {
+export function getScoreMessage(score) {
     if (score === 0) {
         return 'Start met tracken!';
     }
@@ -136,7 +136,7 @@ function getScoreMessage(score) {
  * @param {number} score - Health score (0-100)
  * @returns {string} Color name or hex
  */
-function getScoreColor(score) {
+export function getScoreColor(score) {
     if (score === 0) {
         return '#94A3B8';
     } // Slate (no data)
@@ -162,7 +162,7 @@ function getScoreColor(score) {
  * @param {Object} data - Tracker data
  * @returns {Object} Breakdown of scores by category
  */
-function getScoreBreakdown(data) {
+export function getScoreBreakdown(data) {
     if (!data || Object.keys(data).length === 0) {
         return null;
     }
@@ -239,7 +239,7 @@ function getScoreBreakdown(data) {
  * @param {number} days - Number of recent days to include (default: 7)
  * @returns {number} Average health score
  */
-function calculateAverageScore(allData, days = 7) {
+export function calculateAverageScore(allData, days = 7) {
     const dates = Object.keys(allData).sort().reverse().slice(0, days);
 
     if (dates.length === 0) {
@@ -258,7 +258,7 @@ function calculateAverageScore(allData, days = 7) {
  * @param {number} days - Number of days to analyze
  * @returns {string} 'improving', 'stable', or 'declining'
  */
-function getScoreTrend(allData, days = 7) {
+export function getScoreTrend(allData, days = 7) {
     const dates = Object.keys(allData).sort().reverse().slice(0, days);
 
     if (dates.length < 3) {
@@ -282,19 +282,4 @@ function getScoreTrend(allData, days = 7) {
         return 'declining';
     }
     return 'stable';
-}
-
-// Export for module use (or global if not using modules)
-// eslint-disable-next-line no-undef
-if (typeof module !== 'undefined' && module.exports) {
-    // eslint-disable-next-line no-undef
-    module.exports = {
-        calculateHealthScore,
-        getScoreMessage,
-        getScoreColor,
-        getScoreBreakdown,
-        calculateAverageScore,
-        getScoreTrend,
-        WEIGHTS
-    };
 }

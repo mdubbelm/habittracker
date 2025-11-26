@@ -7,6 +7,8 @@
  * @module services/storage
  */
 
+import { sanitizeNumber, sanitizeBoolean } from '../utils/sanitize.js';
+
 /**
  * Storage key for tracker data
  * Format: { "2024-11-22": {...data}, "2024-11-23": {...data} }
@@ -34,7 +36,7 @@ function isLocalStorageAvailable() {
  * Get all tracker data
  * @returns {Object} All stored data (key: date, value: tracker data)
  */
-function getAllData() {
+export function getAllData() {
     if (!isLocalStorageAvailable()) {
         return {};
     }
@@ -53,7 +55,7 @@ function getAllData() {
  * @param {string} date - ISO date string (YYYY-MM-DD)
  * @returns {Object|null} Tracker data for that date, or null if not found
  */
-function getDataForDate(date) {
+export function getDataForDate(date) {
     const allData = getAllData();
     return allData[date] || null;
 }
@@ -62,7 +64,7 @@ function getDataForDate(date) {
  * Get today's date in ISO format
  * @returns {string} YYYY-MM-DD
  */
-function getTodayDate() {
+export function getTodayDate() {
     return new Date().toISOString().split('T')[0];
 }
 
@@ -70,7 +72,7 @@ function getTodayDate() {
  * Get data for today
  * @returns {Object|null} Today's tracker data
  */
-function getTodayData() {
+export function getTodayData() {
     return getDataForDate(getTodayDate());
 }
 
@@ -93,7 +95,7 @@ function getTodayData() {
  *   caffeineConsumed: true
  * });
  */
-function saveDataForDate(date, data) {
+export function saveDataForDate(date, data) {
     if (!isLocalStorageAvailable()) {
         console.error('Kan niet opslaan: localStorage niet beschikbaar');
         return false;
@@ -131,7 +133,7 @@ function saveDataForDate(date, data) {
  * @param {Object} data - Tracker data
  * @returns {boolean} Success status
  */
-function saveTodayData(data) {
+export function saveTodayData(data) {
     return saveDataForDate(getTodayDate(), data);
 }
 
@@ -143,7 +145,6 @@ function saveTodayData(data) {
  * @returns {Object} Sanitized data
  */
 function sanitizeTrackerData(data) {
-    // Use sanitize functions from sanitize.js
     const sanitized = {};
 
     // Numbers (with ranges)
@@ -190,7 +191,7 @@ function sanitizeTrackerData(data) {
  * @param {string} date - ISO date string
  * @returns {boolean} Success status
  */
-function deleteDataForDate(date) {
+export function deleteDataForDate(date) {
     if (!isLocalStorageAvailable()) {
         return false;
     }
@@ -212,7 +213,7 @@ function deleteDataForDate(date) {
  * DANGER: This cannot be undone!
  * @returns {boolean} Success status
  */
-function deleteAllData() {
+export function deleteAllData() {
     if (!isLocalStorageAvailable()) {
         return false;
     }
@@ -231,7 +232,7 @@ function deleteAllData() {
  * Export all data as JSON
  * @returns {string} JSON string of all data
  */
-function exportAsJSON() {
+export function exportAsJSON() {
     const allData = getAllData();
     return JSON.stringify(allData, null, 2);
 }
@@ -240,7 +241,7 @@ function exportAsJSON() {
  * Export all data as CSV
  * @returns {string} CSV string
  */
-function exportAsCSV() {
+export function exportAsCSV() {
     const allData = getAllData();
     const dates = Object.keys(allData).sort();
 
@@ -285,11 +286,11 @@ function exportAsCSV() {
 /**
  * Privacy acceptance
  */
-function hasAcceptedPrivacy() {
+export function hasAcceptedPrivacy() {
     return localStorage.getItem(PRIVACY_ACCEPTED_KEY) === 'true';
 }
 
-function acceptPrivacy() {
+export function acceptPrivacy() {
     localStorage.setItem(PRIVACY_ACCEPTED_KEY, 'true');
 }
 
@@ -297,7 +298,7 @@ function acceptPrivacy() {
  * Get storage statistics
  * @returns {Object} Stats about stored data
  */
-function getStorageStats() {
+export function getStorageStats() {
     const allData = getAllData();
     const dates = Object.keys(allData);
 
@@ -307,26 +308,5 @@ function getStorageStats() {
         newestEntry: dates.length > 0 ? dates.sort().reverse()[0] : null,
         storageSize: new Blob([JSON.stringify(allData)]).size,
         storageSizeKB: (new Blob([JSON.stringify(allData)]).size / 1024).toFixed(2)
-    };
-}
-
-// Export for module use (or global if not using modules)
-// eslint-disable-next-line no-undef
-if (typeof module !== 'undefined' && module.exports) {
-    // eslint-disable-next-line no-undef
-    module.exports = {
-        getAllData,
-        getDataForDate,
-        getTodayDate,
-        getTodayData,
-        saveDataForDate,
-        saveTodayData,
-        deleteDataForDate,
-        deleteAllData,
-        exportAsJSON,
-        exportAsCSV,
-        hasAcceptedPrivacy,
-        acceptPrivacy,
-        getStorageStats
     };
 }

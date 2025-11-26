@@ -5,7 +5,7 @@ import prettierConfig from 'eslint-config-prettier';
 export default [
     js.configs.recommended,
     prettierConfig,
-    // Browser files (src/)
+    // Browser files (src/) - ES Modules
     {
         files: ['src/**/*.js'],
         plugins: {
@@ -13,7 +13,7 @@ export default [
         },
         languageOptions: {
             ecmaVersion: 2022,
-            sourceType: 'script', // Browser scripts, not ES modules
+            sourceType: 'module', // ES modules
             globals: {
                 // Browser globals
                 window: 'readonly',
@@ -26,27 +26,7 @@ export default [
                 Event: 'readonly',
                 Blob: 'readonly',
                 URL: 'readonly',
-                HTMLElement: 'readonly',
-                // Cross-file functions (loaded via script tags)
-                // From sanitize.js
-                sanitizeText: 'readonly',
-                sanitizeNumber: 'readonly',
-                sanitizeBoolean: 'readonly',
-                sanitizeObject: 'readonly',
-                // From storage.js
-                hasAcceptedPrivacy: 'readonly',
-                acceptPrivacy: 'readonly',
-                getTodayDate: 'readonly',
-                getTodayData: 'readonly',
-                saveTodayData: 'readonly',
-                getAllData: 'readonly',
-                deleteAllData: 'readonly',
-                exportAsCSV: 'readonly',
-                getStorageStats: 'readonly',
-                // From healthScore.js
-                calculateHealthScore: 'readonly',
-                getScoreMessage: 'readonly',
-                getScoreColor: 'readonly'
+                HTMLElement: 'readonly'
             }
         },
         rules: {
@@ -57,8 +37,7 @@ export default [
             'curly': ['error', 'all'],
             'no-var': 'error',
             'prefer-const': 'error',
-            'no-prototype-builtins': 'off', // Allow hasOwnProperty
-            'no-redeclare': 'off' // Functions are used cross-file via script tags
+            'no-duplicate-imports': 'error'
         }
     },
     // Node scripts (scripts/)
