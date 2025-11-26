@@ -707,51 +707,36 @@ button:focus-visible {
 }
 
 /* ============================================
-   PRIVACY NOTICE
+   PRIVACY SCREEN (Inline, not modal)
    ============================================ */
-.privacy-notice {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: var(--z-modal);
-    padding: var(--spacing-xl);
+.privacy-screen {
+    text-align: center;
+    padding-top: var(--spacing-2xl);
 }
 
-.privacy-notice.hidden {
-    display: none;
-}
-
-.privacy-content {
-    background: var(--bg-card);
-    border-radius: var(--radius-xl);
-    padding: var(--spacing-xl);
-    max-width: 400px;
-    border: 2px solid var(--color-gray-300);
-}
-
-.privacy-content h2 {
-    font-size: 1.5rem;
-    margin-bottom: var(--spacing-md);
-}
-
-.privacy-content ul {
-    margin: var(--spacing-md) 0;
-    padding-left: var(--spacing-lg);
-}
-
-.privacy-content li {
+.privacy-screen h1 {
+    font-size: 1.75rem;
     margin-bottom: var(--spacing-sm);
 }
 
-.privacy-content a {
-    color: var(--color-primary);
-    text-decoration: none;
+.privacy-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    margin: var(--spacing-xl) 0;
+    border: var(--border-subtle);
+    text-align: left;
+}
+
+.privacy-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--spacing-md) 0;
+}
+
+.privacy-list li {
+    margin-bottom: var(--spacing-sm);
+    padding-left: var(--spacing-xs);
 }
 
 /* ============================================
@@ -1307,7 +1292,7 @@ button:focus-visible {
    ============================================ */
 /* Skip Link - visible only on focus for keyboard navigation */
 .skip-link {
-    position: absolute;
+    position: fixed;
     top: -100px;
     left: 50%;
     transform: translateX(-50%);
@@ -1321,10 +1306,20 @@ button:focus-visible {
     transition: top 0.2s ease;
 }
 
-.skip-link:focus {
+.skip-link:focus,
+.skip-link:focus-visible {
     top: var(--spacing-md);
     outline: 2px solid white;
     outline-offset: 2px;
+}
+
+/* Ensure focused elements scroll into view above bottom nav */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible,
+.pill-button:focus-visible {
+    scroll-margin-bottom: 100px;
 }
 
 /* Screen Reader Only - Visually hidden but accessible to screen readers */

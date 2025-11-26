@@ -138,8 +138,14 @@ function renderWeightChart(weightStats) {
         return;
     }
 
-    if (!weightStats.entries || weightStats.entries.length < 2) {
-        container.innerHTML = '<p class="no-data">Minimaal 2 metingen nodig voor grafiek</p>';
+    if (!weightStats.entries || weightStats.entries.length === 0) {
+        container.innerHTML = '<p class="no-data">Nog geen gewicht geregistreerd</p>';
+        return;
+    }
+
+    if (weightStats.entries.length === 1) {
+        container.innerHTML =
+            '<p class="no-data">Eén meting geregistreerd — voeg meer toe voor trend</p>';
         return;
     }
 

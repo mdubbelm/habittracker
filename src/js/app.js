@@ -47,16 +47,28 @@ export function initializeApp() {
 }
 
 /**
- * Show privacy notice on first use
+ * Show privacy notice on first use (inline screen, not modal)
  */
 function showPrivacyNotice() {
     const notice = document.getElementById('privacy-notice');
+    const app = document.getElementById('app');
+    const nav = document.querySelector('.bottom-nav');
+
+    // Show privacy screen, hide app
     notice.classList.remove('hidden');
+    app.classList.add('hidden');
+    if (nav) {
+        nav.classList.add('hidden');
+    }
 
     // Accept button
     document.getElementById('accept-privacy').addEventListener('click', function () {
         acceptPrivacy();
         notice.classList.add('hidden');
+        app.classList.remove('hidden');
+        if (nav) {
+            nav.classList.remove('hidden');
+        }
         initApp();
     });
 
@@ -698,6 +710,12 @@ function updateDataStats() {
             <span class="data-stats-label">Opslag</span>
         </div>
     `;
+
+    // Hide demo data section if user already has data
+    const demoCard = document.getElementById('demo-data-card');
+    if (demoCard) {
+        demoCard.style.display = stats.totalEntries > 0 ? 'none' : 'block';
+    }
 }
 
 /**

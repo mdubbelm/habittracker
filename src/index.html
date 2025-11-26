@@ -49,26 +49,31 @@
             </div>
         </div>
 
-        <!-- Privacy Notice (First Time) -->
-        <div id="privacy-notice" class="privacy-notice hidden">
-            <div class="privacy-content">
-                <h2>🔐 Jouw Privacy Telt</h2>
-                <p><strong>Welkom bij Health Tracker!</strong></p>
-                <p>Deze app is ontworpen met jouw privacy in gedachten:</p>
-                <ul>
-                    <li>✅ Alle data blijft op JOUW apparaat (localStorage)</li>
-                    <li>✅ Geen cloud, geen servers, geen tracking</li>
-                    <li>✅ Exporteer je data wanneer je wilt</li>
-                    <li>✅ Verwijder alles met één klik</li>
-                </ul>
-                <p>
-                    <small
-                        >Lees onze
-                        <a href="#" id="view-security">Beveiligings- en Privacyverklaring</a></small
-                    >
-                </p>
-                <button id="accept-privacy" class="btn-primary">Begrepen! Laten we starten</button>
-            </div>
+        <!-- Privacy Notice (First Time) - Inline screen, no modal -->
+        <div id="privacy-notice" class="container hidden">
+            <section class="privacy-screen">
+                <h1>🔐 Jouw Privacy Telt</h1>
+                <p class="subtitle">Welkom bij Health Tracker!</p>
+
+                <div class="privacy-card">
+                    <p>Deze app is ontworpen met jouw privacy in gedachten:</p>
+                    <ul class="privacy-list">
+                        <li>✅ Alle data blijft op JOUW apparaat (localStorage)</li>
+                        <li>✅ Geen cloud, geen servers, geen tracking</li>
+                        <li>✅ Exporteer je data wanneer je wilt</li>
+                        <li>✅ Verwijder alles met één klik</li>
+                    </ul>
+                    <p>
+                        <a href="#" id="view-security" class="link"
+                            >Lees onze Beveiligings- en Privacyverklaring</a
+                        >
+                    </p>
+                </div>
+
+                <button id="accept-privacy" class="btn-primary btn-large">
+                    Begrepen! Laten we starten
+                </button>
+            </section>
         </div>
 
         <!-- Main App Container -->
@@ -664,8 +669,8 @@
                     ></p>
                 </div>
 
-                <!-- Demo Data -->
-                <div class="settings-card">
+                <!-- Demo Data (hidden when user has data) -->
+                <div class="settings-card" id="demo-data-card">
                     <h3>Demo Data</h3>
                     <p class="settings-desc">Genereer voorbeelddata om de app te testen.</p>
                     <div class="settings-buttons">
