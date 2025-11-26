@@ -18,9 +18,11 @@ import {
 } from './services/storage.js';
 
 import { calculateHealthScore, getScoreMessage, getScoreColor } from './services/healthScore.js';
+import { initStatistics, refreshStatistics } from './components/statisticsUI.js';
 
 // State
 let currentView = 'tracker-view';
+let statisticsInitialized = false;
 
 /**
  * Initialize app
@@ -253,6 +255,11 @@ function saveData() {
         // Update health score
         updateHealthScore();
 
+        // Refresh statistics if initialized
+        if (statisticsInitialized) {
+            refreshStatistics();
+        }
+
         // Show feedback
         showSaveFeedback();
     } else {
@@ -441,6 +448,16 @@ function switchView(viewId) {
             btn.classList.add('active');
         }
     });
+
+    // Initialize or refresh statistics when switching to stats view
+    if (viewId === 'stats-view') {
+        if (!statisticsInitialized) {
+            initStatistics();
+            statisticsInitialized = true;
+        } else {
+            refreshStatistics();
+        }
+    }
 
     currentView = viewId;
 }

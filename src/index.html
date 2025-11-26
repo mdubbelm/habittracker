@@ -430,10 +430,179 @@
                 </button>
             </section>
 
-            <!-- Stats View (placeholder) -->
+            <!-- Stats View -->
             <section id="stats-view" class="view">
-                <h2>📊 Statistieken</h2>
-                <p>Binnenkort beschikbaar...</p>
+                <h2>Statistieken</h2>
+
+                <!-- Period Selector -->
+                <div class="period-selector" role="tablist" aria-label="Selecteer periode">
+                    <button
+                        class="period-btn active"
+                        data-period="7"
+                        role="tab"
+                        aria-selected="true"
+                    >
+                        7d
+                    </button>
+                    <button class="period-btn" data-period="14" role="tab" aria-selected="false">
+                        14d
+                    </button>
+                    <button class="period-btn" data-period="30" role="tab" aria-selected="false">
+                        30d
+                    </button>
+                    <button class="period-btn" data-period="90" role="tab" aria-selected="false">
+                        90d
+                    </button>
+                    <button class="period-btn" data-period="-1" role="tab" aria-selected="false">
+                        Alles
+                    </button>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="stats-summary">
+                    <div class="summary-card">
+                        <div class="summary-icon">💯</div>
+                        <div class="summary-data">
+                            <span class="summary-value" id="stats-avg-score">--</span>
+                            <span class="summary-label">Gem. Score</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">📅</div>
+                        <div class="summary-data">
+                            <span class="summary-value" id="stats-total-days">--</span>
+                            <span class="summary-label">Dagen</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">🚶</div>
+                        <div class="summary-data">
+                            <span class="summary-value" id="stats-walk-pct">--</span>
+                            <span class="summary-label">Gelopen</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Score Chart -->
+                <div class="stats-card">
+                    <h3>Health Score Trend</h3>
+                    <div class="chart-container" id="health-score-chart">
+                        <p class="no-data">Geen data beschikbaar</p>
+                    </div>
+                </div>
+
+                <!-- Weight Chart -->
+                <div class="stats-card" id="weight-stats-card">
+                    <h3>Gewicht</h3>
+                    <div class="weight-summary">
+                        <span class="weight-current" id="weight-current">-- kg</span>
+                        <span class="weight-change" id="weight-change"></span>
+                    </div>
+                    <div class="chart-container" id="weight-chart">
+                        <p class="no-data">Geen gewichtsdata beschikbaar</p>
+                    </div>
+                </div>
+
+                <!-- Activity Stats -->
+                <div class="stats-card">
+                    <h3>Activiteit & Welzijn</h3>
+                    <div class="metric-bars">
+                        <div class="metric-bar-item">
+                            <div class="metric-bar-header">
+                                <span>😴 Slaap</span>
+                                <span class="metric-bar-value" id="stats-sleep-avg">--</span>
+                            </div>
+                            <div class="metric-bar-track">
+                                <div
+                                    class="metric-bar-fill"
+                                    id="stats-sleep-bar"
+                                    style="width: 0%"
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="metric-bar-item">
+                            <div class="metric-bar-header">
+                                <span>💧 Water</span>
+                                <span class="metric-bar-value" id="stats-water-avg">--</span>
+                            </div>
+                            <div class="metric-bar-track">
+                                <div
+                                    class="metric-bar-fill water"
+                                    id="stats-water-bar"
+                                    style="width: 0%"
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="metric-bar-item">
+                            <div class="metric-bar-header">
+                                <span>💊 Rugpijn</span>
+                                <span class="metric-bar-value" id="stats-pain-avg">--</span>
+                            </div>
+                            <div class="metric-bar-track">
+                                <div
+                                    class="metric-bar-fill pain"
+                                    id="stats-pain-bar"
+                                    style="width: 0%"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Consumption Stats -->
+                <div class="stats-card">
+                    <h3>Consumptie</h3>
+                    <div class="consumption-stats">
+                        <div class="consumption-item">
+                            <div class="consumption-icon">🍬</div>
+                            <div class="consumption-data">
+                                <div class="consumption-label">Suiker</div>
+                                <div class="consumption-bar-track">
+                                    <div
+                                        class="consumption-bar-fill sugar"
+                                        id="stats-sugar-bar"
+                                        style="width: 0%"
+                                    ></div>
+                                </div>
+                                <div class="consumption-detail" id="stats-sugar-detail">
+                                    -- dagen
+                                </div>
+                            </div>
+                        </div>
+                        <div class="consumption-item">
+                            <div class="consumption-icon">🍷</div>
+                            <div class="consumption-data">
+                                <div class="consumption-label">Alcohol</div>
+                                <div class="consumption-bar-track">
+                                    <div
+                                        class="consumption-bar-fill alcohol"
+                                        id="stats-alcohol-bar"
+                                        style="width: 0%"
+                                    ></div>
+                                </div>
+                                <div class="consumption-detail" id="stats-alcohol-detail">
+                                    -- dagen
+                                </div>
+                            </div>
+                        </div>
+                        <div class="consumption-item">
+                            <div class="consumption-icon">☕</div>
+                            <div class="consumption-data">
+                                <div class="consumption-label">Cafeïne</div>
+                                <div class="consumption-bar-track">
+                                    <div
+                                        class="consumption-bar-fill caffeine"
+                                        id="stats-caffeine-bar"
+                                        style="width: 0%"
+                                    ></div>
+                                </div>
+                                <div class="consumption-detail" id="stats-caffeine-detail">
+                                    -- dagen
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- History View (placeholder) -->

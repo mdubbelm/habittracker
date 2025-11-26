@@ -808,6 +808,315 @@ button {
 }
 
 /* ============================================
+   STATISTICS DASHBOARD
+   ============================================ */
+.period-selector {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    overflow-x: auto;
+    padding-bottom: var(--spacing-xs);
+}
+
+.period-btn {
+    flex: 1;
+    min-width: 50px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: var(--border-light);
+    border-radius: var(--radius-full);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.period-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.period-btn.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+/* Stats Summary Cards */
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.summary-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+}
+
+.summary-icon {
+    font-size: 1.5rem;
+}
+
+.summary-data {
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.summary-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Stats Cards */
+.stats-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.stats-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+/* Chart Container */
+.chart-container {
+    width: 100%;
+    min-height: 150px;
+    position: relative;
+}
+
+.chart-container .no-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+/* Bar Chart */
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 120px;
+    gap: 2px;
+    padding-top: var(--spacing-sm);
+}
+
+.bar-chart-bar {
+    flex: 1;
+    min-width: 8px;
+    max-width: 24px;
+    background: var(--color-primary);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    transition: height 0.3s ease;
+    position: relative;
+}
+
+.bar-chart-bar:hover {
+    background: var(--color-primary-dark);
+}
+
+.bar-chart-bar::after {
+    content: attr(data-value);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.bar-chart-bar:hover::after {
+    opacity: 1;
+}
+
+/* Line Chart (for weight) */
+.line-chart {
+    width: 100%;
+    height: 120px;
+}
+
+.line-chart-path {
+    fill: none;
+    stroke: var(--color-secondary);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.line-chart-area {
+    fill: var(--color-secondary);
+    opacity: 0.1;
+}
+
+.line-chart-dot {
+    fill: var(--color-secondary);
+}
+
+/* Weight Summary */
+.weight-summary {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.weight-current {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.weight-change {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.weight-change.down {
+    color: var(--color-success);
+}
+
+.weight-change.up {
+    color: var(--color-warning);
+}
+
+.weight-change.stable {
+    color: var(--text-muted);
+}
+
+/* Metric Bars */
+.metric-bars {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.metric-bar-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.metric-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+}
+
+.metric-bar-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.metric-bar-track {
+    height: 8px;
+    background: var(--color-gray-100);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.metric-bar-fill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: var(--radius-full);
+    transition: width 0.5s ease;
+}
+
+.metric-bar-fill.water {
+    background: var(--color-secondary);
+}
+
+.metric-bar-fill.pain {
+    background: var(--color-warning);
+}
+
+/* Consumption Stats */
+.consumption-stats {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.consumption-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.consumption-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    text-align: center;
+}
+
+.consumption-data {
+    flex: 1;
+}
+
+.consumption-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.consumption-bar-track {
+    height: 6px;
+    background: var(--color-gray-100);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xs);
+}
+
+.consumption-bar-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.5s ease;
+}
+
+.consumption-bar-fill.sugar {
+    background: var(--color-error);
+}
+
+.consumption-bar-fill.alcohol {
+    background: var(--color-warning);
+}
+
+.consumption-bar-fill.caffeine {
+    background: var(--color-info);
+}
+
+.consumption-detail {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* ============================================
    PWA INSTALL BANNER
    ============================================ */
 .install-banner {
