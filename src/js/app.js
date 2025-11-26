@@ -116,12 +116,16 @@ function loadTodayData() {
 
     // Populate form fields
     if (data.sleepScore !== undefined) {
-        document.getElementById('sleep-score').value = data.sleepScore;
+        const sleepInput = document.getElementById('sleep-score');
+        sleepInput.value = data.sleepScore;
+        sleepInput.setAttribute('aria-valuenow', data.sleepScore);
         document.getElementById('sleep-output').textContent = data.sleepScore;
     }
 
     if (data.backPain !== undefined) {
-        document.getElementById('back-pain').value = data.backPain;
+        const painInput = document.getElementById('back-pain');
+        painInput.value = data.backPain;
+        painInput.setAttribute('aria-valuenow', data.backPain);
         document.getElementById('pain-output').textContent = data.backPain;
     }
 
@@ -166,13 +170,15 @@ function loadTodayData() {
  * Setup all event listeners
  */
 function setupEventListeners() {
-    // Slider inputs (live update of output)
+    // Slider inputs (live update of output and aria-valuenow for screen readers)
     document.getElementById('sleep-score').addEventListener('input', function (e) {
         document.getElementById('sleep-output').textContent = e.target.value;
+        e.target.setAttribute('aria-valuenow', e.target.value);
     });
 
     document.getElementById('back-pain').addEventListener('input', function (e) {
         document.getElementById('pain-output').textContent = e.target.value;
+        e.target.setAttribute('aria-valuenow', e.target.value);
     });
 
     // Save button

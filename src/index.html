@@ -29,6 +29,9 @@
         <!-- Styles are loaded via main.js in development, bundled in production -->
     </head>
     <body>
+        <!-- Skip Link for Keyboard Navigation -->
+        <a href="#main-content" class="skip-link">Ga naar hoofdinhoud</a>
+
         <!-- PWA Install Banner -->
         <div id="install-banner" class="install-banner hidden">
             <div class="install-content">
@@ -77,7 +80,7 @@
             </header>
 
             <!-- Health Score Visualization -->
-            <section class="health-score-section">
+            <main id="main-content" class="health-score-section">
                 <div class="score-container">
                     <!-- Circular Progress SVG - Clean & Minimal -->
                     <svg
@@ -133,7 +136,7 @@
                 <!-- Quick Stats - 2x2 Grid -->
                 <div class="quick-stats">
                     <div class="stat-card">
-                        <div class="stat-label">😴 Slaap</div>
+                        <div class="stat-label"><span aria-hidden="true">😴</span> Slaap</div>
                         <!-- Partial circular progress (decorative) -->
                         <svg class="stat-progress" viewBox="0 0 100 60" aria-hidden="true">
                             <!-- Background arc -->
@@ -159,7 +162,7 @@
                         <div class="stat-value" id="stat-sleep">-</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">💧 Water</div>
+                        <div class="stat-label"><span aria-hidden="true">💧</span> Water</div>
                         <!-- Partial circular progress (decorative) -->
                         <svg class="stat-progress" viewBox="0 0 100 60" aria-hidden="true">
                             <!-- Background arc -->
@@ -185,7 +188,7 @@
                         <div class="stat-value" id="stat-water">-</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">🚶 Lopen</div>
+                        <div class="stat-label"><span aria-hidden="true">🚶</span> Lopen</div>
                         <!-- Partial circular progress (decorative) -->
                         <svg class="stat-progress" viewBox="0 0 100 60" aria-hidden="true">
                             <!-- Background arc -->
@@ -211,7 +214,7 @@
                         <div class="stat-value" id="stat-walked">-</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">💊 Rugpijn</div>
+                        <div class="stat-label"><span aria-hidden="true">💊</span> Rugpijn</div>
                         <!-- Partial circular progress (decorative) -->
                         <svg class="stat-progress" viewBox="0 0 100 60" aria-hidden="true">
                             <!-- Background arc -->
@@ -237,7 +240,7 @@
                         <div class="stat-value" id="stat-pain">-</div>
                     </div>
                 </div>
-            </section>
+            </main>
 
             <!-- Tracking Form (will be in separate view) -->
             <section id="tracker-view" class="view active">
@@ -246,7 +249,7 @@
 
                 <!-- Sleep & Wellbeing -->
                 <div class="tracking-card">
-                    <h3>😴 Slaap & Welzijn</h3>
+                    <h3><span aria-hidden="true">😴</span> Slaap & Welzijn</h3>
 
                     <div class="form-group">
                         <label for="sleep-score">Slaapcijfer</label>
@@ -257,8 +260,15 @@
                             max="10"
                             value="7"
                             class="slider"
+                            aria-describedby="sleep-hint"
+                            aria-valuemin="1"
+                            aria-valuemax="10"
+                            aria-valuenow="7"
                         />
                         <output id="sleep-output">7</output>
+                        <span id="sleep-hint" class="sr-only"
+                            >Kies een waarde van 1 (slecht) tot 10 (uitstekend)</span
+                        >
                     </div>
 
                     <div class="form-group">
@@ -270,8 +280,15 @@
                             max="10"
                             value="0"
                             class="slider"
+                            aria-describedby="pain-hint"
+                            aria-valuemin="0"
+                            aria-valuemax="10"
+                            aria-valuenow="0"
                         />
                         <output id="pain-output">0</output>
+                        <span id="pain-hint" class="sr-only"
+                            >Kies een waarde van 0 (geen pijn) tot 10 (ernstige pijn)</span
+                        >
                     </div>
 
                     <div class="form-group checkbox">
@@ -282,7 +299,7 @@
 
                 <!-- Hydration & Activity -->
                 <div class="tracking-card">
-                    <h3>💧 Hydratatie & Activiteit</h3>
+                    <h3><span aria-hidden="true">💧</span> Hydratatie & Activiteit</h3>
 
                     <div class="form-group">
                         <label for="water-intake">Water (glazen)</label>
@@ -314,7 +331,7 @@
                                 type="button"
                                 class="btn-control btn-minus"
                                 id="water-minus"
-                                title="Verwijder een glas"
+                                aria-label="Verwijder een glas water"
                             >
                                 −
                             </button>
@@ -330,7 +347,7 @@
                                 type="button"
                                 class="btn-control btn-plus"
                                 id="water-add"
-                                title="Voeg een glas toe"
+                                aria-label="Voeg een glas water toe"
                             >
                                 +
                             </button>
@@ -345,7 +362,7 @@
 
                 <!-- Consumption -->
                 <div class="tracking-card">
-                    <h3>🍬 Consumptie</h3>
+                    <h3><span aria-hidden="true">🍬</span> Consumptie</h3>
 
                     <div class="form-group checkbox">
                         <input type="checkbox" id="sugar-consumed" />
@@ -461,21 +478,21 @@
                 <!-- Summary Cards -->
                 <div class="stats-summary">
                     <div class="summary-card">
-                        <div class="summary-icon">💯</div>
+                        <div class="summary-icon" aria-hidden="true">💯</div>
                         <div class="summary-data">
                             <span class="summary-value" id="stats-avg-score">--</span>
                             <span class="summary-label">Gem. Score</span>
                         </div>
                     </div>
                     <div class="summary-card">
-                        <div class="summary-icon">📅</div>
+                        <div class="summary-icon" aria-hidden="true">📅</div>
                         <div class="summary-data">
                             <span class="summary-value" id="stats-total-days">--</span>
                             <span class="summary-label">Dagen</span>
                         </div>
                     </div>
                     <div class="summary-card">
-                        <div class="summary-icon">🚶</div>
+                        <div class="summary-icon" aria-hidden="true">🚶</div>
                         <div class="summary-data">
                             <span class="summary-value" id="stats-walk-pct">--</span>
                             <span class="summary-label">Gelopen</span>
@@ -509,7 +526,7 @@
                     <div class="metric-bars">
                         <div class="metric-bar-item">
                             <div class="metric-bar-header">
-                                <span>😴 Slaap</span>
+                                <span><span aria-hidden="true">😴</span> Slaap</span>
                                 <span class="metric-bar-value" id="stats-sleep-avg">--</span>
                             </div>
                             <div class="metric-bar-track">
@@ -522,7 +539,7 @@
                         </div>
                         <div class="metric-bar-item">
                             <div class="metric-bar-header">
-                                <span>💧 Water</span>
+                                <span><span aria-hidden="true">💧</span> Water</span>
                                 <span class="metric-bar-value" id="stats-water-avg">--</span>
                             </div>
                             <div class="metric-bar-track">
@@ -535,7 +552,7 @@
                         </div>
                         <div class="metric-bar-item">
                             <div class="metric-bar-header">
-                                <span>💊 Rugpijn</span>
+                                <span><span aria-hidden="true">💊</span> Rugpijn</span>
                                 <span class="metric-bar-value" id="stats-pain-avg">--</span>
                             </div>
                             <div class="metric-bar-track">
@@ -554,7 +571,7 @@
                     <h3>Consumptie</h3>
                     <div class="consumption-stats">
                         <div class="consumption-item">
-                            <div class="consumption-icon">🍬</div>
+                            <div class="consumption-icon" aria-hidden="true">🍬</div>
                             <div class="consumption-data">
                                 <div class="consumption-label">Suiker</div>
                                 <div class="consumption-bar-track">
@@ -570,7 +587,7 @@
                             </div>
                         </div>
                         <div class="consumption-item">
-                            <div class="consumption-icon">🍷</div>
+                            <div class="consumption-icon" aria-hidden="true">🍷</div>
                             <div class="consumption-data">
                                 <div class="consumption-label">Alcohol</div>
                                 <div class="consumption-bar-track">
@@ -586,7 +603,7 @@
                             </div>
                         </div>
                         <div class="consumption-item">
-                            <div class="consumption-icon">☕</div>
+                            <div class="consumption-icon" aria-hidden="true">☕</div>
                             <div class="consumption-data">
                                 <div class="consumption-label">Cafeïne</div>
                                 <div class="consumption-bar-track">
@@ -607,7 +624,7 @@
 
             <!-- History View (placeholder) -->
             <section id="history-view" class="view">
-                <h2>📅 Geschiedenis</h2>
+                <h2>Geschiedenis</h2>
                 <p>Binnenkort beschikbaar...</p>
             </section>
 
@@ -639,7 +656,12 @@
                             <input type="file" id="import-json" accept=".json" hidden />
                         </label>
                     </div>
-                    <p class="settings-note" id="import-status"></p>
+                    <p
+                        class="settings-note"
+                        id="import-status"
+                        role="status"
+                        aria-live="polite"
+                    ></p>
                 </div>
 
                 <!-- Demo Data -->
@@ -686,20 +708,20 @@
 
         <!-- Bottom Navigation -->
         <nav class="bottom-nav">
-            <button class="nav-item active" data-view="tracker-view">
-                <span class="nav-icon">📝</span>
+            <button class="nav-item active" data-view="tracker-view" aria-label="Tracken">
+                <span class="nav-icon" aria-hidden="true">📝</span>
                 <span class="nav-label">Tracken</span>
             </button>
-            <button class="nav-item" data-view="stats-view">
-                <span class="nav-icon">📊</span>
+            <button class="nav-item" data-view="stats-view" aria-label="Statistieken">
+                <span class="nav-icon" aria-hidden="true">📊</span>
                 <span class="nav-label">Stats</span>
             </button>
-            <button class="nav-item" data-view="history-view">
-                <span class="nav-icon">📅</span>
+            <button class="nav-item" data-view="history-view" aria-label="Geschiedenis">
+                <span class="nav-icon" aria-hidden="true">📅</span>
                 <span class="nav-label">Historie</span>
             </button>
-            <button class="nav-item" data-view="settings-view">
-                <span class="nav-icon">⚙️</span>
+            <button class="nav-item" data-view="settings-view" aria-label="Instellingen">
+                <span class="nav-icon" aria-hidden="true">⚙️</span>
                 <span class="nav-label">Opties</span>
             </button>
         </nav>

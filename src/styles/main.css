@@ -350,8 +350,9 @@ input[type='text'] {
 
 input[type='number']:focus,
 input[type='text']:focus {
-    outline: none;
     border-color: var(--color-primary);
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 /* Water Glass Visual Indicators */
@@ -449,8 +450,12 @@ input[type='text']:focus {
     height: 8px;
     border-radius: var(--radius-full);
     background: var(--color-gray-200);
-    outline: none;
     margin-right: var(--spacing-md);
+}
+
+.slider:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
 }
 
 .slider::-webkit-slider-thumb {
@@ -506,8 +511,9 @@ select {
 }
 
 select:focus {
-    outline: none;
     border-color: var(--color-primary);
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 /* Alcohol Type Pills - 2 Column Grid */
@@ -538,6 +544,11 @@ select:focus {
     background: var(--color-gray-100);
     border-color: var(--color-primary-light);
     transform: translateY(-2px);
+}
+
+.pill-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 .pill-button.active {
@@ -571,8 +582,12 @@ button {
     font-family: inherit;
     cursor: pointer;
     border: none;
-    outline: none;
     transition: all 0.2s;
+}
+
+button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 .btn-primary {
@@ -664,6 +679,12 @@ button {
 
 .nav-item.active {
     color: var(--color-primary);
+}
+
+.nav-item:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+    border-radius: var(--radius-md);
 }
 
 .nav-icon {
@@ -1284,6 +1305,28 @@ button {
 /* ============================================
    ACCESSIBILITY
    ============================================ */
+/* Skip Link - visible only on focus for keyboard navigation */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-primary);
+    color: white;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
+    z-index: var(--z-tooltip);
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: var(--spacing-md);
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
 /* Screen Reader Only - Visually hidden but accessible to screen readers */
 .sr-only {
     position: absolute;
