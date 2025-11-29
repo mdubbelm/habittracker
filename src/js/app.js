@@ -36,6 +36,7 @@ import {
 
 import { initWeightPicker } from './components/wheelPicker.js';
 import { showSuccess, showError, showWarning, showInfo } from './services/toast.js';
+import { getSettings, setFieldEnabled, applyFieldVisibility } from './services/settings.js';
 
 // State
 let weightPicker = null;
@@ -117,7 +118,38 @@ function initApp() {
     // Setup navigation
     setupNavigation();
 
+    // Setup field toggles in settings
+    setupFieldToggles();
+
+    // Apply field visibility based on settings
+    applyFieldVisibility();
+
     console.log('✅ App initialized!');
+}
+
+/**
+ * Setup field toggle switches in settings
+ */
+function setupFieldToggles() {
+    const settings = getSettings();
+    const toggles = document.querySelectorAll('#field-toggles input[type="checkbox"]');
+
+    toggles.forEach(toggle => {
+        const field = toggle.dataset.field;
+        if (!field) {
+            return;
+        }
+
+        // Set initial state from settings
+        toggle.checked = settings.fields[field] !== false;
+
+        // Add change listener
+        toggle.addEventListener('change', function () {
+            setFieldEnabled(field, this.checked);
+            applyFieldVisibility();
+            showSuccess(`${this.checked ? 'Veld ingeschakeld' : 'Veld uitgeschakeld'}`);
+        });
+    });
 }
 
 /**
