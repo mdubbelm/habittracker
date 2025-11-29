@@ -179,7 +179,77 @@ p {
 }
 
 /* ============================================
-   HEALTH SCORE SECTION - Compact
+   COMPACT HEADER WITH SCORE
+   ============================================ */
+.app-header-compact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md) 0;
+    margin-bottom: var(--spacing-md);
+}
+
+.app-header-compact .header-left h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.app-header-compact .header-left .date {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.header-score {
+    flex-shrink: 0;
+}
+
+.score-mini {
+    width: 56px;
+    height: 56px;
+}
+
+.score-message-compact {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+/* Quick Stats Inline Row */
+.quick-stats-inline {
+    display: flex;
+    justify-content: space-around;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-md);
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: var(--border-subtle);
+}
+
+.stat-inline {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85rem;
+}
+
+.stat-inline .stat-icon {
+    font-size: 1rem;
+}
+
+.stat-inline .stat-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* ============================================
+   HEALTH SCORE SECTION - Full (for stats view)
    ============================================ */
 .health-score-section {
     background: var(--bg-card);
@@ -613,6 +683,23 @@ button:focus-visible {
 .btn-large {
     padding: var(--spacing-lg) var(--spacing-xl);
     font-size: 1.125rem;
+}
+
+/* Action Buttons Container */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.action-buttons .btn-primary {
+    width: 100%;
+}
+
+.action-buttons .btn-secondary {
+    width: 100%;
+    padding: var(--spacing-md);
 }
 
 .btn-secondary {
@@ -1283,6 +1370,62 @@ button:focus-visible {
 /* ============================================
    PWA INSTALL BANNER
    ============================================ */
+/* Update Banner */
+.update-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-primary);
+    color: white;
+    padding: var(--spacing-sm) var(--spacing-md);
+    padding-top: calc(var(--spacing-sm) + env(safe-area-inset-top, 0px));
+    z-index: var(--z-modal);
+    animation: slideDown 0.3s ease-out;
+}
+
+.update-banner.hidden {
+    display: none;
+}
+
+.update-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.update-content .btn-primary {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 0.85rem;
+}
+
+.update-content .btn-dismiss {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.25rem;
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.update-content .btn-dismiss:hover {
+    opacity: 1;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 .install-banner {
     position: fixed;
     bottom: calc(70px + env(safe-area-inset-bottom, 0px));
@@ -1432,4 +1575,341 @@ a:focus-visible,
         --color-gray-200: #c0c0c0;
         --color-gray-300: #a0a0a0;
     }
+}
+
+/* ============================================
+   TIME-BASED SECTIONS
+   ============================================ */
+
+/* Section visibility animation */
+.time-section {
+    transition:
+        opacity 0.3s ease,
+        max-height 0.4s ease,
+        margin 0.3s ease,
+        padding 0.3s ease;
+    overflow: hidden;
+}
+
+.time-section.hidden {
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    pointer-events: none;
+}
+
+/* Fallback Banner */
+.fallback-banner {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #f59e0b;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.fallback-banner p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #92400e;
+    font-weight: 500;
+}
+
+.fallback-banner .btn-secondary {
+    flex-shrink: 0;
+}
+
+/* ============================================
+   WATER CARD - Prominent Design
+   ============================================ */
+
+.water-card {
+    background: linear-gradient(135deg, #7a8b6e 0%, #6d7d5f 100%);
+    color: white;
+    text-align: center;
+}
+
+.water-card h3 {
+    background: transparent !important;
+    color: white !important;
+    margin: 0 0 var(--spacing-md) 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+
+.water-display {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.water-count {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.water-label {
+    font-size: 1.25rem;
+    opacity: 0.9;
+}
+
+.btn-water-add {
+    background: white;
+    color: #5a6b4e;
+    font-size: 1.125rem;
+    font-weight: 700;
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-full);
+    border: none;
+    margin-bottom: var(--spacing-md);
+    cursor: pointer;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+.btn-water-add:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-water-add:active {
+    transform: scale(0.98);
+}
+
+.water-progress {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: var(--spacing-sm);
+}
+
+.water-progress-fill {
+    height: 100%;
+    background: white;
+    border-radius: var(--radius-full);
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.water-goal {
+    font-size: 0.875rem;
+    opacity: 0.8;
+    margin: 0;
+}
+
+/* ============================================
+   COUNTER CONTROLS
+   ============================================ */
+
+.counter-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    background: var(--bg-input);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-lg);
+}
+
+.counter-control input {
+    width: 60px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+}
+
+.btn-counter {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-counter.btn-plus {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-counter.btn-plus:hover {
+    background: var(--color-primary-dark);
+}
+
+.btn-counter.btn-minus {
+    background: var(--color-gray-200);
+    color: var(--text-primary);
+}
+
+.btn-counter.btn-minus:hover {
+    background: var(--color-gray-300);
+}
+
+/* ============================================
+   OPTION PILLS (Dreamed)
+   ============================================ */
+
+.option-pills {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.pill-option {
+    flex: 1;
+    padding: var(--spacing-md);
+    background: var(--bg-input);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-primary);
+}
+
+.pill-option:hover {
+    border-color: var(--color-primary);
+}
+
+.pill-option[aria-checked='true'] {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+/* ============================================
+   NUMBER INPUT (Weight)
+   ============================================ */
+
+.input-number {
+    width: 100%;
+    padding: var(--spacing-md);
+    font-size: 1.25rem;
+    font-weight: 600;
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    background: var(--bg-input);
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.input-number:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.input-number::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.form-hint {
+    display: block;
+    margin-top: var(--spacing-xs);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ============================================
+   EDIT TODAY ROW
+   ============================================ */
+.edit-today-row {
+    text-align: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-sm);
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.btn-link:hover {
+    background: var(--color-gray-100);
+}
+
+/* ============================================
+   MOOD PICKER
+   ============================================ */
+
+.mood-picker {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+}
+
+.mood-option {
+    flex: 1;
+    aspect-ratio: 1;
+    max-width: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    background: var(--bg-input);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mood-option:hover {
+    transform: scale(1.1);
+    border-color: var(--color-primary);
+}
+
+.mood-option[aria-checked='true'] {
+    background: var(--color-primary-light);
+    border-color: var(--color-primary);
+    transform: scale(1.15);
+}
+
+/* ============================================
+   BUTTON VARIANTS
+   ============================================ */
+
+.btn-small {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.875rem;
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: var(--color-primary);
+    color: white;
 }

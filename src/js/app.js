@@ -28,9 +28,16 @@ import {
     getFormattedStats
 } from './services/dataManager.js';
 
+import {
+    getSectionVisibility,
+    getMissedWindows,
+    getTimeWindowLabel
+} from './services/timeService.js';
+
 // State
 let currentView = 'tracker-view';
 let statisticsInitialized = false;
+let autoSaveTimeout = null;
 
 /**
  * Initialize app
@@ -88,6 +95,9 @@ function initApp() {
     // Set current date
     updateCurrentDate();
 
+    // Update time-based section visibility
+    updateSectionVisibility();
+
     // Load today's data (if exists)
     loadTodayData();
 
@@ -121,12 +131,13 @@ function loadTodayData() {
 
     if (!data) {
         console.log('📋 Nog geen data voor vandaag');
+        updateSectionVisibility();
         return;
     }
 
     console.log('📥 Data van vandaag laden:', data);
 
-    // Populate form fields
+    // === MORNING FIELDS ===
     if (data.sleepScore !== undefined) {
         const sleepInput = document.getElementById('sleep-score');
         sleepInput.value = data.sleepScore;
@@ -141,63 +152,254 @@ function loadTodayData() {
         document.getElementById('pain-output').textContent = data.backPain;
     }
 
-    if (data.waterIntake !== undefined) {
-        document.getElementById('water-intake').value = data.waterIntake;
-        updateWaterGlasses(data.waterIntake);
+    // Dreamed - handle both old boolean and new string format
+    if (data.dreamed !== undefined) {
+        let dreamedValue;
+        if (typeof data.dreamed === 'boolean') {
+            dreamedValue = data.dreamed ? 'yes' : 'no';
+        } else {
+            dreamedValue = data.dreamed;
+        }
+        document.getElementById('dreamed-value').value = dreamedValue;
+        document.querySelectorAll('.pill-option').forEach(btn => {
+            btn.setAttribute('aria-checked', btn.dataset.value === dreamedValue ? 'true' : 'false');
+        });
     }
 
+    // Weight (formatted with 2 decimals)
+    if (data.weight !== undefined && data.weight !== null) {
+        document.getElementById('weight').value = parseFloat(data.weight).toFixed(2);
+    }
+
+    // === WATER ===
+    if (data.waterIntake !== undefined) {
+        document.getElementById('water-intake').value = data.waterIntake;
+        document.getElementById('water-count').textContent = data.waterIntake;
+        updateWaterProgress(data.waterIntake);
+    }
+
+    // === EVENING FIELDS ===
     if (data.walked !== undefined) {
         document.getElementById('walked').checked = data.walked;
     }
 
-    if (data.dreamed !== undefined) {
-        document.getElementById('dreamed').checked = data.dreamed;
+    // Sugar - migrate from boolean if needed
+    const sugarValue = data.sugarPortions ?? (data.sugarConsumed ? 1 : 0);
+    document.getElementById('sugar-portions').value = sugarValue;
+
+    // Caffeine - migrate from boolean if needed
+    const caffeineValue = data.caffeineCount ?? (data.caffeineConsumed ? 1 : 0);
+    document.getElementById('caffeine-count').value = caffeineValue;
+
+    // Alcohol - migrate from boolean if needed
+    const alcoholValue = data.alcoholCount ?? (data.alcoholConsumed ? 1 : 0);
+    document.getElementById('alcohol-count').value = alcoholValue;
+
+    // Mood
+    if (data.mood !== undefined && data.mood !== null) {
+        document.getElementById('mood-value').value = data.mood;
+        document.querySelectorAll('.mood-option').forEach(btn => {
+            btn.setAttribute(
+                'aria-checked',
+                btn.dataset.mood === String(data.mood) ? 'true' : 'false'
+            );
+        });
     }
 
-    if (data.sugarConsumed !== undefined) {
-        document.getElementById('sugar-consumed').checked = data.sugarConsumed;
+    // Update section visibility based on loaded data
+    updateSectionVisibility();
+}
+
+// Track if user is in edit mode (shows all sections)
+let editMode = false;
+
+/**
+ * Update section visibility based on time and data
+ */
+function updateSectionVisibility() {
+    const todayData = getTodayData();
+    const visibility = getSectionVisibility(todayData);
+
+    // Morning section
+    const morningSection = document.getElementById('morning-section');
+    if (morningSection) {
+        // Show if visible OR in edit mode
+        morningSection.classList.toggle('hidden', !visibility.morning.visible && !editMode);
     }
 
-    if (data.alcoholConsumed !== undefined) {
-        document.getElementById('alcohol-consumed').checked = data.alcoholConsumed;
+    // Evening section
+    const eveningSection = document.getElementById('evening-section');
+    if (eveningSection) {
+        // Show if visible OR in edit mode
+        eveningSection.classList.toggle('hidden', !visibility.evening.visible && !editMode);
     }
 
-    if (data.caffeineConsumed !== undefined) {
-        document.getElementById('caffeine-consumed').checked = data.caffeineConsumed;
-    }
-
-    if (data.alcoholType !== undefined && data.alcoholType) {
-        document.getElementById('alcohol-type').value = data.alcoholType;
-        document.getElementById('alcohol-type-group').style.display = 'block';
-        // Set active pill and aria-pressed state
-        const pillButton = document.querySelector(`.pill-button[data-type="${data.alcoholType}"]`);
-        if (pillButton) {
-            pillButton.classList.add('active');
-            pillButton.setAttribute('aria-pressed', 'true');
+    // Fallback banner - hide in edit mode
+    const fallbackBanner = document.getElementById('fallback-banner');
+    if (fallbackBanner) {
+        fallbackBanner.classList.toggle('hidden', !visibility.showFallback || editMode);
+        if (visibility.showFallback) {
+            const missedLabel = document.getElementById('missed-window-label');
+            if (missedLabel) {
+                missedLabel.textContent = 'ochtend';
+            }
         }
     }
+
+    // Show edit button if any section is complete OR if in edit mode
+    const editBtn = document.getElementById('edit-today-btn');
+    if (editBtn) {
+        const hasCompleteSection = visibility.morning.complete || visibility.evening.complete;
+        // Show if: complete section exists OR currently in edit mode
+        editBtn.classList.toggle('hidden', !hasCompleteSection && !editMode);
+        // Update button text
+        editBtn.textContent = editMode ? '✓ Klaar met bewerken' : '✏️ Bewerk ingevulde secties';
+    }
+
+    // Update greeting
+    const greeting = document.getElementById('time-greeting');
+    if (greeting) {
+        greeting.textContent = getTimeWindowLabel();
+    }
+}
+
+/**
+ * Show all sections (fallback mode)
+ */
+function showAllSections() {
+    document.getElementById('morning-section')?.classList.remove('hidden');
+    document.getElementById('evening-section')?.classList.remove('hidden');
+    document.getElementById('fallback-banner')?.classList.add('hidden');
+}
+
+/**
+ * Toggle edit mode - shows all sections for editing
+ */
+function toggleEditMode() {
+    editMode = !editMode;
+    updateSectionVisibility();
+}
+
+/**
+ * Update water progress bar
+ */
+function updateWaterProgress(count) {
+    const fill = document.getElementById('water-progress-fill');
+    if (fill) {
+        const percentage = Math.min((count / 8) * 100, 100);
+        fill.style.width = percentage + '%';
+    }
+    // Update aria
+    const progressBar = document.querySelector('.water-progress');
+    if (progressBar) {
+        progressBar.setAttribute('aria-valuenow', count);
+    }
+}
+
+/**
+ * Auto-save with debounce
+ */
+function autoSave() {
+    window.clearTimeout(autoSaveTimeout);
+    autoSaveTimeout = window.setTimeout(() => {
+        saveData(true); // silent save
+    }, 500);
 }
 
 /**
  * Setup all event listeners
  */
 function setupEventListeners() {
+    // === MORNING SECTION ===
     // Slider inputs (live update of output and aria-valuenow for screen readers)
-    document.getElementById('sleep-score').addEventListener('input', function (e) {
+    document.getElementById('sleep-score')?.addEventListener('input', function (e) {
         document.getElementById('sleep-output').textContent = e.target.value;
         e.target.setAttribute('aria-valuenow', e.target.value);
+        autoSave();
     });
 
-    document.getElementById('back-pain').addEventListener('input', function (e) {
+    document.getElementById('back-pain')?.addEventListener('input', function (e) {
         document.getElementById('pain-output').textContent = e.target.value;
         e.target.setAttribute('aria-valuenow', e.target.value);
+        autoSave();
     });
 
+    // Dreamed pills
+    document.querySelectorAll('.pill-option').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document
+                .querySelectorAll('.pill-option')
+                .forEach(b => b.setAttribute('aria-checked', 'false'));
+            this.setAttribute('aria-checked', 'true');
+            document.getElementById('dreamed-value').value = this.dataset.value;
+            autoSave();
+        });
+    });
+
+    // === WATER SECTION ===
+    document.getElementById('water-add')?.addEventListener('click', function () {
+        const countEl = document.getElementById('water-count');
+        const waterInput = document.getElementById('water-intake');
+        const current = parseInt(countEl.textContent) || 0;
+        if (current < 20) {
+            countEl.textContent = current + 1;
+            waterInput.value = current + 1;
+            updateWaterProgress(current + 1);
+            autoSave();
+        }
+    });
+
+    // === EVENING SECTION ===
+    // Counter controls (sugar, caffeine, alcohol)
+    document.querySelectorAll('.btn-counter').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const target = document.getElementById(this.dataset.target);
+            if (!target) {
+                return;
+            }
+            const current = parseInt(target.value) || 0;
+            const isPlus = this.classList.contains('btn-plus');
+            const newValue = Math.max(0, Math.min(20, current + (isPlus ? 1 : -1)));
+            target.value = newValue;
+            autoSave();
+        });
+    });
+
+    // Mood picker
+    document.querySelectorAll('.mood-option').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document
+                .querySelectorAll('.mood-option')
+                .forEach(b => b.setAttribute('aria-checked', 'false'));
+            this.setAttribute('aria-checked', 'true');
+            document.getElementById('mood-value').value = this.dataset.mood;
+            autoSave();
+        });
+    });
+
+    // Walked checkbox
+    document.getElementById('walked')?.addEventListener('change', autoSave);
+
+    // Weight - format with 2 decimals on blur
+    document.getElementById('weight')?.addEventListener('blur', function () {
+        if (this.value && !isNaN(parseFloat(this.value))) {
+            this.value = parseFloat(this.value).toFixed(2);
+        }
+    });
+    document.getElementById('weight')?.addEventListener('change', autoSave);
+
+    // === FALLBACK ===
+    document.getElementById('fill-all-btn')?.addEventListener('click', showAllSections);
+
+    // === EDIT MODE ===
+    document.getElementById('edit-today-btn')?.addEventListener('click', toggleEditMode);
+
+    // === GLOBAL ===
     // Save button
-    document.getElementById('save-data').addEventListener('click', saveData);
+    document.getElementById('save-data')?.addEventListener('click', () => saveData(false));
 
     // Delete all data button
-    document.getElementById('delete-all-data').addEventListener('click', confirmDeleteAll);
+    document.getElementById('delete-all-data')?.addEventListener('click', confirmDeleteAll);
 
     // Settings: Export buttons
     document.getElementById('export-csv')?.addEventListener('click', handleExportCSV);
@@ -217,78 +419,59 @@ function setupEventListeners() {
 
     // Settings: Cleanup button
     document.getElementById('cleanup-old')?.addEventListener('click', handleCleanupOld);
-
-    // Water +/- buttons
-    document.getElementById('water-add').addEventListener('click', function () {
-        const waterInput = document.getElementById('water-intake');
-        const currentValue = parseInt(waterInput.value) || 0;
-        if (currentValue < 20) {
-            waterInput.value = currentValue + 1;
-            updateWaterGlasses(currentValue + 1);
-        }
-    });
-
-    document.getElementById('water-minus').addEventListener('click', function () {
-        const waterInput = document.getElementById('water-intake');
-        const currentValue = parseInt(waterInput.value) || 0;
-        if (currentValue > 0) {
-            waterInput.value = currentValue - 1;
-            updateWaterGlasses(currentValue - 1);
-        }
-    });
-
-    // Alcohol type conditional display
-    document.getElementById('alcohol-consumed').addEventListener('change', function (e) {
-        const alcoholTypeGroup = document.getElementById('alcohol-type-group');
-        if (e.target.checked) {
-            alcoholTypeGroup.style.display = 'block';
-        } else {
-            alcoholTypeGroup.style.display = 'none';
-            document.getElementById('alcohol-type').value = '';
-            // Deselect all pills
-            document
-                .querySelectorAll('.pill-button')
-                .forEach(btn => btn.classList.remove('active'));
-        }
-    });
-
-    // Alcohol type pill buttons
-    document.querySelectorAll('.pill-button').forEach(button => {
-        button.addEventListener('click', function () {
-            // Remove active from all and set aria-pressed to false
-            document.querySelectorAll('.pill-button').forEach(btn => {
-                btn.classList.remove('active');
-                btn.setAttribute('aria-pressed', 'false');
-            });
-            // Add active to clicked and set aria-pressed to true
-            this.classList.add('active');
-            this.setAttribute('aria-pressed', 'true');
-            // Set hidden input value
-            document.getElementById('alcohol-type').value = this.getAttribute('data-type');
-        });
-    });
 }
 
 /**
  * Save current form data
+ * Only saves data from visible sections, preserves existing data for hidden sections
+ * @param {boolean} silent - If true, don't show feedback
  */
-function saveData() {
-    console.log('💾 Data opslaan...');
+function saveData(silent = false) {
+    if (!silent) {
+        console.log('💾 Data opslaan...');
+    }
 
-    // Collect form data
-    const data = {
-        sleepScore: parseInt(document.getElementById('sleep-score').value),
-        backPain: parseInt(document.getElementById('back-pain').value),
-        waterIntake: parseInt(document.getElementById('water-intake').value),
-        walked: document.getElementById('walked').checked,
-        dreamed: document.getElementById('dreamed').checked,
-        sugarConsumed: document.getElementById('sugar-consumed').checked,
-        alcoholConsumed: document.getElementById('alcohol-consumed').checked,
-        alcoholType: document.getElementById('alcohol-type').value,
-        caffeineConsumed: document.getElementById('caffeine-consumed').checked
-    };
+    // Get existing data first (to preserve hidden section data)
+    const existingData = getTodayData() || {};
 
-    console.log('📊 Op te slaan data:', data);
+    // Check which sections are visible
+    const morningVisible = !document
+        .getElementById('morning-section')
+        ?.classList.contains('hidden');
+    const eveningVisible = !document
+        .getElementById('evening-section')
+        ?.classList.contains('hidden');
+
+    // Start with existing data, then update visible sections
+    const data = { ...existingData };
+
+    // Morning fields - only update if section is visible
+    if (morningVisible) {
+        data.sleepScore = parseInt(document.getElementById('sleep-score')?.value) || 7;
+        data.backPain = parseInt(document.getElementById('back-pain')?.value) || 0;
+        data.dreamed = document.getElementById('dreamed-value')?.value || null;
+        const weightValue = parseFloat(document.getElementById('weight')?.value);
+        if (!isNaN(weightValue) && weightValue > 0) {
+            data.weight = weightValue;
+        }
+    }
+
+    // Water (always visible)
+    data.waterIntake = parseInt(document.getElementById('water-intake')?.value) || 0;
+
+    // Evening fields - only update if section is visible
+    if (eveningVisible) {
+        data.walked = document.getElementById('walked')?.checked || false;
+        data.sugarPortions = parseInt(document.getElementById('sugar-portions')?.value) || 0;
+        data.caffeineCount = parseInt(document.getElementById('caffeine-count')?.value) || 0;
+        data.alcoholCount = parseInt(document.getElementById('alcohol-count')?.value) || 0;
+        data.mood = parseInt(document.getElementById('mood-value')?.value) || null;
+    }
+
+    if (!silent) {
+        console.log('📊 Op te slaan data:', data);
+        console.log('📍 Zichtbaar - Ochtend:', morningVisible, '| Avond:', eveningVisible);
+    }
 
     // Save to storage
     const success = saveTodayData(data);
@@ -297,14 +480,19 @@ function saveData() {
         // Update health score
         updateHealthScore();
 
+        // Update section visibility
+        updateSectionVisibility();
+
         // Refresh statistics if initialized
         if (statisticsInitialized) {
             refreshStatistics();
         }
 
-        // Show feedback
-        showSaveFeedback();
-    } else {
+        // Show feedback (unless silent)
+        if (!silent) {
+            showSaveFeedback();
+        }
+    } else if (!silent) {
         alert('❌ Fout bij opslaan van data. Controleer de browser console.');
     }
 }
@@ -356,13 +544,17 @@ function updateHealthScore() {
 }
 
 /**
- * Update circular progress bar
+ * Update circular progress bar (mini version in header)
  * @param {number} score - Health score (0-100)
  */
 function updateCircularProgress(score) {
     const circle = document.getElementById('progress-circle');
-    const radius = 80;
-    const circumference = 2 * Math.PI * radius; // ≈ 502.65
+    if (!circle) {
+        return;
+    }
+
+    // Mini circle has radius 24, circumference = 2 * PI * 24 ≈ 150.8
+    const circumference = 150.8;
 
     // Calculate offset (100% = 0 offset, 0% = full circumference)
     const offset = circumference - (score / 100) * circumference;
@@ -371,9 +563,7 @@ function updateCircularProgress(score) {
 
     // Change color based on score
     const color = getScoreColor(score);
-    if (circle) {
-        circle.setAttribute('stroke', color);
-    }
+    circle.setAttribute('stroke', color);
 }
 
 /**

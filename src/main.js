@@ -76,20 +76,85 @@ function setupInstallPrompt() {
     });
 }
 
-// Register Service Worker (vite-plugin-pwa handles this automatically in production)
+// Store the waiting service worker for update
+let waitingServiceWorker = null;
+
+// Register Service Worker and handle updates
 async function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
         try {
-            // In production, vite-plugin-pwa injects the SW registration
-            // This is a fallback for development or manual registration
             const registration = await navigator.serviceWorker.register('/sw.js', {
                 scope: '/'
             });
             console.log('Service Worker registered:', registration.scope);
+
+            // Check for updates immediately and periodically
+            registration.update();
+            window.setInterval(() => registration.update(), 60 * 60 * 1000); // Check hourly
+
+            // Listen for new service worker waiting
+            registration.addEventListener('waiting', () => {
+                waitingServiceWorker = registration.waiting;
+                showUpdateBanner();
+            });
+
+            // Also check if there's already a waiting worker
+            if (registration.waiting) {
+                waitingServiceWorker = registration.waiting;
+                showUpdateBanner();
+            }
+
+            // Listen for new service worker installing
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        // New version available
+                        waitingServiceWorker = newWorker;
+                        showUpdateBanner();
+                    }
+                });
+            });
         } catch {
-            // SW registration may fail in development, that's okay
             console.log('Service Worker registration skipped (dev mode or not available)');
         }
+    }
+}
+
+// Show the update banner
+function showUpdateBanner() {
+    const updateBanner = document.getElementById('update-banner');
+    if (updateBanner) {
+        updateBanner.classList.remove('hidden');
+    }
+}
+
+// Setup update banner handlers
+function setupUpdateBanner() {
+    const updateBanner = document.getElementById('update-banner');
+    const updateButton = document.getElementById('update-button');
+    const dismissButton = document.getElementById('dismiss-update');
+
+    if (updateButton) {
+        updateButton.addEventListener('click', () => {
+            if (waitingServiceWorker) {
+                // Tell the waiting service worker to activate
+                waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+                // Reload once the new service worker is active
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    window.location.reload();
+                });
+            } else {
+                // Fallback: just reload
+                window.location.reload();
+            }
+        });
+    }
+
+    if (dismissButton) {
+        dismissButton.addEventListener('click', () => {
+            updateBanner?.classList.add('hidden');
+        });
     }
 }
 
@@ -97,5 +162,6 @@ async function registerServiceWorker() {
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
     setupInstallPrompt();
+    setupUpdateBanner();
     registerServiceWorker();
 });

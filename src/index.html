@@ -32,6 +32,15 @@
         <!-- Skip Link for Keyboard Navigation -->
         <a href="#main-content" class="skip-link">Ga naar hoofdinhoud</a>
 
+        <!-- PWA Update Banner -->
+        <div id="update-banner" class="update-banner hidden">
+            <div class="update-content">
+                <span>🆕 Nieuwe versie beschikbaar!</span>
+                <button id="update-button" class="btn-primary btn-small">Updaten</button>
+                <button id="dismiss-update" class="btn-dismiss" aria-label="Later">×</button>
+            </div>
+        </div>
+
         <!-- PWA Install Banner -->
         <div id="install-banner" class="install-banner hidden">
             <div class="install-content">
@@ -78,186 +87,105 @@
 
         <!-- Main App Container -->
         <div id="app" class="container">
-            <!-- Header -->
-            <header class="app-header">
-                <h1>Health Tracker</h1>
-                <p class="subtitle">Jouw gezondheid, jouw data, jouw controle</p>
-            </header>
-
-            <!-- Health Score Visualization -->
-            <main id="main-content" class="health-score-section">
-                <div class="score-container">
-                    <!-- Circular Progress SVG - Clean & Minimal -->
-                    <svg
-                        class="health-circle"
-                        viewBox="0 0 200 200"
-                        role="img"
-                        aria-labelledby="health-score-title health-score-desc"
-                    >
+            <!-- Compact Header with Score -->
+            <header class="app-header-compact">
+                <div class="header-left">
+                    <h1>Health Tracker</h1>
+                    <p class="date" id="current-date"></p>
+                </div>
+                <div class="header-score" role="img" aria-label="Gezondheidscore">
+                    <!-- Mini circular progress -->
+                    <svg class="score-mini" viewBox="0 0 60 60" aria-hidden="true">
                         <title id="health-score-title">Gezondheidscore</title>
                         <desc id="health-score-desc">Je huidige gezondheidscore is 0%</desc>
-                        <!-- Background circle -->
                         <circle
-                            cx="100"
-                            cy="100"
-                            r="80"
+                            cx="30"
+                            cy="30"
+                            r="24"
                             fill="none"
                             stroke="#E8E3DD"
-                            stroke-width="16"
+                            stroke-width="6"
                         />
-                        <!-- Progress circle -->
                         <circle
                             id="progress-circle"
-                            cx="100"
-                            cy="100"
-                            r="80"
+                            cx="30"
+                            cy="30"
+                            r="24"
                             fill="none"
                             stroke="#C17A5C"
-                            stroke-width="16"
+                            stroke-width="6"
                             stroke-linecap="round"
-                            stroke-dasharray="502.65"
-                            stroke-dashoffset="502.65"
-                            transform="rotate(-90 100 100)"
+                            stroke-dasharray="150.8"
+                            stroke-dashoffset="150.8"
+                            transform="rotate(-90 30 30)"
                         />
-                        <!-- Percentage Text -->
                         <text
-                            x="100"
-                            y="100"
+                            x="30"
+                            y="30"
                             text-anchor="middle"
                             dominant-baseline="middle"
-                            font-size="48"
+                            font-size="14"
                             font-weight="700"
                             fill="#2C2822"
                             id="svg-score-value"
-                            aria-hidden="true"
                         >
                             0%
                         </text>
                     </svg>
                 </div>
+            </header>
 
-                <div class="score-message" id="score-message">Start met tracken!</div>
+            <main id="main-content">
+                <!-- Score message (compact) -->
+                <div class="score-message-compact" id="score-message">Start met tracken!</div>
 
-                <!-- Quick Stats - 2x2 Grid -->
-                <div class="quick-stats">
-                    <div class="stat-card">
-                        <div class="stat-label"><span aria-hidden="true">😴</span> Slaap</div>
-                        <!-- Partial circular progress (decorative) -->
-                        <svg class="stat-progress" viewBox="0 0 100 60" aria-hidden="true">
-                            <!-- Background arc -->
-                            <path
-                                d="M 10 50 A 40 40 0 0 1 90 50"
-                                fill="none"
-                                stroke="#E8E3DD"
-                                stroke-width="8"
-                                stroke-linecap="round"
-                            />
-                            <!-- Progress arc -->
-                            <path
-                                id="stat-sleep-progress"
-                                d="M 10 50 A 40 40 0 0 1 90 50"
-                                fill="none"
-                                stroke="#C17A5C"
-                                stroke-width="8"
-                                stroke-linecap="round"
-                                stroke-dasharray="125.66"
-                                stroke-dashoffset="125.66"
-                            />
-                        </svg>
-                        <div class="stat-value" id="stat-sleep">-</div>
+                <!-- Quick Stats - Inline Row (hidden by default, shown after input) -->
+                <div class="quick-stats-inline hidden" id="quick-stats-row">
+                    <div class="stat-inline">
+                        <span class="stat-icon" aria-hidden="true">😴</span>
+                        <span class="stat-value" id="stat-sleep">-</span>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label"><span aria-hidden="true">💧</span> Water</div>
-                        <!-- Partial circular progress (decorative) -->
-                        <svg class="stat-progress" viewBox="0 0 100 60" aria-hidden="true">
-                            <!-- Background arc -->
-                            <path
-                                d="M 10 50 A 40 40 0 0 1 90 50"
-                                fill="none"
-                                stroke="#E8E3DD"
-                                stroke-width="8"
-                                stroke-linecap="round"
-                            />
-                            <!-- Progress arc -->
-                            <path
-                                id="stat-water-progress"
-                                d="M 10 50 A 40 40 0 0 1 90 50"
-                                fill="none"
-                                stroke="#8B9E7D"
-                                stroke-width="8"
-                                stroke-linecap="round"
-                                stroke-dasharray="125.66"
-                                stroke-dashoffset="125.66"
-                            />
-                        </svg>
-                        <div class="stat-value" id="stat-water">-</div>
+                    <div class="stat-inline">
+                        <span class="stat-icon" aria-hidden="true">💧</span>
+                        <span class="stat-value" id="stat-water">-</span>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label"><span aria-hidden="true">🚶</span> Lopen</div>
-                        <!-- Partial circular progress (decorative) -->
-                        <svg class="stat-progress" viewBox="0 0 100 60" aria-hidden="true">
-                            <!-- Background arc -->
-                            <path
-                                d="M 10 50 A 40 40 0 0 1 90 50"
-                                fill="none"
-                                stroke="#E8E3DD"
-                                stroke-width="8"
-                                stroke-linecap="round"
-                            />
-                            <!-- Progress arc -->
-                            <path
-                                id="stat-walked-progress"
-                                d="M 10 50 A 40 40 0 0 1 90 50"
-                                fill="none"
-                                stroke="#C17A5C"
-                                stroke-width="8"
-                                stroke-linecap="round"
-                                stroke-dasharray="125.66"
-                                stroke-dashoffset="125.66"
-                            />
-                        </svg>
-                        <div class="stat-value" id="stat-walked">-</div>
+                    <div class="stat-inline">
+                        <span class="stat-icon" aria-hidden="true">🚶</span>
+                        <span class="stat-value" id="stat-walked">-</span>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label"><span aria-hidden="true">💊</span> Rugpijn</div>
-                        <!-- Partial circular progress (decorative) -->
-                        <svg class="stat-progress" viewBox="0 0 100 60" aria-hidden="true">
-                            <!-- Background arc -->
-                            <path
-                                d="M 10 50 A 40 40 0 0 1 90 50"
-                                fill="none"
-                                stroke="#E8E3DD"
-                                stroke-width="8"
-                                stroke-linecap="round"
-                            />
-                            <!-- Progress arc -->
-                            <path
-                                id="stat-pain-progress"
-                                d="M 10 50 A 40 40 0 0 1 90 50"
-                                fill="none"
-                                stroke="#D89A82"
-                                stroke-width="8"
-                                stroke-linecap="round"
-                                stroke-dasharray="125.66"
-                                stroke-dashoffset="125.66"
-                            />
-                        </svg>
-                        <div class="stat-value" id="stat-pain">-</div>
+                    <div class="stat-inline">
+                        <span class="stat-icon" aria-hidden="true">💊</span>
+                        <span class="stat-value" id="stat-pain">-</span>
                     </div>
                 </div>
+
+                <!-- Hidden elements for arc progress compatibility -->
+                <svg class="hidden" aria-hidden="true">
+                    <path id="stat-sleep-progress" stroke-dashoffset="125.66" />
+                    <path id="stat-water-progress" stroke-dashoffset="125.66" />
+                    <path id="stat-walked-progress" stroke-dashoffset="125.66" />
+                    <path id="stat-pain-progress" stroke-dashoffset="125.66" />
+                </svg>
             </main>
 
-            <!-- Tracking Form (will be in separate view) -->
+            <!-- Tracking Form (Time-based sections) -->
             <section id="tracker-view" class="view active">
-                <h2>Tracking van Vandaag</h2>
-                <p class="date" id="current-date"></p>
+                <h2 id="time-greeting" class="sr-only">Tracking van Vandaag</h2>
 
-                <!-- Sleep & Wellbeing -->
-                <div class="tracking-card">
-                    <h3><span aria-hidden="true">😴</span> Slaap & Welzijn</h3>
+                <!-- Fallback Banner (when morning missed) -->
+                <div id="fallback-banner" class="fallback-banner hidden">
+                    <p>Je hebt de <span id="missed-window-label">ochtend</span> gemist</p>
+                    <button id="fill-all-btn" class="btn-secondary btn-small">
+                        Alles invullen
+                    </button>
+                </div>
+
+                <!-- MORNING SECTION (06:00 - 10:00) -->
+                <div id="morning-section" class="tracking-card time-section" data-window="morning">
+                    <h3><span aria-hidden="true">🌅</span> Goedemorgen</h3>
 
                     <div class="form-group">
-                        <label for="sleep-score">Slaapcijfer</label>
+                        <label for="sleep-score">Hoe heb je geslapen?</label>
                         <input
                             type="range"
                             id="sleep-score"
@@ -277,7 +205,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="back-pain">Rugpijn Niveau</label>
+                        <label for="back-pain">Rugpijn niveau</label>
                         <input
                             type="range"
                             id="back-pain"
@@ -296,160 +224,268 @@
                         >
                     </div>
 
-                    <div class="form-group checkbox">
-                        <input type="checkbox" id="dreamed" />
-                        <label for="dreamed">Ik heb afgelopen nacht gedroomd</label>
+                    <div class="form-group">
+                        <label id="dreamed-label">Heb je gedroomd vannacht?</label>
+                        <div class="option-pills" role="radiogroup" aria-labelledby="dreamed-label">
+                            <button
+                                type="button"
+                                class="pill-option"
+                                data-value="yes"
+                                role="radio"
+                                aria-checked="false"
+                            >
+                                Ja
+                            </button>
+                            <button
+                                type="button"
+                                class="pill-option"
+                                data-value="no"
+                                role="radio"
+                                aria-checked="false"
+                            >
+                                Nee
+                            </button>
+                            <button
+                                type="button"
+                                class="pill-option"
+                                data-value="unknown"
+                                role="radio"
+                                aria-checked="false"
+                            >
+                                Weet niet
+                            </button>
+                        </div>
+                        <input type="hidden" id="dreamed-value" value="" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weight">Gewicht (kg)</label>
+                        <input
+                            type="number"
+                            id="weight"
+                            min="30"
+                            max="300"
+                            step="0.01"
+                            placeholder="bijv. 72,50"
+                            class="input-number"
+                            aria-describedby="weight-hint"
+                            inputmode="decimal"
+                        />
+                        <span id="weight-hint" class="form-hint"
+                            >Optioneel - weeg jezelf elke ochtend</span
+                        >
                     </div>
                 </div>
 
-                <!-- Hydration & Activity -->
-                <div class="tracking-card">
-                    <h3><span aria-hidden="true">💧</span> Hydratatie & Activiteit</h3>
+                <!-- WATER SECTION (Always visible) -->
+                <div
+                    id="water-section"
+                    class="tracking-card water-card time-section"
+                    data-window="always"
+                >
+                    <h3><span aria-hidden="true">💧</span> Water</h3>
 
+                    <div class="water-display" role="status" aria-live="polite">
+                        <div class="water-count" id="water-count">0</div>
+                        <span class="water-label">glazen</span>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="water-add"
+                        class="btn-water-add"
+                        aria-label="Voeg glas water toe"
+                    >
+                        + Glas water
+                    </button>
+
+                    <div
+                        class="water-progress"
+                        role="progressbar"
+                        aria-valuemin="0"
+                        aria-valuemax="8"
+                        aria-valuenow="0"
+                    >
+                        <div class="water-progress-fill" id="water-progress-fill"></div>
+                    </div>
+                    <p class="water-goal">Doel: 8 glazen</p>
+
+                    <!-- Hidden input for compatibility -->
+                    <input type="hidden" id="water-intake" value="0" />
+                </div>
+
+                <!-- EVENING SECTION (after 20:00) -->
+                <div id="evening-section" class="tracking-card time-section" data-window="evening">
+                    <h3><span aria-hidden="true">🌙</span> Goedenavond</h3>
+
+                    <!-- Walked -->
+                    <div class="form-group checkbox">
+                        <input type="checkbox" id="walked" />
+                        <label for="walked">Ik heb vandaag gelopen</label>
+                    </div>
+
+                    <!-- Sugar Portions -->
                     <div class="form-group">
-                        <label for="water-intake">Water (glazen)</label>
-
-                        <!-- Visual glass indicators with screen reader support -->
-                        <div
-                            class="water-glasses"
-                            id="water-glasses"
-                            role="status"
-                            aria-live="polite"
-                        >
-                            <!-- Screen reader announcement (updated dynamically) -->
-                            <span class="sr-only" id="water-status" aria-atomic="true"
-                                >Water: 0 van 8 glazen</span
-                            >
-                            <!-- Visual indicators (decorative for screen readers) -->
-                            <div class="glass-icon" data-glass="1" aria-hidden="true">💧</div>
-                            <div class="glass-icon" data-glass="2" aria-hidden="true">💧</div>
-                            <div class="glass-icon" data-glass="3" aria-hidden="true">💧</div>
-                            <div class="glass-icon" data-glass="4" aria-hidden="true">💧</div>
-                            <div class="glass-icon" data-glass="5" aria-hidden="true">💧</div>
-                            <div class="glass-icon" data-glass="6" aria-hidden="true">💧</div>
-                            <div class="glass-icon" data-glass="7" aria-hidden="true">💧</div>
-                            <div class="glass-icon" data-glass="8" aria-hidden="true">💧</div>
-                        </div>
-
-                        <div class="water-control">
+                        <label for="sugar-portions">Suiker (porties)</label>
+                        <div class="counter-control">
                             <button
                                 type="button"
-                                class="btn-control btn-minus"
-                                id="water-minus"
-                                aria-label="Verwijder een glas water"
+                                class="btn-counter btn-minus"
+                                data-target="sugar-portions"
+                                aria-label="Minder suiker"
                             >
                                 −
                             </button>
                             <input
                                 type="number"
-                                id="water-intake"
+                                id="sugar-portions"
                                 min="0"
                                 max="20"
                                 value="0"
                                 readonly
+                                aria-label="Aantal suiker porties"
                             />
                             <button
                                 type="button"
-                                class="btn-control btn-plus"
-                                id="water-add"
-                                aria-label="Voeg een glas water toe"
+                                class="btn-counter btn-plus"
+                                data-target="sugar-portions"
+                                aria-label="Meer suiker"
                             >
                                 +
                             </button>
                         </div>
                     </div>
 
-                    <div class="form-group checkbox">
-                        <input type="checkbox" id="walked" />
-                        <label for="walked">Ik heb vandaag gelopen</label>
-                    </div>
-                </div>
-
-                <!-- Consumption -->
-                <div class="tracking-card">
-                    <h3><span aria-hidden="true">🍬</span> Consumptie</h3>
-
-                    <div class="form-group checkbox">
-                        <input type="checkbox" id="sugar-consumed" />
-                        <label for="sugar-consumed">Suiker geconsumeerd</label>
-                    </div>
-
-                    <div class="form-group checkbox">
-                        <input type="checkbox" id="alcohol-consumed" />
-                        <label for="alcohol-consumed">Alcohol geconsumeerd</label>
-                    </div>
-
-                    <div class="form-group" id="alcohol-type-group" style="display: none">
-                        <label>Type drankje</label>
-                        <div class="alcohol-pills">
+                    <!-- Caffeine Count -->
+                    <div class="form-group">
+                        <label for="caffeine-count">Cafeïne (kopjes)</label>
+                        <div class="counter-control">
                             <button
                                 type="button"
-                                class="pill-button"
-                                data-type="bier"
-                                aria-pressed="false"
+                                class="btn-counter btn-minus"
+                                data-target="caffeine-count"
+                                aria-label="Minder cafeïne"
                             >
-                                <span class="pill-icon">🍺</span>
-                                <span class="pill-label">Bier</span>
+                                −
                             </button>
+                            <input
+                                type="number"
+                                id="caffeine-count"
+                                min="0"
+                                max="20"
+                                value="0"
+                                readonly
+                                aria-label="Aantal kopjes cafeïne"
+                            />
                             <button
                                 type="button"
-                                class="pill-button"
-                                data-type="wijn"
-                                aria-pressed="false"
+                                class="btn-counter btn-plus"
+                                data-target="caffeine-count"
+                                aria-label="Meer cafeïne"
                             >
-                                <span class="pill-icon">🍷</span>
-                                <span class="pill-label">Wijn</span>
-                            </button>
-                            <button
-                                type="button"
-                                class="pill-button"
-                                data-type="whisky"
-                                aria-pressed="false"
-                            >
-                                <span class="pill-icon">🥃</span>
-                                <span class="pill-label">Whisky</span>
-                            </button>
-                            <button
-                                type="button"
-                                class="pill-button"
-                                data-type="port"
-                                aria-pressed="false"
-                            >
-                                <span class="pill-icon">🍷</span>
-                                <span class="pill-label">Port</span>
-                            </button>
-                            <button
-                                type="button"
-                                class="pill-button"
-                                data-type="vermouth"
-                                aria-pressed="false"
-                            >
-                                <span class="pill-icon">🍸</span>
-                                <span class="pill-label">Vermouth</span>
-                            </button>
-                            <button
-                                type="button"
-                                class="pill-button"
-                                data-type="gin"
-                                aria-pressed="false"
-                            >
-                                <span class="pill-icon">🍸</span>
-                                <span class="pill-label">Gin</span>
+                                +
                             </button>
                         </div>
-                        <input type="hidden" id="alcohol-type" value="" />
                     </div>
 
-                    <div class="form-group checkbox">
-                        <input type="checkbox" id="caffeine-consumed" />
-                        <label for="caffeine-consumed">Cafeïne geconsumeerd</label>
+                    <!-- Alcohol Count -->
+                    <div class="form-group">
+                        <label for="alcohol-count">Alcohol (glazen)</label>
+                        <div class="counter-control">
+                            <button
+                                type="button"
+                                class="btn-counter btn-minus"
+                                data-target="alcohol-count"
+                                aria-label="Minder alcohol"
+                            >
+                                −
+                            </button>
+                            <input
+                                type="number"
+                                id="alcohol-count"
+                                min="0"
+                                max="20"
+                                value="0"
+                                readonly
+                                aria-label="Aantal glazen alcohol"
+                            />
+                            <button
+                                type="button"
+                                class="btn-counter btn-plus"
+                                data-target="alcohol-count"
+                                aria-label="Meer alcohol"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mood (5 Smileys) -->
+                    <div class="form-group">
+                        <label id="mood-label">Hoe was je dag?</label>
+                        <div class="mood-picker" role="radiogroup" aria-labelledby="mood-label">
+                            <button
+                                type="button"
+                                class="mood-option"
+                                data-mood="1"
+                                role="radio"
+                                aria-checked="false"
+                                aria-label="Zeer slecht"
+                            >
+                                😢
+                            </button>
+                            <button
+                                type="button"
+                                class="mood-option"
+                                data-mood="2"
+                                role="radio"
+                                aria-checked="false"
+                                aria-label="Slecht"
+                            >
+                                😕
+                            </button>
+                            <button
+                                type="button"
+                                class="mood-option"
+                                data-mood="3"
+                                role="radio"
+                                aria-checked="false"
+                                aria-label="Neutraal"
+                            >
+                                😐
+                            </button>
+                            <button
+                                type="button"
+                                class="mood-option"
+                                data-mood="4"
+                                role="radio"
+                                aria-checked="false"
+                                aria-label="Goed"
+                            >
+                                🙂
+                            </button>
+                            <button
+                                type="button"
+                                class="mood-option"
+                                data-mood="5"
+                                role="radio"
+                                aria-checked="false"
+                                aria-label="Zeer goed"
+                            >
+                                😄
+                            </button>
+                        </div>
+                        <input type="hidden" id="mood-value" value="" />
                     </div>
                 </div>
 
-                <!-- Save Button -->
-                <button id="save-data" class="btn-primary btn-large">
-                    💾 Bewaar Data van Vandaag
-                </button>
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="save-data" class="btn-primary btn-large">💾 Bewaar</button>
+                    <button type="button" id="edit-today-btn" class="btn-secondary hidden">
+                        ✏️ Bewerk ingevulde secties
+                    </button>
+                </div>
             </section>
 
             <!-- Stats View -->

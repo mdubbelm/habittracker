@@ -140,6 +140,7 @@ export function saveTodayData(data) {
 /**
  * Sanitize tracker data before storage
  * Ensures all values are valid and safe
+ * Supports both old boolean format and new numeric format
  *
  * @param {Object} data - Raw tracker data
  * @returns {Object} Sanitized data
@@ -147,7 +148,7 @@ export function saveTodayData(data) {
 function sanitizeTrackerData(data) {
     const sanitized = {};
 
-    // Numbers (with ranges)
+    // === EXISTING FIELDS ===
     if (data.sleepScore !== undefined) {
         sanitized.sleepScore = sanitizeNumber(data.sleepScore, 1, 10, 7);
     }
@@ -160,22 +161,51 @@ function sanitizeTrackerData(data) {
     if (data.weight !== undefined && data.weight !== null && data.weight !== '') {
         sanitized.weight = sanitizeNumber(data.weight, 30, 300, null);
     }
-
-    // Booleans
     if (data.walked !== undefined) {
         sanitized.walked = sanitizeBoolean(data.walked);
     }
-    if (data.dreamed !== undefined) {
-        sanitized.dreamed = sanitizeBoolean(data.dreamed);
+
+    // === DREAMED: support both boolean (old) and string (new) format ===
+    if (data.dreamed !== undefined && data.dreamed !== null) {
+        if (typeof data.dreamed === 'boolean') {
+            // Migrate old boolean to new string format
+            sanitized.dreamed = data.dreamed ? 'yes' : 'no';
+        } else if (['yes', 'no', 'unknown'].includes(data.dreamed)) {
+            sanitized.dreamed = data.dreamed;
+        }
     }
-    if (data.sugarConsumed !== undefined) {
-        sanitized.sugarConsumed = sanitizeBoolean(data.sugarConsumed);
+
+    // === NEW NUMERIC FIELDS ===
+    // Sugar portions (new format)
+    if (data.sugarPortions !== undefined) {
+        sanitized.sugarPortions = sanitizeNumber(data.sugarPortions, 0, 20, 0);
+    } else if (data.sugarConsumed !== undefined) {
+        // Legacy migration: boolean -> number
+        sanitized.sugarPortions = data.sugarConsumed ? 1 : 0;
     }
-    if (data.alcoholConsumed !== undefined) {
-        sanitized.alcoholConsumed = sanitizeBoolean(data.alcoholConsumed);
+
+    // Caffeine count (new format)
+    if (data.caffeineCount !== undefined) {
+        sanitized.caffeineCount = sanitizeNumber(data.caffeineCount, 0, 20, 0);
+    } else if (data.caffeineConsumed !== undefined) {
+        // Legacy migration: boolean -> number
+        sanitized.caffeineCount = data.caffeineConsumed ? 1 : 0;
     }
-    if (data.caffeineConsumed !== undefined) {
-        sanitized.caffeineConsumed = sanitizeBoolean(data.caffeineConsumed);
+
+    // Alcohol count (new format)
+    if (data.alcoholCount !== undefined) {
+        sanitized.alcoholCount = sanitizeNumber(data.alcoholCount, 0, 20, 0);
+    } else if (data.alcoholConsumed !== undefined) {
+        // Legacy migration: boolean -> number
+        sanitized.alcoholCount = data.alcoholConsumed ? 1 : 0;
+    }
+
+    // === MOOD (new field) ===
+    if (data.mood !== undefined && data.mood !== null) {
+        const moodValue = sanitizeNumber(data.mood, 1, 5, null);
+        if (moodValue !== null) {
+            sanitized.mood = moodValue;
+        }
     }
 
     // Custom habits (if added later)
