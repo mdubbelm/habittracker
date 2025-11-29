@@ -1,135 +1,56 @@
 {
-  "timestamp": "2025-11-25T19:30:00+01:00",
-  "sessionNumber": 4,
-  "duration": "5 hours",
-  "summary": "Phase 0 volledig afgerond! Alle 8 foundation issues zijn nu gesloten. Belangrijkste werk: Vite build tooling opgezet (Issue #1), alle JavaScript geconverteerd naar ES modules (Issue #3), testing infrastructure geïmplementeerd (#2), CI/CD pipeline gemaakt (#4), code quality tools (#7), SVG accessibility (#10), en testing milestone voltooid (#16). Daarnaast 6 nieuwe Phase 1 feature issues aangemaakt (#20-25) en gekoppeld aan milestones. Project is nu klaar voor Phase 1: MVP development.",
+  "timestamp": "2025-11-29T16:00:00+01:00",
+  "sessionNumber": 8,
+  "duration": "~45 min",
+  "summary": "Blog fixes en documentatie: baseURL gecorrigeerd naar vibemo.netlify.app, blog volgorde gefixet met timestamps, responsive screenshot grid toegevoegd, end-session command verduidelijkt met projectscheiding, blog ideeën genoteerd.",
   "filesModified": [
-    "vite.config.js (nieuw)",
-    "package.json",
-    "src/main.js (nieuw - entry point)",
-    "src/index.html",
-    "src/js/app.js",
-    "src/js/services/storage.js",
-    "src/js/services/healthScore.js",
-    "src/js/utils/sanitize.js",
-    "eslint.config.js",
-    ".github/workflows/ci.yml",
-    "vitest.config.js",
-    "tests/setup.js",
-    "tests/healthScore.test.js",
-    "tests/sanitize.test.js",
-    ".time-tracking/SESSION_004.md",
-    "DEVLOG.md"
+    "devblog/hugo.toml - baseURL en title naar Vibemo",
+    "devblog/assets/css/extended/custom.css - NIEUW: responsive screenshot grid",
+    "devblog/content/habittracker/*.md - timestamps toegevoegd aan same-date posts",
+    "devblog/content/habittracker/2025-11-22-mvp-live.md - screenshot grid layout",
+    ".claude/commands/end-session.md - projectscheiding uitleg toegevoegd",
+    "blog/_ideas.md - NIEUW: blog ideeën voor volgende sessies"
   ],
   "issuesManaged": {
-    "closed": [
-      "#1 - Development Environment & Build Tools Setup",
-      "#2 - Testing Infrastructure - Unit & E2E",
-      "#3 - Refactor Monolithic HTML naar Modules",
-      "#4 - CI/CD Pipeline met GitHub Actions",
-      "#7 - Code Quality Tools - ESLint & Prettier",
-      "#10 - SVG Health Score Accessible Text",
-      "#16 - Testing Milestone"
-    ],
-    "created": [
-      "#20 - PWA Implementation",
-      "#21 - Statistics & Analytics Dashboard",
-      "#22 - Data Import/Export Improvements",
-      "#23 - Custom Habits Management System",
-      "#24 - Health Score Visualisatie & Animaties",
-      "#25 - UX Polish & Error Handling"
+    "open": [
+      "#27 - Obsidian integratie",
+      "#28 - Customizable tracking fields met toggles",
+      "#29 - Energieniveau vastleggen in avond ritueel",
+      "#30 - Design: bewaarknop kleur + flat design menu iconen",
+      "#31 - Lezen toevoegen als habit"
     ]
   },
-  "milestoneStatus": {
-    "phase0": {
-      "name": "Phase 0: Foundation & Setup",
-      "progress": "100%",
-      "open": 0,
-      "closed": 8,
-      "status": "COMPLETE"
-    },
-    "phase1": {
-      "name": "Phase 1: MVP",
-      "progress": "0%",
-      "open": 10,
-      "closed": 0,
-      "status": "READY TO START"
-    }
-  },
-  "technicalAchievements": {
-    "buildTools": {
-      "tool": "Vite v7.2.4",
-      "devServer": "npm run dev (port 3000, HMR enabled)",
-      "productionBuild": "npm run build → dist/",
-      "bundleSizes": {
-        "html": "21KB",
-        "css": "12KB (gzip: 2.85KB)",
-        "js": "12KB (gzip: 4KB)"
-      },
-      "performanceBudget": "✅ All within budget"
-    },
-    "esModules": {
-      "entryPoint": "src/main.js",
-      "modules": ["app.js", "storage.js", "healthScore.js", "sanitize.js"],
-      "importExport": "Proper ES module syntax with named exports"
-    },
-    "testing": {
-      "framework": "Vitest + jsdom",
-      "unitTests": 51,
-      "e2eTests": 30,
-      "coverage": "80%+",
-      "browsers": ["Chrome", "Firefox", "Safari"]
-    },
-    "codeQuality": {
-      "linting": "ESLint 9 (flat config)",
-      "formatting": "Prettier",
-      "preCommit": "Husky + lint-staged"
-    },
-    "cicd": {
-      "platform": "GitHub Actions",
-      "jobs": ["lint", "unit-test", "e2e-test", "build"],
-      "deployTarget": "GitHub Pages (ready)"
-    }
-  },
-  "nextSteps": [
-    "Start Phase 1: MVP development",
-    "Recommended first: #20 (PWA) or #21 (Statistics Dashboard)",
-    "Accessibility issues (#11-14) can be done in parallel",
-    "Run 'npm run dev' to start development server"
+  "completedThisSession": [
+    "baseURL fix: devblog.netlify.app → vibemo.netlify.app",
+    "Blog volgorde fix: timestamps voor same-date posts (sessie 1,2,3 en 7,8)",
+    "Responsive screenshot grid CSS (2 cols mobiel, 3 desktop)",
+    "MVP post bijgewerkt met screenshot grid",
+    "End-session command verduidelijkt met projectscheiding diagram",
+    "Blog ideeën genoteerd: projectorganisatie & Obsidian workflow"
   ],
-  "openIssues": {
-    "phase1Features": [
-      "#20 - PWA Implementation",
-      "#21 - Statistics & Analytics Dashboard",
-      "#22 - Data Import/Export Improvements",
-      "#23 - Custom Habits Management System",
-      "#24 - Health Score Visualisatie & Animaties",
-      "#25 - UX Polish & Error Handling"
-    ],
-    "accessibility": [
-      "#11 - Replace Emoji Icons with Accessible Icons",
-      "#12 - Improve Focus Indicators for Keyboard Navigation",
-      "#13 - Add Skip Link for Keyboard Navigation",
-      "#14 - Improve Form Error Messages (Inline Validation)"
-    ]
+  "commits": [
+    "c27b44a - fix: correct baseURL to vibemo.netlify.app (devblog)",
+    "088c746 - fix: blog ordering and responsive screenshot grid (devblog)",
+    "1aa4766 - docs: clarify project separation in end-session command (habittracker)"
+  ],
+  "nextSteps": [
+    "Blog schrijven over projectorganisatie en Obsidian workflow",
+    "Meer screenshots toevoegen aan andere blog posts",
+    "Issue #29: Energieniveau tracking implementeren",
+    "Issue #30: Design verbeteringen doorvoeren",
+    "Issue #31: Lezen habit toevoegen"
+  ],
+  "openIssues": [],
+  "todoList": "Geen openstaande todos",
+  "blogIdeas": [
+    "Projectorganisatie: _agents, _knowledge, centrale CLAUDE.md",
+    "Obsidian als hub voor markdown bestanden",
+    "Single source of truth: Obsidian → Hugo blog"
+  ],
+  "urls": {
+    "blog": "https://vibemo.netlify.app/",
+    "app": "https://dailymo.netlify.app/"
   },
-  "commands": {
-    "dev": "npm run dev - Start Vite dev server with HMR",
-    "build": "npm run build - Production build to dist/",
-    "preview": "npm run preview - Preview production build",
-    "test": "npm test - Run 51 unit tests",
-    "lint": "npm run lint - ESLint check",
-    "format": "npm run format - Prettier formatting"
-  },
-  "metrics": {
-    "totalSessionTime": "5 hours",
-    "cumulativeProjectTime": "9.5 hours",
-    "issuesClosed": 7,
-    "issuesCreated": 6,
-    "unitTests": 51,
-    "e2eTests": 30,
-    "testCoverage": "80%+"
-  },
-  "celebration": "🎉 PHASE 0 COMPLETE! All 8 foundation issues closed. Modern build tooling, ES modules, 51 tests, CI/CD pipeline, and comprehensive backlog ready. Project is production-ready for Phase 1 development!",
-  "nextSessionFocus": "Phase 1: MVP - Start with PWA (#20) or Statistics Dashboard (#21)"
+  "version": "0.2.0",
+  "nextSessionFocus": "Blog post over projectorganisatie en Obsidian workflow"
 }
