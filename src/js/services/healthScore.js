@@ -14,12 +14,12 @@
 export const WEIGHTS = {
     sleep: 25, // Sleep quality
     pain: 15, // Pain management
-    hydration: 20, // Water intake (increased)
+    hydration: 15, // Water intake
     activity: 10, // Walking/movement
     reading: 5, // Reading/learning
     mood: 10, // Daily mood
     consumption: 20 // Sugar/alcohol/caffeine (negative impact)
-};
+}; // Total: 100
 
 /**
  * Calculate health score from tracker data

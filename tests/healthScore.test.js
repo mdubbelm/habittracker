@@ -164,8 +164,8 @@ describe('calculateHealthScore', () => {
                 backPain: 10 // 0%
             });
             // Weighted average of 100% and 0% based on weights
-            // Sleep: 30, Pain: 20 → (100*30 + 0*20) / 50 = 60%
-            expect(result).toBe(60);
+            // Sleep: 25, Pain: 15 → (100*25 + 0*15) / 40 = 62.5 → 63%
+            expect(result).toBe(63);
         });
 
         it('perfect day gives high score', () => {

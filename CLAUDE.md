@@ -19,6 +19,71 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## Workflow Vereisten
+
+**🚨 KRITISCH - NIET OVERSLAAN 🚨**
+
+Deze checklist MOET worden afgewerkt. Geen excuses.
+
+---
+
+### 📋 END-OF-SESSION CHECKLIST
+
+Wanneer de gebruiker `/end-session` aanroept OF aangeeft klaar te zijn, doorloop deze checklist **VOORDAT** je afsluit:
+
+#### 1. ⏱️ Time Tracking
+```bash
+# Check huidige sessie nummer
+ls .time-tracking/
+```
+- [ ] Maak `.time-tracking/SESSION_XXX.md` (volgende nummer)
+- [ ] Vul in: datum, geschatte tijd, wat is gedaan
+- [ ] Update cumulative time
+
+#### 2. 📖 Blog Post (blog/)
+- [ ] Maak `blog/YYYY-MM-DD-[titel].md` (gebruik `blog/_template.md`)
+- [ ] **Schrijf persoonlijk**, niet als changelog!
+- [ ] Include: emoties, realisaties, learnings
+- [ ] YAML frontmatter met stats en mood
+- [ ] Update `blog/_index.md` tabel en stats
+
+#### 3. 📊 GitHub Issues
+```bash
+gh issue list --state open
+```
+- [ ] Sluit afgeronde issues met comment
+- [ ] Update open issues met voortgang
+- [ ] Maak nieuwe issues voor ontdekte werk
+
+#### 4. 💾 Session Status
+- [ ] Update `.session-status.json` met:
+  - sessionNumber
+  - summary
+  - filesModified
+  - commits
+  - nextSteps
+
+#### 5. ✅ Final Commit
+- [ ] Commit alle documentatie updates
+- [ ] Push naar GitHub
+
+---
+
+### 🔄 Tijdens het werk
+- **GitHub Issues**: Check relevante open issues (`gh issue list`)
+- **Issues linken**: Verwijs naar issue nummers in commits (bijv. "fixes #26")
+- **LEARNINGS.md**: Voeg learnings toe bij interessante problemen/oplossingen
+
+### 🚀 Bij feature completion
+- **GitHub Issue sluiten**: `gh issue close #XX --comment "Implemented in [commit]"`
+- **Deploy check**: Verifieer Netlify deploy succesvol is
+
+---
+
+**⚠️ HERINNERING**: Als je deze checklist niet afwerkt, mist de gebruiker belangrijke documentatie en moet ze er later om vragen. Dat is vervelend. Doe het gewoon.
+
+---
+
 ## Development Commands
 
 ### Setup & Installation
