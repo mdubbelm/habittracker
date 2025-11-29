@@ -32,6 +32,18 @@
         <!-- Skip Link for Keyboard Navigation -->
         <a href="#main-content" class="skip-link">Ga naar hoofdinhoud</a>
 
+        <!-- Pull to Refresh Indicator -->
+        <div id="pull-refresh" class="pull-refresh">
+            <div class="pull-refresh-icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                    <path
+                        d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+                    />
+                </svg>
+            </div>
+            <span class="pull-refresh-text">Trek naar beneden om te verversen</span>
+        </div>
+
         <!-- PWA Update Banner -->
         <div id="update-banner" class="update-banner hidden">
             <div class="update-content">
@@ -260,17 +272,17 @@
 
                     <div class="form-group">
                         <label for="weight">Gewicht (kg)</label>
-                        <input
-                            type="number"
-                            id="weight"
-                            min="30"
-                            max="300"
-                            step="0.01"
-                            placeholder="bijv. 72,50"
-                            class="input-number"
+                        <button
+                            type="button"
+                            id="weight-picker-trigger"
+                            class="picker-trigger"
                             aria-describedby="weight-hint"
-                            inputmode="decimal"
-                        />
+                            aria-haspopup="dialog"
+                        >
+                            <span id="weight-display" class="picker-value">-- kg</span>
+                            <span class="picker-arrow">›</span>
+                        </button>
+                        <input type="hidden" id="weight" value="" />
                         <span id="weight-hint" class="form-hint"
                             >Optioneel - weeg jezelf elke ochtend</span
                         >
@@ -766,6 +778,42 @@
                 <span class="nav-label">Opties</span>
             </button>
         </nav>
+
+        <!-- Weight Wheel Picker -->
+        <div
+            id="weight-picker-overlay"
+            class="picker-overlay hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Gewicht kiezen"
+        >
+            <div class="picker-container">
+                <div class="picker-header">
+                    <button type="button" id="weight-picker-cancel" class="picker-btn">
+                        Annuleren
+                    </button>
+                    <span class="picker-title">Gewicht</span>
+                    <button
+                        type="button"
+                        id="weight-picker-confirm"
+                        class="picker-btn picker-btn-primary"
+                    >
+                        Klaar
+                    </button>
+                </div>
+                <div class="picker-wheels">
+                    <div class="picker-wheel" id="weight-kg-wheel">
+                        <div class="picker-wheel-inner" id="weight-kg-inner"></div>
+                    </div>
+                    <div class="picker-separator">,</div>
+                    <div class="picker-wheel" id="weight-decimal-wheel">
+                        <div class="picker-wheel-inner" id="weight-decimal-inner"></div>
+                    </div>
+                    <div class="picker-unit">kg</div>
+                    <div class="picker-highlight"></div>
+                </div>
+            </div>
+        </div>
 
         <!-- Main Application Script (ES Module) -->
         <script type="module" src="./main.js"></script>

@@ -12,10 +12,11 @@
  * Total should add up to 100 for easy percentage calculation
  */
 export const WEIGHTS = {
-    sleep: 30, // Sleep is VERY important
-    pain: 20, // Pain management crucial
-    hydration: 15, // Water intake
-    activity: 15, // Walking/movement
+    sleep: 25, // Sleep quality
+    pain: 15, // Pain management
+    hydration: 20, // Water intake (increased)
+    activity: 10, // Walking/movement
+    mood: 10, // Daily mood (new)
     consumption: 20 // Sugar/alcohol/caffeine (negative impact)
 };
 
@@ -73,27 +74,56 @@ export function calculateHealthScore(data) {
         totalWeight += WEIGHTS.activity;
     }
 
-    // Consumption (sugar, alcohol, caffeine)
-    // Each "bad" thing reduces the score
-    if (
-        data.sugarConsumed !== undefined ||
-        data.alcoholConsumed !== undefined ||
-        data.caffeineConsumed !== undefined
-    ) {
-        let consumptionScore = 100; // Start at 100%
+    // Mood (1-5 scale → 0-100%)
+    if (data.mood !== undefined && data.mood !== null) {
+        const moodPercent = ((data.mood - 1) / 4) * 100;
+        totalScore += moodPercent * (WEIGHTS.mood / 100);
+        totalWeight += WEIGHTS.mood;
+    }
 
+    // Consumption (sugar, alcohol, caffeine)
+    // Supports both old boolean format and new numeric format
+    let hasConsumptionData = false;
+    let consumptionScore = 100; // Start at 100%
+
+    // Sugar: -15 points per portion (max -40)
+    if (data.sugarPortions !== undefined && data.sugarPortions > 0) {
+        consumptionScore -= Math.min(data.sugarPortions * 15, 40);
+        hasConsumptionData = true;
+    } else if (data.sugarConsumed !== undefined) {
+        // Legacy boolean support
         if (data.sugarConsumed) {
             consumptionScore -= 40;
         }
+        hasConsumptionData = true;
+    }
+
+    // Alcohol: -20 points per glass (max -40)
+    if (data.alcoholCount !== undefined && data.alcoholCount > 0) {
+        consumptionScore -= Math.min(data.alcoholCount * 20, 40);
+        hasConsumptionData = true;
+    } else if (data.alcoholConsumed !== undefined) {
         if (data.alcoholConsumed) {
             consumptionScore -= 40;
         }
+        hasConsumptionData = true;
+    }
+
+    // Caffeine: -10 points per cup over 3 (moderate is ok)
+    if (data.caffeineCount !== undefined) {
+        if (data.caffeineCount > 3) {
+            consumptionScore -= (data.caffeineCount - 3) * 10;
+        }
+        hasConsumptionData = true;
+    } else if (data.caffeineConsumed !== undefined) {
         if (data.caffeineConsumed) {
             consumptionScore -= 20;
         }
+        hasConsumptionData = true;
+    }
 
+    if (hasConsumptionData) {
         consumptionScore = Math.max(consumptionScore, 0); // Don't go below 0
-
         totalScore += consumptionScore * (WEIGHTS.consumption / 100);
         totalWeight += WEIGHTS.consumption;
     }

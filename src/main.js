@@ -79,6 +79,94 @@ function setupInstallPrompt() {
 // Store the waiting service worker for update
 let waitingServiceWorker = null;
 
+// Pull to Refresh functionality
+function setupPullToRefresh() {
+    const pullRefresh = document.getElementById('pull-refresh');
+    if (!pullRefresh) {
+        return;
+    }
+
+    let startY = 0;
+    let isPulling = false;
+    const threshold = 80; // Pixels to pull before refresh triggers
+
+    // Only enable when at top of page
+    function isAtTop() {
+        return window.scrollY <= 0;
+    }
+
+    document.addEventListener(
+        'touchstart',
+        e => {
+            if (isAtTop()) {
+                startY = e.touches[0].clientY;
+                isPulling = true;
+            }
+        },
+        { passive: true }
+    );
+
+    document.addEventListener(
+        'touchmove',
+        e => {
+            if (!isPulling) {
+                return;
+            }
+
+            const currentY = e.touches[0].clientY;
+            const pullDistance = currentY - startY;
+
+            if (pullDistance > 0 && isAtTop()) {
+                // Show pulling indicator
+                const progress = Math.min(pullDistance / threshold, 1);
+                pullRefresh.style.transform = `translateY(${Math.min(pullDistance * 0.5, threshold) - 100}%)`;
+                pullRefresh.classList.add('pulling');
+
+                // Rotate icon based on progress
+                const icon = pullRefresh.querySelector('.pull-refresh-icon');
+                if (icon) {
+                    icon.style.transform = `rotate(${progress * 180}deg)`;
+                }
+            }
+        },
+        { passive: true }
+    );
+
+    document.addEventListener(
+        'touchend',
+        () => {
+            if (!isPulling) {
+                return;
+            }
+            isPulling = false;
+
+            const pullRefreshRect = pullRefresh.getBoundingClientRect();
+            const wasFullyPulled = pullRefreshRect.bottom >= threshold;
+
+            if (wasFullyPulled) {
+                // Trigger refresh
+                pullRefresh.classList.remove('pulling');
+                pullRefresh.classList.add('refreshing');
+                pullRefresh.style.transform = 'translateY(0)';
+
+                // Reload after short delay
+                window.setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                // Cancel pull
+                pullRefresh.classList.remove('pulling');
+                pullRefresh.style.transform = 'translateY(-100%)';
+                const icon = pullRefresh.querySelector('.pull-refresh-icon');
+                if (icon) {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            }
+        },
+        { passive: true }
+    );
+}
+
 // Register Service Worker and handle updates
 async function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
@@ -163,5 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
     setupInstallPrompt();
     setupUpdateBanner();
+    setupPullToRefresh();
     registerServiceWorker();
 });

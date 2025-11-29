@@ -34,7 +34,10 @@ import {
     getTimeWindowLabel
 } from './services/timeService.js';
 
+import { initWeightPicker } from './components/wheelPicker.js';
+
 // State
+let weightPicker = null;
 let currentView = 'tracker-view';
 let statisticsInitialized = false;
 let autoSaveTimeout = null;
@@ -97,6 +100,9 @@ function initApp() {
 
     // Update time-based section visibility
     updateSectionVisibility();
+
+    // Initialize wheel picker for weight (before loading data)
+    weightPicker = initWeightPicker();
 
     // Load today's data (if exists)
     loadTodayData();
@@ -166,9 +172,13 @@ function loadTodayData() {
         });
     }
 
-    // Weight (formatted with 2 decimals)
+    // Weight (use wheel picker if available)
     if (data.weight !== undefined && data.weight !== null) {
-        document.getElementById('weight').value = parseFloat(data.weight).toFixed(2);
+        if (weightPicker) {
+            weightPicker.setValue(parseFloat(data.weight));
+        } else {
+            document.getElementById('weight').value = parseFloat(data.weight).toFixed(2);
+        }
     }
 
     // === WATER ===
@@ -380,12 +390,7 @@ function setupEventListeners() {
     // Walked checkbox
     document.getElementById('walked')?.addEventListener('change', autoSave);
 
-    // Weight - format with 2 decimals on blur
-    document.getElementById('weight')?.addEventListener('blur', function () {
-        if (this.value && !isNaN(parseFloat(this.value))) {
-            this.value = parseFloat(this.value).toFixed(2);
-        }
-    });
+    // Weight - auto-save on change (from wheel picker)
     document.getElementById('weight')?.addEventListener('change', autoSave);
 
     // === FALLBACK ===

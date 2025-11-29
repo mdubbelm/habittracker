@@ -99,6 +99,8 @@ html {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Disable browser's native pull-to-refresh */
+    overscroll-behavior-y: contain;
 }
 
 body {
@@ -108,6 +110,7 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     padding-bottom: 80px; /* Space for bottom nav */
+    overscroll-behavior-y: contain;
 }
 
 /* ============================================
@@ -1365,6 +1368,255 @@ button:focus-visible {
 .consumption-detail {
     font-size: 0.75rem;
     color: var(--text-muted);
+}
+
+/* ============================================
+   PULL TO REFRESH
+   ============================================ */
+.pull-refresh {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+    padding-top: calc(var(--spacing-md) + env(safe-area-inset-top, 0px));
+    background: var(--bg-secondary);
+    transform: translateY(-100%);
+    transition: transform 0.2s ease-out;
+    z-index: var(--z-sticky);
+    opacity: 0;
+}
+
+.pull-refresh.pulling {
+    opacity: 1;
+}
+
+.pull-refresh.refreshing {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.pull-refresh-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--color-primary);
+    transition: transform 0.3s ease;
+}
+
+.pull-refresh.pulling .pull-refresh-icon {
+    animation: none;
+}
+
+.pull-refresh.refreshing .pull-refresh-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.pull-refresh-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-xs);
+}
+
+.pull-refresh.refreshing .pull-refresh-text::after {
+    content: 'Verversen...';
+}
+
+.pull-refresh.refreshing .pull-refresh-text {
+    font-size: 0;
+}
+
+.pull-refresh.refreshing .pull-refresh-text::after {
+    font-size: 0.85rem;
+}
+
+/* ============================================
+   WHEEL PICKER (iOS-style rotor)
+   ============================================ */
+
+/* Picker Trigger Button (replaces input) */
+.picker-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--spacing-md);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.picker-trigger:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.picker-value {
+    font-weight: 500;
+}
+
+.picker-value:empty::before,
+.picker-trigger .picker-value:first-child:not(:empty) {
+    color: var(--text-primary);
+}
+
+.picker-trigger[data-empty='true'] .picker-value {
+    color: var(--text-muted);
+}
+
+.picker-arrow {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    transform: rotate(90deg);
+}
+
+/* Picker Overlay */
+.picker-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: var(--z-modal);
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.picker-overlay.hidden {
+    display: none;
+}
+
+/* Picker Container */
+.picker-container {
+    width: 100%;
+    max-width: 400px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    animation: slideUp 0.3s ease-out;
+}
+
+/* Picker Header */
+.picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.picker-title {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.picker-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: var(--color-primary);
+    cursor: pointer;
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.picker-btn-primary {
+    font-weight: 600;
+}
+
+/* Picker Wheels Container */
+.picker-wheels {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    padding: 0 var(--spacing-lg);
+}
+
+/* Individual Wheel */
+.picker-wheel {
+    height: 100%;
+    width: 80px;
+    overflow: hidden;
+    position: relative;
+    /* Gradient masks for 3D effect */
+    mask-image: linear-gradient(to bottom, transparent 0%, black 35%, black 65%, transparent 100%);
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 35%,
+        black 65%,
+        transparent 100%
+    );
+}
+
+.picker-wheel-inner {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.1s ease-out;
+}
+
+.picker-wheel-item {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.picker-wheel-item.selected {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Separator and Unit */
+.picker-separator {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 var(--spacing-xs);
+}
+
+.picker-unit {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-left: var(--spacing-sm);
+}
+
+/* Highlight bar (selected row indicator) */
+.picker-highlight {
+    position: absolute;
+    left: var(--spacing-md);
+    right: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    height: 40px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+    z-index: -1;
 }
 
 /* ============================================
