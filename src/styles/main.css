@@ -552,23 +552,84 @@ input[type='text']:focus {
 }
 
 output {
-    display: inline-block;
-    min-width: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 32px;
     padding: var(--spacing-xs) var(--spacing-sm);
-    background: var(--color-gray-100);
+    background: var(--color-primary);
+    color: white;
     border-radius: var(--radius-md);
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     font-weight: 600;
     text-align: center;
-    color: var(--text-primary);
+    transition: transform 0.15s ease;
 }
 
-/* Checkboxes */
-input[type='checkbox'] {
-    width: 20px;
-    height: 20px;
-    accent-color: var(--color-primary);
+/* Pulse animation when slider value changes */
+output.pulse {
+    animation: output-pulse 0.2s ease;
+}
+
+@keyframes output-pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Custom Checkboxes */
+.form-group.checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.form-group.checkbox input[type='checkbox'] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--radius-sm);
+    background: white;
     cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.form-group.checkbox input[type='checkbox']:checked {
+    background: var(--color-success);
+    border-color: var(--color-success);
+}
+
+.form-group.checkbox input[type='checkbox']:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.form-group.checkbox input[type='checkbox']:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.form-group.checkbox label {
+    margin: 0;
+    cursor: pointer;
+    font-weight: 500;
 }
 
 /* Select Dropdown */

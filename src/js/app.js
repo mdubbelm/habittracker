@@ -323,6 +323,20 @@ function updateWaterProgress(count) {
 }
 
 /**
+ * Pulse animation for output elements
+ * @param {HTMLElement} element - The output element to animate
+ */
+function pulseOutput(element) {
+    if (!element) {
+        return;
+    }
+    element.classList.remove('pulse');
+    // Trigger reflow to restart animation
+    void element.offsetWidth;
+    element.classList.add('pulse');
+}
+
+/**
  * Auto-save with debounce
  */
 function autoSave() {
@@ -339,14 +353,18 @@ function setupEventListeners() {
     // === MORNING SECTION ===
     // Slider inputs (live update of output and aria-valuenow for screen readers)
     document.getElementById('sleep-score')?.addEventListener('input', function (e) {
-        document.getElementById('sleep-output').textContent = e.target.value;
+        const output = document.getElementById('sleep-output');
+        output.textContent = e.target.value;
         e.target.setAttribute('aria-valuenow', e.target.value);
+        pulseOutput(output);
         autoSave();
     });
 
     document.getElementById('back-pain')?.addEventListener('input', function (e) {
-        document.getElementById('pain-output').textContent = e.target.value;
+        const output = document.getElementById('pain-output');
+        output.textContent = e.target.value;
         e.target.setAttribute('aria-valuenow', e.target.value);
+        pulseOutput(output);
         autoSave();
     });
 
