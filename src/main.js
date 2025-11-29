@@ -340,12 +340,36 @@ function setupCheckForUpdates() {
     });
 }
 
+// Offline indicator
+function setupOfflineIndicator() {
+    const banner = document.getElementById('offline-banner');
+    if (!banner) {
+        return;
+    }
+
+    function updateOnlineStatus() {
+        if (navigator.onLine) {
+            banner.classList.remove('visible');
+        } else {
+            banner.classList.add('visible');
+        }
+    }
+
+    // Initial check
+    updateOnlineStatus();
+
+    // Listen for changes
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+}
+
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
     setupInstallPrompt();
     setupUpdateBanner();
     setupPullToRefresh();
+    setupOfflineIndicator();
     displayVersionInfo();
     setupCheckForUpdates();
     registerServiceWorker();

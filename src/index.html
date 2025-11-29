@@ -32,6 +32,12 @@
         <!-- Skip Link for Keyboard Navigation -->
         <a href="#main-content" class="skip-link">Ga naar hoofdinhoud</a>
 
+        <!-- Offline Indicator -->
+        <div id="offline-banner" class="offline-banner" role="alert">
+            <span class="offline-banner-icon" aria-hidden="true">📡</span>
+            <span>Geen internetverbinding - Data wordt lokaal opgeslagen</span>
+        </div>
+
         <!-- Pull to Refresh Indicator -->
         <div id="pull-refresh" class="pull-refresh">
             <div class="pull-refresh-icon">
@@ -958,6 +964,14 @@
                 </div>
             </div>
         </div>
+
+        <!-- Toast Notifications Container -->
+        <div
+            id="toast-container"
+            class="toast-container"
+            aria-live="polite"
+            aria-atomic="true"
+        ></div>
 
         <!-- Main Application Script (ES Module) -->
         <script type="module" src="./main.js"></script>

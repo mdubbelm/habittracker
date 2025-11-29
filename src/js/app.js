@@ -35,6 +35,7 @@ import {
 } from './services/timeService.js';
 
 import { initWeightPicker } from './components/wheelPicker.js';
+import { showSuccess, showError, showWarning, showInfo } from './services/toast.js';
 
 // State
 let weightPicker = null;
@@ -530,24 +531,15 @@ function saveData(silent = false) {
             showSaveFeedback();
         }
     } else if (!silent) {
-        alert('❌ Fout bij opslaan van data. Controleer de browser console.');
+        showError('Fout bij opslaan. Probeer opnieuw.');
     }
 }
 
 /**
- * Show save feedback
+ * Show save feedback using toast notification
  */
 function showSaveFeedback() {
-    const btn = document.getElementById('save-data');
-    const originalText = btn.textContent;
-
-    btn.textContent = '✅ Opgeslagen!';
-    btn.style.backgroundColor = '#6b8e5e'; // --color-success (earthy green)
-
-    setTimeout(() => {
-        btn.textContent = originalText;
-        btn.style.backgroundColor = '';
-    }, 2000);
+    showSuccess('Data opgeslagen');
 }
 
 /**
@@ -769,7 +761,7 @@ function confirmDeleteAll() {
 
             updateHealthScore();
 
-            alert('🗑️ Alle data verwijderd');
+            showSuccess('Alle data verwijderd');
             updateDataStats();
         }
     }
@@ -890,21 +882,15 @@ function handleCleanupOld() {
 }
 
 /**
- * Show import/export status message
+ * Show import/export status message using toast
  * @param {string} message - Status message
  * @param {boolean} success - Whether operation was successful
  */
 function showImportStatus(message, success) {
-    const statusEl = document.getElementById('import-status');
-    if (statusEl) {
-        statusEl.textContent = message;
-        statusEl.className = `settings-note ${success ? 'success' : 'error'}`;
-
-        // Clear after 5 seconds
-        setTimeout(() => {
-            statusEl.textContent = '';
-            statusEl.className = 'settings-note';
-        }, 5000);
+    if (success) {
+        showSuccess(message);
+    } else {
+        showError(message);
     }
 }
 
