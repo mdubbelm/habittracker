@@ -11,6 +11,11 @@ import './styles/main.css';
 // Import and initialize the app
 import { initializeApp } from './js/app.js';
 
+// App version (from package.json via Vite)
+/* global __APP_VERSION__, __BUILD_DATE__ */
+const APP_VERSION = __APP_VERSION__;
+const BUILD_DATE = __BUILD_DATE__;
+
 // PWA Install Prompt Handler
 let deferredPrompt = null;
 
@@ -246,11 +251,102 @@ function setupUpdateBanner() {
     }
 }
 
+// Display version info
+function displayVersionInfo() {
+    const versionEl = document.getElementById('app-version');
+    const buildDateEl = document.getElementById('app-build-date');
+
+    if (versionEl) {
+        versionEl.textContent = APP_VERSION;
+    }
+
+    if (buildDateEl) {
+        // Format the build date nicely
+        const date = new Date(BUILD_DATE);
+        const formatted = date.toLocaleDateString('nl-NL', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        buildDateEl.textContent = formatted;
+    }
+}
+
+// Setup check for updates button
+function setupCheckForUpdates() {
+    const checkButton = document.getElementById('check-update');
+    const statusEl = document.getElementById('update-status');
+
+    if (!checkButton) {
+        return;
+    }
+
+    checkButton.addEventListener('click', async () => {
+        const btnText = checkButton.querySelector('.btn-text');
+        const spinner = checkButton.querySelector('.btn-spinner');
+
+        // Show loading state
+        checkButton.disabled = true;
+        spinner?.classList.remove('hidden');
+        statusEl.textContent = 'Controleren op updates...';
+        statusEl.className = 'update-status checking';
+
+        try {
+            // Check if service worker is registered
+            if ('serviceWorker' in navigator) {
+                const registration = await navigator.serviceWorker.getRegistration();
+
+                if (registration) {
+                    // Force check for updates
+                    await registration.update();
+
+                    // Wait a moment for the update check
+                    await new Promise(resolve => window.setTimeout(resolve, 1500));
+
+                    if (registration.waiting || waitingServiceWorker) {
+                        // New version available
+                        statusEl.textContent =
+                            '🆕 Nieuwe versie beschikbaar! Gebruik de banner bovenaan om te updaten.';
+                        statusEl.className = 'update-status info';
+                        showUpdateBanner();
+                    } else if (registration.installing) {
+                        // Update in progress
+                        statusEl.textContent = '⏳ Update wordt geïnstalleerd...';
+                        statusEl.className = 'update-status checking';
+                    } else {
+                        // Already up to date
+                        statusEl.textContent = '✓ Je hebt de nieuwste versie!';
+                        statusEl.className = 'update-status success';
+                    }
+                } else {
+                    statusEl.textContent = 'Service worker niet beschikbaar';
+                    statusEl.className = 'update-status error';
+                }
+            } else {
+                statusEl.textContent = 'Updates niet ondersteund in deze browser';
+                statusEl.className = 'update-status error';
+            }
+        } catch (error) {
+            console.error('Update check failed:', error);
+            statusEl.textContent = 'Kon niet controleren op updates';
+            statusEl.className = 'update-status error';
+        } finally {
+            // Reset button state
+            checkButton.disabled = false;
+            spinner?.classList.add('hidden');
+        }
+    });
+}
+
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
     setupInstallPrompt();
     setupUpdateBanner();
     setupPullToRefresh();
+    displayVersionInfo();
+    setupCheckForUpdates();
     registerServiceWorker();
 });

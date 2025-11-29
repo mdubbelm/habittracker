@@ -1,6 +1,6 @@
 {
   "name": "health-tracker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A modern, privacy-first Progressive Web App for tracking daily health metrics and habits",
   "type": "module",
   "scripts": {

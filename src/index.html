@@ -756,6 +756,33 @@
                         Bekijk Beveiligings- en Privacyverklaring
                     </a>
                 </div>
+
+                <!-- About / Version -->
+                <div class="settings-card settings-card-muted">
+                    <h3>Over Health Tracker</h3>
+                    <div class="version-info">
+                        <div class="version-row">
+                            <span class="version-label">Versie</span>
+                            <span class="version-value" id="app-version">0.1.0</span>
+                        </div>
+                        <div class="version-row">
+                            <span class="version-label">Build</span>
+                            <span class="version-value" id="app-build-date">--</span>
+                        </div>
+                    </div>
+                    <div class="settings-buttons" style="margin-top: var(--spacing-md)">
+                        <button id="check-update" class="btn-secondary">
+                            <span class="btn-text">Controleer op updates</span>
+                            <span class="btn-spinner hidden"></span>
+                        </button>
+                    </div>
+                    <p
+                        class="update-status"
+                        id="update-status"
+                        role="status"
+                        aria-live="polite"
+                    ></p>
+                </div>
             </section>
         </div>
 

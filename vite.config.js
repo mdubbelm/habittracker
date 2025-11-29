@@ -1,8 +1,15 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import { VitePWA } from 'vite-plugin-pwa';
+import pkg from './package.json';
 
 export default defineConfig({
+    // Define global constants (replaced at build time)
+    define: {
+        __APP_VERSION__: JSON.stringify(pkg.version),
+        __BUILD_DATE__: JSON.stringify(new Date().toISOString())
+    },
+
     plugins: [
         VitePWA({
             registerType: 'autoUpdate',

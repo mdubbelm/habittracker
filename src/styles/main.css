@@ -1061,6 +1061,75 @@ button:focus-visible {
     color: var(--text-muted);
 }
 
+/* Version Info */
+.settings-card-muted {
+    background: var(--bg-secondary);
+    border: none;
+}
+
+.version-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.version-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.version-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.version-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: ui-monospace, 'SF Mono', Monaco, monospace;
+}
+
+.update-status {
+    font-size: 0.8125rem;
+    margin-top: var(--spacing-sm);
+    min-height: 1.2em;
+}
+
+.update-status.checking {
+    color: var(--text-secondary);
+}
+
+.update-status.success {
+    color: var(--color-success);
+}
+
+.update-status.info {
+    color: var(--color-primary);
+}
+
+.update-status.error {
+    color: var(--color-error);
+}
+
+/* Button spinner */
+.btn-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: var(--spacing-xs);
+    vertical-align: middle;
+}
+
+.btn-spinner.hidden {
+    display: none;
+}
+
 /* ============================================
    STATISTICS DASHBOARD
    ============================================ */
