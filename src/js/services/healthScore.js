@@ -16,7 +16,8 @@ export const WEIGHTS = {
     pain: 15, // Pain management
     hydration: 20, // Water intake (increased)
     activity: 10, // Walking/movement
-    mood: 10, // Daily mood (new)
+    reading: 5, // Reading/learning
+    mood: 10, // Daily mood
     consumption: 20 // Sugar/alcohol/caffeine (negative impact)
 };
 
@@ -72,6 +73,13 @@ export function calculateHealthScore(data) {
         const walkPercent = data.walked ? 100 : 0;
         totalScore += walkPercent * (WEIGHTS.activity / 100);
         totalWeight += WEIGHTS.activity;
+    }
+
+    // Reading (boolean → 100% or 0%)
+    if (data.reading !== undefined) {
+        const readPercent = data.reading ? 100 : 0;
+        totalScore += readPercent * (WEIGHTS.reading / 100);
+        totalWeight += WEIGHTS.reading;
     }
 
     // Mood (1-5 scale → 0-100%)
@@ -180,9 +188,9 @@ export function getScoreColor(score) {
         return '#EAB308';
     } // Yellow
     if (score < 85) {
-        return '#84CC16';
-    } // Lime
-    return '#10B981'; // Green
+        return '#8aa67c';
+    } // Sage light
+    return '#6b8e5e'; // Natural green (--color-success)
 }
 
 /**
@@ -232,6 +240,15 @@ export function getScoreBreakdown(data) {
             score: data.walked ? 100 : 0,
             weight: WEIGHTS.activity,
             label: 'Activity'
+        };
+    }
+
+    // Reading
+    if (data.reading !== undefined) {
+        breakdown.reading = {
+            score: data.reading ? 100 : 0,
+            weight: WEIGHTS.reading,
+            label: 'Reading'
         };
     }
 

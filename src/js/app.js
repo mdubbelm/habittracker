@@ -193,6 +193,10 @@ function loadTodayData() {
         document.getElementById('walked').checked = data.walked;
     }
 
+    if (data.reading !== undefined) {
+        document.getElementById('reading').checked = data.reading;
+    }
+
     // Sugar - migrate from boolean if needed
     const sugarValue = data.sugarPortions ?? (data.sugarConsumed ? 1 : 0);
     document.getElementById('sugar-portions').value = sugarValue;
@@ -204,6 +208,17 @@ function loadTodayData() {
     // Alcohol - migrate from boolean if needed
     const alcoholValue = data.alcoholCount ?? (data.alcoholConsumed ? 1 : 0);
     document.getElementById('alcohol-count').value = alcoholValue;
+
+    // Energy level
+    if (data.energyLevel !== undefined && data.energyLevel !== null) {
+        document.getElementById('energy-value').value = data.energyLevel;
+        document.querySelectorAll('.energy-option').forEach(btn => {
+            btn.setAttribute(
+                'aria-checked',
+                btn.dataset.energy === String(data.energyLevel) ? 'true' : 'false'
+            );
+        });
+    }
 
     // Mood
     if (data.mood !== undefined && data.mood !== null) {
@@ -375,6 +390,18 @@ function setupEventListeners() {
         });
     });
 
+    // Energy picker
+    document.querySelectorAll('.energy-option').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document
+                .querySelectorAll('.energy-option')
+                .forEach(b => b.setAttribute('aria-checked', 'false'));
+            this.setAttribute('aria-checked', 'true');
+            document.getElementById('energy-value').value = this.dataset.energy;
+            autoSave();
+        });
+    });
+
     // Mood picker
     document.querySelectorAll('.mood-option').forEach(btn => {
         btn.addEventListener('click', function () {
@@ -389,6 +416,9 @@ function setupEventListeners() {
 
     // Walked checkbox
     document.getElementById('walked')?.addEventListener('change', autoSave);
+
+    // Reading checkbox
+    document.getElementById('reading')?.addEventListener('change', autoSave);
 
     // Weight - auto-save on change (from wheel picker)
     document.getElementById('weight')?.addEventListener('change', autoSave);
@@ -467,9 +497,11 @@ function saveData(silent = false) {
     // Evening fields - only update if section is visible
     if (eveningVisible) {
         data.walked = document.getElementById('walked')?.checked || false;
+        data.reading = document.getElementById('reading')?.checked || false;
         data.sugarPortions = parseInt(document.getElementById('sugar-portions')?.value) || 0;
         data.caffeineCount = parseInt(document.getElementById('caffeine-count')?.value) || 0;
         data.alcoholCount = parseInt(document.getElementById('alcohol-count')?.value) || 0;
+        data.energyLevel = parseInt(document.getElementById('energy-value')?.value) || null;
         data.mood = parseInt(document.getElementById('mood-value')?.value) || null;
     }
 
@@ -510,7 +542,7 @@ function showSaveFeedback() {
     const originalText = btn.textContent;
 
     btn.textContent = '✅ Opgeslagen!';
-    btn.style.backgroundColor = '#10B981';
+    btn.style.backgroundColor = '#6b8e5e'; // --color-success (earthy green)
 
     setTimeout(() => {
         btn.textContent = originalText;

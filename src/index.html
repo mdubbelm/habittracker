@@ -336,6 +336,12 @@
                         <label for="walked">Ik heb vandaag gelopen</label>
                     </div>
 
+                    <!-- Reading -->
+                    <div class="form-group checkbox">
+                        <input type="checkbox" id="reading" />
+                        <label for="reading">Ik heb vandaag gelezen</label>
+                    </div>
+
                     <!-- Sugar Portions -->
                     <div class="form-group">
                         <label for="sugar-portions">Suiker (porties)</label>
@@ -430,6 +436,64 @@
                                 +
                             </button>
                         </div>
+                    </div>
+
+                    <!-- Energy Level (5 levels) -->
+                    <div class="form-group">
+                        <label id="energy-label">Hoeveel energie had je vandaag?</label>
+                        <div class="energy-picker" role="radiogroup" aria-labelledby="energy-label">
+                            <button
+                                type="button"
+                                class="energy-option"
+                                data-energy="1"
+                                role="radio"
+                                aria-checked="false"
+                                aria-label="Uitgeput"
+                            >
+                                😫
+                            </button>
+                            <button
+                                type="button"
+                                class="energy-option"
+                                data-energy="2"
+                                role="radio"
+                                aria-checked="false"
+                                aria-label="Moe"
+                            >
+                                😴
+                            </button>
+                            <button
+                                type="button"
+                                class="energy-option"
+                                data-energy="3"
+                                role="radio"
+                                aria-checked="false"
+                                aria-label="Normaal"
+                            >
+                                😐
+                            </button>
+                            <button
+                                type="button"
+                                class="energy-option"
+                                data-energy="4"
+                                role="radio"
+                                aria-checked="false"
+                                aria-label="Energiek"
+                            >
+                                😊
+                            </button>
+                            <button
+                                type="button"
+                                class="energy-option"
+                                data-energy="5"
+                                role="radio"
+                                aria-checked="false"
+                                aria-label="Vol energie"
+                            >
+                                💪
+                            </button>
+                        </div>
+                        <input type="hidden" id="energy-value" value="" />
                     </div>
 
                     <!-- Mood (5 Smileys) -->
@@ -789,19 +853,72 @@
         <!-- Bottom Navigation -->
         <nav class="bottom-nav">
             <button class="nav-item active" data-view="tracker-view" aria-label="Tracken">
-                <span class="nav-icon" aria-hidden="true">📝</span>
+                <svg
+                    class="nav-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                >
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
                 <span class="nav-label">Tracken</span>
             </button>
             <button class="nav-item" data-view="stats-view" aria-label="Statistieken">
-                <span class="nav-icon" aria-hidden="true">📊</span>
+                <svg
+                    class="nav-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                >
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
                 <span class="nav-label">Stats</span>
             </button>
             <button class="nav-item" data-view="history-view" aria-label="Geschiedenis">
-                <span class="nav-icon" aria-hidden="true">📅</span>
+                <svg
+                    class="nav-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                >
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
                 <span class="nav-label">Historie</span>
             </button>
             <button class="nav-item" data-view="settings-view" aria-label="Instellingen">
-                <span class="nav-icon" aria-hidden="true">⚙️</span>
+                <svg
+                    class="nav-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                >
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                    ></path>
+                </svg>
                 <span class="nav-label">Opties</span>
             </button>
         </nav>
