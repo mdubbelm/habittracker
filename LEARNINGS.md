@@ -6,22 +6,23 @@ Dit bestand documenteert learnings, opgeloste problemen en belangrijke beslissin
 
 ## Learnings
 
-### [2025-11-30] Dev server conflict met Obsidian
+### [2025-11-30] Dev server conflict met Obsidian op poort 3000
 
-**Context**: Bij testen van de app via `npm run dev` op het lokale netwerk.
+**Context**: Bij testen van de app via `npm run dev` op localhost:3000 in Safari op macOS.
 
-**Probleem**: Op iPhone verschijnt een Obsidian-gerelateerde melding in plaats van de app. Dit gebeurt wanneer:
-1. Obsidian app op de telefoon de URL probeert te intercepten
-2. Er een URL scheme conflict is tussen localhost/netwerk URL en Obsidian
+**Probleem**: Safari op de laptop toont een Obsidian-gerelateerde melding bij localhost:3000. Waarschijnlijk:
+1. Obsidian (of een plugin) registreert een URL handler voor localhost:3000
+2. Safari detecteert dit en vraagt of je wilt openen in Obsidian
 
 **Workaround**:
-- Test via production build: `npm run build && npm run preview`
-- Of test direct via GitHub Pages deployment
-- Of sluit Obsidian app op de telefoon tijdens dev testen
+- Gebruik Chrome of Firefox voor dev testing
+- Test via production build: `npm run build && npm run preview` (gebruikt andere poort)
+- Test direct via GitHub Pages deployment
+- Gebruik een andere poort: wijzig `server.port` in vite.config.js
 
-**Permanente oplossing**: Onderzoek of Vite een andere poort/URL kan gebruiken die niet conflicteert. Of gebruik `--host 0.0.0.0` met een specifieke poort.
+**Permanente oplossing**: Wijzig de dev poort in vite.config.js naar bijv. 3001 of 5173 (Vite default).
 
-**Tags**: #dev-environment #ios #obsidian #vite
+**Tags**: #dev-environment #safari #obsidian #vite #macos
 
 ---
 

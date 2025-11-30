@@ -106,7 +106,7 @@ export default defineConfig({
 
     // Development server configuration
     server: {
-        port: 3000,
+        port: 5173, // Changed from 3000 to avoid Obsidian URL handler conflict in Safari
         open: true, // Auto-open browser
         host: true // Allow access from network (useful for mobile testing)
     },
