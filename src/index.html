@@ -243,7 +243,10 @@
                     <h3><span aria-hidden="true">🌅</span> Goedemorgen</h3>
 
                     <div class="form-group">
-                        <label for="sleep-score">Hoe heb je geslapen?</label>
+                        <label for="sleep-score" class="label-with-value">
+                            <span>Hoe heb je geslapen?</span>
+                            <output id="sleep-output">7</output><span class="value-max">/10</span>
+                        </label>
                         <input
                             type="range"
                             id="sleep-score"
@@ -256,14 +259,16 @@
                             aria-valuemax="10"
                             aria-valuenow="7"
                         />
-                        <output id="sleep-output">7</output>
                         <span id="sleep-hint" class="sr-only"
                             >Kies een waarde van 1 (slecht) tot 10 (uitstekend)</span
                         >
                     </div>
 
                     <div class="form-group">
-                        <label for="back-pain">Rugpijn niveau</label>
+                        <label for="back-pain" class="label-with-value">
+                            <span>Rugpijn niveau</span>
+                            <output id="pain-output">0</output><span class="value-max">/10</span>
+                        </label>
                         <input
                             type="range"
                             id="back-pain"
@@ -276,7 +281,6 @@
                             aria-valuemax="10"
                             aria-valuenow="0"
                         />
-                        <output id="pain-output">0</output>
                         <span id="pain-hint" class="sr-only"
                             >Kies een waarde van 0 (geen pijn) tot 10 (ernstige pijn)</span
                         >
