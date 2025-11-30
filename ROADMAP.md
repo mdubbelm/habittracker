@@ -82,14 +82,16 @@ Phase 3: Scale & Optimize    ░░░░░░░░░░░░░░░░░
 
 ## 🔄 Phase 2: Enhancement (IN PROGRESS)
 
-### Bugs & Fixes
-- [ ] #33 - PWA update button werkt niet op iOS
-- [ ] Test coverage verhogen (nu ~51 tests)
+### Recent Completed (Nov 30)
+- [x] #32 - Bewerk data van eerdere dagen (backfill)
+- [x] #33 - PWA update button iOS (timeout fallback)
+- [x] #36 - Pull-to-refresh tab state fix
+- [x] #37 - README update
 
-### User Requests
-- [ ] #32 - Bewerk data van eerdere dagen (backfill)
+### In Progress
 - [ ] #23 - Custom Habits Management System
 - [ ] #24 - Health Score Visualisatie verbeteringen
+- [ ] Test coverage verhogen (nu ~51 tests)
 
 ### Nice-to-haves
 - [ ] #27 - Obsidian integratie/export
@@ -118,10 +120,10 @@ Phase 3: Scale & Optimize    ░░░░░░░░░░░░░░░░░
 
 ## 🎯 Huidige Prioriteiten
 
-1. **Bugs fixen** - #33 iOS PWA update
-2. **Stabiliteit** - Tests, accessibility audit
-3. **User value** - #32 Backfill feature
-4. **Personalisatie** - #23 Custom habits
+1. **Personalisatie** - #23 Custom habits
+2. **Polish** - #24 Health Score visualisaties
+3. **Stabiliteit** - Tests, accessibility audit
+4. **Nice-to-have** - Dark mode, streaks
 
 ---
 
@@ -143,13 +145,11 @@ Phase 3: Scale & Optimize    ░░░░░░░░░░░░░░░░░
 
 | # | Titel | Type | Prioriteit |
 |---|-------|------|------------|
-| 33 | PWA update button iOS | Bug | Hoog |
-| 32 | Backfill eerdere dagen | Feature | Hoog |
-| 23 | Custom Habits System | Feature | Medium |
-| 24 | Health Score Visualisatie | Polish | Laag |
+| 23 | Custom Habits System | Feature | Hoog |
+| 24 | Health Score Visualisatie | Polish | Medium |
 | 27 | Obsidian integratie | Niche | Laag |
 
 ---
 
-**Laatst bijgewerkt**: 29 november 2025
-**Versie**: 2.0
+**Laatst bijgewerkt**: 30 november 2025
+**Versie**: 0.3.0

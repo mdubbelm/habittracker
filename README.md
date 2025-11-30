@@ -1,305 +1,81 @@
 # 🏃‍♀️ Health Tracker
 
-> A modern, privacy-first Progressive Web App for tracking daily health metrics and habits, optimized for mobile devices.
+> Privacy-first PWA voor het bijhouden van dagelijkse gezondheid en gewoonten.
 
 [![CI](https://github.com/mdubbelm/habittracker/actions/workflows/ci.yml/badge.svg)](https://github.com/mdubbelm/habittracker/actions/workflows/ci.yml)
-[![Phase](https://img.shields.io/badge/Phase-0%20Foundation-yellow)]()
-[![Platform](https://img.shields.io/badge/Platform-Mobile%20First-blue)]()
-[![Device](https://img.shields.io/badge/Optimized%20for-iPhone%2013-black)]()
+[![Version](https://img.shields.io/badge/version-0.3.0-blue)]()
+[![Live](https://img.shields.io/badge/live-daily.modub.nl-green)](https://daily.modub.nl)
+
+**[▶ Open de app](https://daily.modub.nl)**
 
 ---
 
-## 📱 Overview
+## Features
 
-Health Tracker is een intuïtieve mobile-first app die je helpt gezonde gewoonten te ontwikkelen door middel van visuele feedback en betekenisvolle insights. De app berekent een dagelijkse gezondheidscore (0-100%) gebaseerd op slaap, activiteit, consumptie en custom habits.
-
-**Key Features:**
-- 🎯 **Real-time Health Score** - Circulaire visualisatie met menselijke figuur
-- 📊 **Comprehensive Tracking** - Slaap, gewicht, water, activiteit, consumptie
-- 📈 **Advanced Statistics** - Trends, grafieken en insights over tijd
-- 🎨 **Modern Design** - Fastic-geïnspireerd met gradient accenten
-- 🔒 **Privacy First** - Alle data blijft lokaal (localStorage)
-- 📴 **Offline Ready** - PWA met offline functionaliteit (Phase 1)
+- 🎯 **Health Score** - Dagelijkse score (0-100%) gebaseerd op je gewoonten
+- 📊 **Tracking** - Slaap, gewicht, water, beweging, consumptie
+- 📈 **Statistieken** - Trends en grafieken over tijd
+- 📅 **Backfill** - Bewerk data van eerdere dagen
+- 🔒 **Privacy** - Alle data blijft lokaal op je apparaat
+- 📴 **Offline** - Werkt zonder internet (PWA)
 
 ---
 
-## 🚀 Quick Start
-
-### Huidige Setup (Phase 0)
+## Quick Start
 
 ```bash
-# Clone de repository
+# Clone & install
 git clone https://github.com/mdubbelm/habittracker.git
 cd habittracker
-
-# Open in browser (gebruik een lokale server)
-python3 -m http.server 3000
-
-# Navigeer naar:
-# - App: http://localhost:3000/habittracker.html
-# - iPhone 13 Preview: http://localhost:3000/dev-preview.html
-```
-
-### Toekomstige Setup (Phase 1+)
-
-```bash
-# Installeer dependencies
 npm install
 
-# Start development server
-npm run dev
+# Development
+npm run dev      # Start op http://localhost:5173
 
-# Run tests
-npm test
-
-# Build voor production
+# Production build
 npm run build
+npm run preview
 ```
 
 ---
 
-## 🎯 Project Status
+## Tech Stack
 
-**Current Phase:** Phase 1 - MVP (Production Ready)
-
-**Completed:**
-- [x] Modulaire codebase (src/ structuur met ES modules)
-- [x] PWA met offline support en update notifications
-- [x] GitHub Pages deployment (daily.modub.nl)
-- [x] CI/CD pipeline (GitHub Actions)
-- [x] Time-based section visibility
-- [x] Health score berekening
-- [x] Statistics dashboard met grafieken
-- [x] Data export (CSV/JSON)
-- [x] Backfill feature (eerdere dagen bewerken)
-
-**In Progress:**
-- [ ] Dark mode
-- [ ] Custom habits
-- [ ] Improved visualizations
-
-**Live:** [daily.modub.nl](https://daily.modub.nl)
-
-Zie [ROADMAP.md](./ROADMAP.md) voor de volledige planning.
-
----
-
-## 📚 Documentation
-
-| Document | Beschrijving |
-|----------|--------------|
-| [ROADMAP.md](./ROADMAP.md) | Product roadmap met alle fasen en milestones |
-| [TEAM.md](./TEAM.md) | Team structuur, rollen en verantwoordelijkheden |
-| [CLAUDE.md](./CLAUDE.md) | Development guide voor Claude Code assistance |
-| [health-tracker-development.md](./health-tracker-development.md) | Uitgebreide feature documentatie |
-| [.github/MOBILE_TESTING.md](./.github/MOBILE_TESTING.md) | iPhone 13 testing guide |
-| [.github/PHASE0_ISSUES.md](./.github/PHASE0_ISSUES.md) | Phase 0 backlog |
-
----
-
-## 🏗️ Architecture
-
-### Current Structure
-```
-src/
-├── js/
-│   ├── components/     # UI componenten (statisticsUI, wheelPicker)
-│   ├── services/       # Business logica (storage, healthScore, toast)
-│   └── utils/          # Utilities (sanitize)
-├── styles/             # CSS modules
-├── main.js             # App entry point, PWA setup
-└── index.html          # Single page app
-
-tests/
-├── unit/           # Unit tests
-└── e2e/            # E2E tests (Playwright)
-```
-
-Zie [CLAUDE.md](./CLAUDE.md#high-level-architecture) voor details.
-
----
-
-## 🎨 Design System
-
-**Color Palette:**
-- Primary: Purple gradient (#6366F1 → #8B5CF6)
-- Success: Green gradient (#10B981 → #059669)
-- Background: Light purple/blue (#F8F9FE)
-
-**Typography:**
-- Font: System fonts
-- Scale: 12px - 48px
-- Weights: 500, 600, 700-800
-
-**Inspiration:** Fastic app design met veel whitespace en duidelijke cijfers.
-
----
-
-## 📱 Mobile Testing
-
-### iPhone 13 Preview
-
-Open `dev-preview.html` voor een real-time preview in een iPhone 13 frame:
-
-```bash
-open dev-preview.html
-```
-
-**Features:**
-- ✅ Accurate viewport (390×844px)
-- ✅ Device notch simulation
-- ✅ Rotation toggle
-- ✅ Live reload controls
-- ✅ DevTools integration
-
-### Automated Testing
-
-```bash
-# Run Playwright tests (future)
-npm run test:e2e
-
-# Run iPhone 13 tests specifically
-npm run test:iphone
-```
-
-Zie [.github/MOBILE_TESTING.md](./.github/MOBILE_TESTING.md) voor complete guide.
-
----
-
-## 🧪 Testing
-
-### Test Coverage Goals
-- Unit tests: > 80%
-- E2E tests: Critical user flows
-- Visual regression: Key components
-
-### Test Devices
-- **Primary:** iPhone 13 (390×844px)
-- **Secondary:** Desktop Chrome, iPad Pro
-
-### Running Tests
-
-```bash
-# Unit tests
-npm test
-
-# E2E tests
-npm run test:e2e
-
-# Visual regression
-npm run test:visual
-
-# All tests
-npm run test:all
-```
-
----
-
-## 🤝 Contributing
-
-We verwelkomen contributions! Zie de volgende documenten:
-
-1. **Issue aanmaken:** Gebruik een van de [issue templates](./.github/ISSUE_TEMPLATE/)
-2. **Development setup:** Zie [Quick Start](#-quick-start)
-3. **Coding standards:** Volg de code style in het project
-4. **Testing:** Schrijf tests voor nieuwe features
-5. **Pull Request:** Volg de PR template
-
-**Good First Issues:** Check issues gelabeld met `good first issue`.
-
----
-
-## 📦 Tech Stack
-
-| Category | Technology |
-|----------|-----------|
-| **Frontend** | Vanilla JavaScript, HTML5, CSS3 |
-| **Storage** | localStorage API |
-| **Graphics** | SVG |
-| **Testing** | Playwright (E2E), Vitest (Unit) |
+| | |
+|--|--|
+| **Frontend** | Vanilla JS, HTML5, CSS3 |
 | **Build** | Vite |
+| **Storage** | localStorage |
+| **Deploy** | GitHub Pages |
 | **CI/CD** | GitHub Actions |
-| **Deployment** | GitHub Pages (daily.modub.nl) |
 
 ---
 
-## 🗺️ Roadmap Highlights
+## Documentation
 
-### Phase 0: Foundation ✅
-- ✅ Modulaire codebase
-- ✅ CI/CD pipeline
-- ✅ Testing infrastructure
-
-### Phase 1: MVP ✅ Current
-- ✅ Production-ready PWA
-- ✅ Offline functionaliteit
-- ✅ Backfill (eerdere dagen bewerken)
-- ✅ Statistics dashboard
-
-### Phase 2: Enhancement 🔄
-- 🔄 Dark mode
-- 🔄 Custom habits
-- 🔄 Advanced visualizations
-
-### Phase 3: Scale
-- Backend & cloud sync
-- Multi-device support
-
-### Phase 4: Advanced
-- AI insights
-- Wearables integration
-
-Zie [ROADMAP.md](./ROADMAP.md) voor complete details.
+| Document | |
+|----------|--|
+| [ROADMAP.md](./ROADMAP.md) | Roadmap en huidige status |
+| [CLAUDE.md](./CLAUDE.md) | Development guide |
+| [LEARNINGS.md](./LEARNINGS.md) | Opgeloste problemen en patterns |
 
 ---
 
-## 👥 Team
+## Development
 
-| Role | Expertise |
-|------|-----------|
-| Product Owner | Product visie, UX strategy |
-| Lead Frontend | Architecture, code reviews |
-| UI Specialist | CSS, animations, responsive design |
-| Data Specialist | localStorage, statistics, export |
-| QA Lead | Testing strategy, quality metrics |
-| Mobile QA | iOS testing, device compatibility |
-| DevOps | CI/CD, deployment, monitoring |
-
-Zie [TEAM.md](./TEAM.md) voor volledige team structuur.
+```bash
+npm run dev          # Dev server
+npm test             # Unit tests
+npm run lint         # Linting
+npm run lint:fix     # Auto-fix
+```
 
 ---
 
-## 🔐 Privacy & Security
+## License
 
-- **Lokale Data:** Alle data blijft op jouw apparaat
-- **Geen Tracking:** Geen analytics of tracking scripts
-- **Geen Server:** Volledig client-side applicatie (Phase 0-1)
-- **Gebruikerscontrole:** Volledige controle over eigen data
-- **Data Export:** CSV export voor portability
+Voor persoonlijk gebruik.
 
 ---
 
-## 📄 License
-
-**Voor persoonlijk gebruik** - Licentie details komen in latere fase.
-
----
-
-## 📧 Contact
-
-- **GitHub:** [@mdubbelm](https://github.com/mdubbelm)
-- **Repository:** [habittracker](https://github.com/mdubbelm/habittracker)
-- **Issues:** [GitHub Issues](https://github.com/mdubbelm/habittracker/issues)
-
----
-
-## 🙏 Acknowledgments
-
-- Design geïnspireerd door [Fastic](https://www.fastic.com/)
-- Ontwikkeld met assistance van [Claude Code](https://claude.ai/code)
-
----
-
-**Built with ❤️ for a healthier lifestyle**
-
-*Last updated: November 2025*
+**[daily.modub.nl](https://daily.modub.nl)** · Ontwikkeld met [Claude Code](https://claude.ai/code)
