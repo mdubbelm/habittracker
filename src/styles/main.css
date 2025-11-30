@@ -227,8 +227,8 @@ p {
 }
 
 .date-nav-btn:hover {
-    background: var(--primary-light);
-    color: var(--primary);
+    background: var(--color-primary-light);
+    color: var(--color-primary);
 }
 
 .date-nav-btn:active {
@@ -248,26 +248,23 @@ p {
 
 .date-picker-input:focus {
     outline: none;
-    border-color: var(--primary);
+    border-color: var(--color-primary);
 }
 
 .today-btn {
     font-size: 0.75rem;
     padding: 4px 10px;
     border: none;
-    background: var(--primary, #6366f1);
+    background: var(--color-primary);
     color: #ffffff;
     border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.15s ease;
-    /* Ensure visibility on light backgrounds */
-    text-shadow: none;
-    -webkit-text-fill-color: #ffffff;
 }
 
 .today-btn:hover {
-    background: var(--primary-dark, #4f46e5);
+    background: var(--color-primary-dark);
 }
 
 .today-btn.hidden {

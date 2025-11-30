@@ -6,6 +6,30 @@ Dit bestand documenteert learnings, opgeloste problemen en belangrijke beslissin
 
 ## Learnings
 
+### [2025-11-30] Altijd project CSS variables gebruiken
+
+**Context**: Nieuwe "Vandaag" knop toegevoegd aan date selector.
+
+**Probleem**: Paarse kleur (#6366f1) gebruikt die niet in het earthy palette past. Had `var(--primary)` gebruikt die niet bestond.
+
+**Oplossing**:
+```css
+/* ❌ FOUT */
+background: var(--primary, #6366f1); /* Fallback naar paars */
+
+/* ✅ GOED */
+background: var(--color-primary); /* Project variable: terracotta */
+```
+
+**Preventie**:
+1. Lees altijd eerst `:root` in main.css voor beschikbare variables
+2. Check DESIGN_PRINCIPLES.md bij twijfel
+3. Vraag UI designer (Kehrana) voor nieuwe kleuren
+
+**Tags**: #css #design #variables
+
+---
+
 ### [2025-11-30] Dev server conflict met Obsidian op poort 3000
 
 **Context**: Bij testen van de app via `npm run dev` op localhost:3000 in Safari op macOS.
