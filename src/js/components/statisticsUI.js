@@ -59,7 +59,7 @@ export function renderStatistics(days) {
 
 /**
  * Get trend arrow HTML
- * @param {Object} trend - Trend object with direction and diff
+ * @param {Object} trend - Trend object with direction, diff, and positive
  * @returns {string} HTML for trend indicator
  */
 function getTrendHTML(trend) {
@@ -67,17 +67,17 @@ function getTrendHTML(trend) {
         return '';
     }
 
-    const { direction, diff } = trend;
+    const { direction, diff, positive } = trend;
     if (direction === 'stable') {
         return '<span class="trend-indicator trend-stable" aria-label="Stabiel">→</span>';
     }
-    if (direction === 'up') {
-        return `<span class="trend-indicator trend-up" aria-label="Omhoog ${Math.abs(diff)}">↑</span>`;
-    }
-    if (direction === 'down') {
-        return `<span class="trend-indicator trend-down" aria-label="Omlaag ${Math.abs(diff)}">↓</span>`;
-    }
-    return '';
+
+    // Arrow follows number direction, color indicates good (green) or bad (red)
+    const arrow = direction === 'up' ? '↑' : '↓';
+    const colorClass = positive ? 'trend-positive' : 'trend-negative';
+    const label = direction === 'up' ? 'Omhoog' : 'Omlaag';
+
+    return `<span class="trend-indicator ${colorClass}" aria-label="${label} ${Math.abs(diff)}">${arrow}</span>`;
 }
 
 /**

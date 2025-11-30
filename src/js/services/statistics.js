@@ -530,13 +530,16 @@ function calculateTrends(days) {
         const diff = current - previous;
         const threshold = 0.5; // Minimum difference to show trend
         if (Math.abs(diff) < threshold) {
-            return { direction: 'stable', diff: 0 };
+            return { direction: 'stable', diff: 0, positive: null };
         }
-        if (inverse) {
-            // For metrics where lower is better (like pain)
-            return { direction: diff < 0 ? 'up' : 'down', diff: Math.round(diff * 10) / 10 };
-        }
-        return { direction: diff > 0 ? 'up' : 'down', diff: Math.round(diff * 10) / 10 };
+        // Arrow follows the number direction, color indicates good/bad
+        const arrowDirection = diff > 0 ? 'up' : 'down';
+        const isPositive = inverse ? diff < 0 : diff > 0; // For pain: down is good
+        return {
+            direction: arrowDirection,
+            diff: Math.round(diff * 10) / 10,
+            positive: isPositive
+        };
     };
 
     return {

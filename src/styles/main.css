@@ -1606,11 +1606,11 @@ button:focus-visible {
     margin-left: var(--spacing-xs);
 }
 
-.trend-indicator.trend-up {
+.trend-indicator.trend-positive {
     color: var(--color-success);
 }
 
-.trend-indicator.trend-down {
+.trend-indicator.trend-negative {
     color: var(--color-error);
 }
 
