@@ -603,6 +603,14 @@
                         </div>
                         <input type="hidden" id="mood-value" value="" />
                     </div>
+
+                    <!-- Custom Habits (dynamically rendered) -->
+                    <div id="custom-habits-tracker" class="custom-habits-tracker hidden">
+                        <div class="form-group">
+                            <label>Mijn gewoonten</label>
+                            <div id="custom-habits-checkboxes" class="habits-checkboxes"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Action Buttons -->
@@ -806,6 +814,13 @@
             <!-- Settings View -->
             <section id="settings-view" class="view">
                 <h2>Instellingen</h2>
+
+                <!-- Custom Habits Section -->
+                <div class="settings-card">
+                    <h3>Custom Habits</h3>
+                    <p class="settings-desc">Voeg je eigen gewoonten toe om bij te houden.</p>
+                    <div id="custom-habits-settings"></div>
+                </div>
 
                 <!-- Tracking Fields Section -->
                 <div class="settings-card">

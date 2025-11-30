@@ -37,6 +37,12 @@ import {
 } from './services/timeService.js';
 
 import { initWeightPicker } from './components/wheelPicker.js';
+import { initCustomHabitsUI } from './components/customHabitsUI.js';
+import {
+    renderTrackerHabits,
+    getHabitValues,
+    refreshTrackerHabits
+} from './components/trackerHabits.js';
 import { showSuccess, showError, showWarning, showInfo } from './services/toast.js';
 import { getSettings, setFieldEnabled, applyFieldVisibility } from './services/settings.js';
 
@@ -142,7 +148,19 @@ function initApp() {
     // Apply field visibility based on settings
     applyFieldVisibility();
 
+    // Initialize custom habits
+    initCustomHabitsUI(handleHabitsChange);
+    renderTrackerHabits(getDataForDate(selectedDate), autoSave);
+
     console.log('✅ App initialized!');
+}
+
+/**
+ * Handle changes to custom habits list (called when habits are added/removed in settings)
+ */
+function handleHabitsChange() {
+    // Refresh the tracker form to show updated habits
+    refreshTrackerHabits(getDataForDate(selectedDate), autoSave);
 }
 
 /**
@@ -269,6 +287,9 @@ function clearForm() {
     document.querySelectorAll('.mood-option').forEach(btn => {
         btn.setAttribute('aria-checked', 'false');
     });
+
+    // Custom habits
+    renderTrackerHabits(null, autoSave);
 }
 
 /**
@@ -453,6 +474,9 @@ function loadDataForDate(dateStr = selectedDate) {
             );
         });
     }
+
+    // Custom habits
+    renderTrackerHabits(data, autoSave);
 
     // Update section visibility based on loaded data
     updateSectionVisibility();
@@ -757,6 +781,12 @@ function saveData(silent = false) {
 
         const moodValue = document.getElementById('mood-value')?.value;
         data.mood = moodValue !== '' ? parseInt(moodValue) : null;
+
+        // Custom habits
+        const habitValues = getHabitValues();
+        if (Object.keys(habitValues).length > 0) {
+            data.customHabits = habitValues;
+        }
     }
 
     if (!silent) {

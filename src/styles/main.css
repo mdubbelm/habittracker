@@ -1126,6 +1126,186 @@ button:focus-visible {
 }
 
 /* ============================================
+   CUSTOM HABITS
+   ============================================ */
+
+/* Habits list in settings */
+.habits-list {
+    margin-bottom: var(--spacing-md);
+}
+
+.no-habits {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    text-align: center;
+    padding: var(--spacing-md);
+}
+
+.habit-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-sm);
+    transition: background 0.2s;
+}
+
+.habit-item.confirm-delete {
+    background: var(--color-error-bg);
+}
+
+.habit-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.habit-emoji {
+    font-size: 1.25rem;
+}
+
+.habit-name {
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+}
+
+.habit-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.btn-habit-edit,
+.btn-habit-delete {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s;
+}
+
+.btn-habit-edit:hover,
+.btn-habit-delete:hover {
+    background: var(--color-gray-100);
+}
+
+.btn-add-habit {
+    width: 100%;
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border: 2px dashed var(--color-gray-200);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-add-habit:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: var(--color-gray-50);
+}
+
+.habits-limit-reached {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    text-align: center;
+    padding: var(--spacing-sm);
+}
+
+/* Habit form */
+.habit-form-container {
+    margin-top: var(--spacing-md);
+}
+
+.habit-form {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+}
+
+.habit-form h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    color: var(--text-primary);
+}
+
+.habit-name-input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    background: var(--bg-card);
+}
+
+.habit-name-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.char-count {
+    display: block;
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-xs);
+}
+
+.habit-form-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.habit-form-actions button {
+    flex: 1;
+}
+
+/* Habits in tracker form */
+.custom-habits-tracker {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: var(--border-subtle);
+}
+
+.habits-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.habit-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.habit-checkbox-item input[type='checkbox'] {
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: var(--color-primary);
+}
+
+.habit-checkbox-item label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.habit-checkbox-item label .habit-emoji {
+    font-size: 1.125rem;
+}
+
+/* ============================================
    DARK MODE SUPPORT (Future)
    ============================================ */
 @media (prefers-color-scheme: dark) {

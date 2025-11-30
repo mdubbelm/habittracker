@@ -273,9 +273,14 @@ describe('WEIGHTS constant', () => {
         expect(typeof WEIGHTS).toBe('object');
     });
 
-    it('weights sum to 100', () => {
-        const sum = Object.values(WEIGHTS).reduce((a, b) => a + b, 0);
+    it('base weights sum to 100 (customHabits is bonus)', () => {
+        // Base weights (without customHabits bonus) should sum to 100
+        const baseWeights = { ...WEIGHTS };
+        delete baseWeights.customHabits;
+        const sum = Object.values(baseWeights).reduce((a, b) => a + b, 0);
         expect(sum).toBe(100);
+        // CustomHabits adds optional bonus points
+        expect(WEIGHTS.customHabits).toBe(10);
     });
 
     it('all weights are positive', () => {

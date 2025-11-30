@@ -10,6 +10,7 @@
 /**
  * Weight configuration for each metric
  * Total should add up to 100 for easy percentage calculation
+ * Custom habits get a share from the existing weights when present
  */
 export const WEIGHTS = {
     sleep: 25, // Sleep quality
@@ -18,8 +19,9 @@ export const WEIGHTS = {
     activity: 10, // Walking/movement
     reading: 5, // Reading/learning
     mood: 10, // Daily mood
-    consumption: 20 // Sugar/alcohol/caffeine (negative impact)
-}; // Total: 100
+    consumption: 20, // Sugar/alcohol/caffeine (negative impact)
+    customHabits: 10 // Custom habits bonus (on top of 100 base)
+}; // Base total: 100, with custom habits bonus
 
 /**
  * Calculate health score from tracker data
@@ -134,6 +136,18 @@ export function calculateHealthScore(data) {
         consumptionScore = Math.max(consumptionScore, 0); // Don't go below 0
         totalScore += consumptionScore * (WEIGHTS.consumption / 100);
         totalWeight += WEIGHTS.consumption;
+    }
+
+    // Custom Habits (bonus points for completing personal habits)
+    if (data.customHabits && typeof data.customHabits === 'object') {
+        const habitIds = Object.keys(data.customHabits);
+        if (habitIds.length > 0) {
+            const completed = habitIds.filter(id => data.customHabits[id] === true).length;
+            const total = habitIds.length;
+            const completionPercent = (completed / total) * 100;
+            totalScore += completionPercent * (WEIGHTS.customHabits / 100);
+            totalWeight += WEIGHTS.customHabits;
+        }
     }
 
     // Calculate final score (normalize by actual weights used)
