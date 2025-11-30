@@ -31,13 +31,16 @@ const TESTS = [
         name: 'Page loads correctly',
         test: async page => {
             await page.goto(`${CONFIG.baseURL}/src/index.html`);
-            await page.waitForSelector('#app', { state: 'visible' });
 
-            // Accept privacy if shown
+            // Wait for either app or privacy notice to be visible
+            await page.waitForSelector('#app, #privacy-notice', { state: 'visible' });
+
+            // Accept privacy if shown (privacy notice hides #app until accepted)
             const privacyVisible = await page.locator('#privacy-notice').isVisible();
             if (privacyVisible) {
                 await page.click('#accept-privacy');
-                await page.waitForTimeout(300);
+                // Wait for app to become visible after accepting
+                await page.waitForSelector('#app', { state: 'visible' });
             }
 
             return { passed: true };
