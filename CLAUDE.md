@@ -41,11 +41,26 @@ ls .time-tracking/
 - [ ] Update cumulative time
 
 #### 2. 📖 Blog Post (blog/)
-- [ ] Maak `blog/YYYY-MM-DD-[titel].md` (gebruik `blog/_template.md`)
+- [ ] Maak `blog/YYYY-MM-DD-[titel].md`
 - [ ] **Schrijf persoonlijk**, niet als changelog!
 - [ ] Include: emoties, realisaties, learnings
 - [ ] YAML frontmatter met stats en mood
 - [ ] Update `blog/_index.md` tabel en stats
+
+**📝 Blog Schrijfrichtlijnen:**
+- **Doelgroep**: Niet-technisch publiek, mensen die geïnteresseerd zijn in AI-assisted development
+- **Perspectief**: Vanuit de mens, niet vanuit de code
+- **Toon**: Persoonlijk, toegankelijk, verhalend
+- **Techniek**: Mag erin, maar houd het simpel en kort
+  - Code snippets alleen als ze het verhaal versterken
+  - Geen lange technische uitleg
+  - Focus op het "waarom" en "wat voelde ik", niet het "hoe werkt het"
+- **Structuur**: Begin met de menselijke ervaring, eindig met reflectie
+- **Vermijd**: Changelog-stijl ("Added X, Fixed Y"), droge opsommingen
+
+**📁 Blog-specifieke bestanden:**
+- `_ideas.md` - Referentie voor jou en mij, wordt NIET gepubliceerd
+- `_index.md` - Landing page van de blog
 
 #### 3. 📊 GitHub Issues
 ```bash

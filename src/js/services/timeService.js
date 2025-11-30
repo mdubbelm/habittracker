@@ -9,7 +9,8 @@
 
 // Tijdvenster definities
 export const TIME_WINDOWS = {
-    morning: { start: 6, end: 10 }, // 06:00 - 10:00
+    morning: { start: 6, end: 10 }, // 06:00 - 10:00 (slaap, rugpijn, dromen)
+    weight: { start: 5, end: 12 }, // 05:00 - 12:00 (ruimer venster voor gewicht)
     evening: { start: 20, end: 24 } // 20:00 - 23:59
 };
 
@@ -116,6 +117,10 @@ export function getSectionVisibility(todayData) {
     const morningVisible =
         !morningComplete && (currentWindow === 'morning' || missed.missedMorning);
 
+    // Weight: visible if within weight time window (05:00-12:00), independent of morning section
+    const hour = getCurrentHour();
+    const weightVisible = hour >= TIME_WINDOWS.weight.start && hour < TIME_WINDOWS.weight.end;
+
     // Evening: visible if in time window, BUT hidden if complete
     const eveningVisible = !eveningComplete && currentWindow === 'evening';
 
@@ -130,6 +135,10 @@ export function getSectionVisibility(todayData) {
                     ? 'missed'
                     : 'hidden',
             complete: morningComplete
+        },
+        weight: {
+            visible: weightVisible,
+            reason: weightVisible ? 'time' : 'hidden'
         },
         water: {
             visible: true,

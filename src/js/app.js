@@ -285,6 +285,13 @@ function updateSectionVisibility() {
         morningSection.classList.toggle('hidden', !visibility.morning.visible && !editMode);
     }
 
+    // Weight section (separate from morning, wider time window)
+    const weightSection = document.getElementById('weight-section');
+    if (weightSection) {
+        // Show if visible OR in edit mode
+        weightSection.classList.toggle('hidden', !visibility.weight.visible && !editMode);
+    }
+
     // Evening section
     const eveningSection = document.getElementById('evening-section');
     if (eveningSection) {
@@ -326,6 +333,7 @@ function updateSectionVisibility() {
  */
 function showAllSections() {
     document.getElementById('morning-section')?.classList.remove('hidden');
+    document.getElementById('weight-section')?.classList.remove('hidden');
     document.getElementById('evening-section')?.classList.remove('hidden');
     document.getElementById('fallback-banner')?.classList.add('hidden');
 }
