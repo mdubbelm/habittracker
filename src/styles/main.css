@@ -200,9 +200,8 @@ p {
 }
 
 .app-header-compact .header-left .date {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-top: 2px;
+    /* Hide the text date when date selector is present */
+    display: none;
 }
 
 /* Date Selector for Backfill (issue #32) */
@@ -256,16 +255,19 @@ p {
     font-size: 0.75rem;
     padding: 4px 10px;
     border: none;
-    background: var(--primary);
-    color: white;
+    background: var(--primary, #6366f1);
+    color: #ffffff;
     border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.15s ease;
+    /* Ensure visibility on light backgrounds */
+    text-shadow: none;
+    -webkit-text-fill-color: #ffffff;
 }
 
 .today-btn:hover {
-    background: var(--primary-dark);
+    background: var(--primary-dark, #4f46e5);
 }
 
 .today-btn.hidden {

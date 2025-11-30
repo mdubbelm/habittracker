@@ -60,18 +60,25 @@ npm run build
 
 ## 🎯 Project Status
 
-**Current Phase:** Phase 0 - Foundation & Setup
+**Current Phase:** Phase 1 - MVP (Production Ready)
 
-**Progress:**
-- [x] Initial prototype (single HTML file)
-- [x] Team samenstelling
-- [x] Product roadmap
-- [x] GitHub omgeving (labels, milestones, issue templates)
-- [x] iPhone 13 preview omgeving
-- [ ] Codebase refactoring (modular structure)
-- [ ] Testing infrastructure
-- [ ] CI/CD pipeline
-- [ ] Design system documentatie
+**Completed:**
+- [x] Modulaire codebase (src/ structuur met ES modules)
+- [x] PWA met offline support en update notifications
+- [x] GitHub Pages deployment (daily.modub.nl)
+- [x] CI/CD pipeline (GitHub Actions)
+- [x] Time-based section visibility
+- [x] Health score berekening
+- [x] Statistics dashboard met grafieken
+- [x] Data export (CSV/JSON)
+- [x] Backfill feature (eerdere dagen bewerken)
+
+**In Progress:**
+- [ ] Dark mode
+- [ ] Custom habits
+- [ ] Improved visualizations
+
+**Live:** [daily.modub.nl](https://daily.modub.nl)
 
 Zie [ROADMAP.md](./ROADMAP.md) voor de volledige planning.
 
@@ -92,16 +99,16 @@ Zie [ROADMAP.md](./ROADMAP.md) voor de volledige planning.
 
 ## 🏗️ Architecture
 
-### Current (Phase 0)
-Monolithic HTML file met inline CSS en JavaScript voor rapid prototyping.
-
-### Target (Phase 1+)
+### Current Structure
 ```
 src/
-├── components/     # UI componenten
-├── services/       # Business logica
-├── utils/          # Utilities
-└── styles/         # CSS modules
+├── js/
+│   ├── components/     # UI componenten (statisticsUI, wheelPicker)
+│   ├── services/       # Business logica (storage, healthScore, toast)
+│   └── utils/          # Utilities (sanitize)
+├── styles/             # CSS modules
+├── main.js             # App entry point, PWA setup
+└── index.html          # Single page app
 
 tests/
 ├── unit/           # Unit tests
@@ -210,7 +217,7 @@ We verwelkomen contributions! Zie de volgende documenten:
 | **Storage** | localStorage API |
 | **Graphics** | SVG |
 | **Testing** | Playwright (E2E), Vitest (Unit) |
-| **Build** | Vite (future) |
+| **Build** | Vite |
 | **CI/CD** | GitHub Actions |
 | **Deployment** | GitHub Pages (daily.modub.nl) |
 
@@ -218,31 +225,29 @@ We verwelkomen contributions! Zie de volgende documenten:
 
 ## 🗺️ Roadmap Highlights
 
-### Phase 0: Foundation (Weeks 1-2) - 🟢 Current
-- ✅ Team setup
-- ✅ Documentation
-- 🔄 Codebase refactoring
-- 🔄 Testing infrastructure
+### Phase 0: Foundation ✅
+- ✅ Modulaire codebase
+- ✅ CI/CD pipeline
+- ✅ Testing infrastructure
 
-### Phase 1: MVP (Weeks 3-6)
-- Production-ready PWA
-- Offline functionaliteit
-- Polish & UX improvements
+### Phase 1: MVP ✅ Current
+- ✅ Production-ready PWA
+- ✅ Offline functionaliteit
+- ✅ Backfill (eerdere dagen bewerken)
+- ✅ Statistics dashboard
 
-### Phase 2: Enhancement (Weeks 7-10)
-- Advanced visualizations
-- Gamification
-- Dark mode
+### Phase 2: Enhancement 🔄
+- 🔄 Dark mode
+- 🔄 Custom habits
+- 🔄 Advanced visualizations
 
-### Phase 3: Scale (Weeks 11-14)
+### Phase 3: Scale
 - Backend & cloud sync
 - Multi-device support
-- Performance optimization
 
-### Phase 4: Advanced (Weeks 15+)
+### Phase 4: Advanced
 - AI insights
 - Wearables integration
-- Native apps
 
 Zie [ROADMAP.md](./ROADMAP.md) voor complete details.
 

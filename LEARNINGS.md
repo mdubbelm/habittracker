@@ -6,6 +6,112 @@ Dit bestand documenteert learnings, opgeloste problemen en belangrijke beslissin
 
 ## Learnings
 
+### [2025-11-30] Dev server conflict met Obsidian
+
+**Context**: Bij testen van de app via `npm run dev` op het lokale netwerk.
+
+**Probleem**: Op iPhone verschijnt een Obsidian-gerelateerde melding in plaats van de app. Dit gebeurt wanneer:
+1. Obsidian app op de telefoon de URL probeert te intercepten
+2. Er een URL scheme conflict is tussen localhost/netwerk URL en Obsidian
+
+**Workaround**:
+- Test via production build: `npm run build && npm run preview`
+- Of test direct via GitHub Pages deployment
+- Of sluit Obsidian app op de telefoon tijdens dev testen
+
+**Permanente oplossing**: Onderzoek of Vite een andere poort/URL kan gebruiken die niet conflicteert. Of gebruik `--host 0.0.0.0` met een specifieke poort.
+
+**Tags**: #dev-environment #ios #obsidian #vite
+
+---
+
+### [2025-11-30] iOS Safari PWA update - controllerchange event unreliable
+
+**Context**: PWA update banner met "Updaten" knop werkte niet op iOS Safari.
+
+**Probleem**: iOS Safari triggert het `controllerchange` event niet betrouwbaar na `skipWaiting()`. De knop deed dus niets.
+
+**Oplossing**:
+```javascript
+// Timeout fallback voor iOS
+let reloaded = false;
+const reloadTimeout = window.setTimeout(() => {
+    if (!reloaded) {
+        reloaded = true;
+        window.location.reload();
+    }
+}, 1500);
+
+// Desktop: wacht op controllerchange
+navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.clearTimeout(reloadTimeout);
+    if (!reloaded) {
+        reloaded = true;
+        window.location.reload();
+    }
+}, { once: true });
+```
+
+**Waarom**: iOS Safari heeft strikte beperkingen voor Service Worker lifecycle. Timeout fallback forceert reload na 1.5s als event niet komt.
+
+**Tags**: #ios #safari #pwa #service-worker
+
+---
+
+### [2025-11-30] JavaScript Date timezone issues
+
+**Context**: Date picker navigatie (vorige/volgende dag) sprong soms 2 dagen in plaats van 1.
+
+**Probleem**: `toISOString()` converteert naar UTC, wat bij timezone offset kan resulteren in verkeerde datum.
+
+**Oplossing**:
+```javascript
+// FOUT: toISOString() geeft UTC, niet lokale tijd
+const date = new Date(selectedDate + 'T00:00:00');
+date.setDate(date.getDate() - 1);
+const newDate = date.toISOString().split('T')[0]; // Kan verkeerde datum geven!
+
+// GOED: gebruik noon time en lokale formatting
+const date = new Date(selectedDate + 'T12:00:00');
+date.setDate(date.getDate() - 1);
+const newDate = formatDateLocal(date);
+
+function formatDateLocal(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+```
+
+**Waarom**: Door T12:00:00 (middag) te gebruiken i.p.v. T00:00:00 (middernacht) voorkom je timezone edge cases.
+
+**Tags**: #javascript #date #timezone #bug
+
+---
+
+### [2025-11-30] parseInt met || operator voor nullable values
+
+**Context**: Energie level (1-5) werd niet correct opgeslagen.
+
+**Probleem**: `parseInt('') || null` geeft correct `null`, maar `parseInt('0') || null` geeft OOK `null` omdat 0 falsy is!
+
+**Oplossing**:
+```javascript
+// FOUT: 0 wordt null
+data.energyLevel = parseInt(document.getElementById('energy-value')?.value) || null;
+
+// GOED: check expliciet op lege string
+const energyValue = document.getElementById('energy-value')?.value;
+data.energyLevel = energyValue !== '' ? parseInt(energyValue) : null;
+```
+
+**Waarom**: In JavaScript is 0 een falsy value. De || operator behandelt 0 hetzelfde als '', undefined, null, false.
+
+**Tags**: #javascript #bug #form-data
+
+---
+
 ### [2025-11-29] Data behoud bij verborgen secties
 
 **Context**: App heeft tijd-gebaseerde secties (ochtend/avond) die verborgen worden buiten hun tijdvenster.

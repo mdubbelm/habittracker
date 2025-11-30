@@ -48,6 +48,18 @@ let autoSaveTimeout = null;
 let selectedDate = getTodayDate(); // Track which date is being edited (issue #32)
 
 /**
+ * Format a Date object to YYYY-MM-DD in local timezone
+ * @param {Date} date
+ * @returns {string}
+ */
+function formatDateLocal(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+/**
  * Initialize app
  */
 export function initializeApp() {
@@ -283,17 +295,17 @@ function setupDateSelector() {
 
     // Previous day button
     prevDateBtn?.addEventListener('click', () => {
-        const date = new Date(selectedDate + 'T00:00:00');
+        const date = new Date(selectedDate + 'T12:00:00'); // Use noon to avoid timezone issues
         date.setDate(date.getDate() - 1);
-        const newDate = date.toISOString().split('T')[0];
+        const newDate = formatDateLocal(date);
         switchToDate(newDate);
     });
 
     // Next day button
     nextDateBtn?.addEventListener('click', () => {
-        const date = new Date(selectedDate + 'T00:00:00');
+        const date = new Date(selectedDate + 'T12:00:00'); // Use noon to avoid timezone issues
         date.setDate(date.getDate() + 1);
-        const newDate = date.toISOString().split('T')[0];
+        const newDate = formatDateLocal(date);
 
         // Don't go beyond today
         if (newDate <= getTodayDate()) {
@@ -738,8 +750,13 @@ function saveData(silent = false) {
         data.sugarPortions = parseInt(document.getElementById('sugar-portions')?.value) || 0;
         data.caffeineCount = parseInt(document.getElementById('caffeine-count')?.value) || 0;
         data.alcoholCount = parseInt(document.getElementById('alcohol-count')?.value) || 0;
-        data.energyLevel = parseInt(document.getElementById('energy-value')?.value) || null;
-        data.mood = parseInt(document.getElementById('mood-value')?.value) || null;
+
+        // Energy and mood: check for empty string before parsing
+        const energyValue = document.getElementById('energy-value')?.value;
+        data.energyLevel = energyValue !== '' ? parseInt(energyValue) : null;
+
+        const moodValue = document.getElementById('mood-value')?.value;
+        data.mood = moodValue !== '' ? parseInt(moodValue) : null;
     }
 
     if (!silent) {
