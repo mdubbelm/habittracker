@@ -1869,62 +1869,44 @@ button:focus-visible {
     color: var(--color-gray-300);
 }
 
-/* Energy & Mood Distribution */
-.energy-mood-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-md);
-}
-
-.distribution-card {
-    text-align: center;
-}
-
-.distribution-card h4 {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-sm);
-}
-
-.distribution-chart {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: var(--spacing-xs);
-    height: 60px;
-    margin-bottom: var(--spacing-xs);
-}
-
-.distribution-bar-wrapper {
+/* Energy & Mood Simple View */
+.energy-mood-simple {
     display: flex;
     flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 2px;
-    flex: 1;
-    max-width: 32px;
+    padding: var(--spacing-sm) 0;
+    border-bottom: var(--border-subtle);
 }
 
-.distribution-bar {
-    width: 100%;
-    min-height: 4px;
-    background: var(--color-primary);
-    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-    transition: height 0.3s ease;
+.stat-row:last-child {
+    border-bottom: none;
 }
 
-.distribution-bar.mood {
-    background: var(--color-secondary);
+.stat-label {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
 }
 
-.distribution-label {
-    font-size: 0.875rem;
+.stat-value-emoji {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
-.distribution-avg {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-top: var(--spacing-xs);
+.stat-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.caffeine-stats {
+    padding: var(--spacing-xs) 0;
 }
 
 /* ============================================

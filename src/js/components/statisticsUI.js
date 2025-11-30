@@ -353,24 +353,37 @@ function renderConsumptionStats(consumptionStats) {
         }
     }
 
-    // Caffeine - show frequency (neutral, caffeine is not inherently bad)
-    const caffeineBarEl = document.getElementById('stats-caffeine-bar');
+    // Caffeine - simple frequency display (separate section, neutral framing)
     const caffeineDetailEl = document.getElementById('stats-caffeine-detail');
-    if (caffeineBarEl && caffeineDetailEl) {
+    if (caffeineDetailEl) {
         const daysConsumed = consumptionStats.caffeine.daysConsumed || 0;
-        const pct = totalDays > 0 ? (daysConsumed / totalDays) * 100 : 0;
-        caffeineBarEl.style.width = `${pct}%`;
 
         if (totalDays === 0) {
-            caffeineDetailEl.textContent = 'Geen data';
+            caffeineDetailEl.textContent = '--';
         } else {
-            caffeineDetailEl.textContent = `${daysConsumed}/${totalDays} dagen`;
+            caffeineDetailEl.textContent = `${daysConsumed}/${totalDays}`;
         }
     }
 }
 
 /**
- * Render energy and mood statistics
+ * Get emoji for energy/mood level
+ * @param {number} level - Level 1-5
+ * @param {string} type - 'energy' or 'mood'
+ * @returns {string} Emoji
+ */
+function getLevelEmoji(level, type) {
+    if (type === 'energy') {
+        const emojis = ['😴', '🥱', '😐', '⚡', '🔥'];
+        return emojis[Math.round(level) - 1] || '😐';
+    } else {
+        const emojis = ['😢', '😕', '😐', '🙂', '😄'];
+        return emojis[Math.round(level) - 1] || '😐';
+    }
+}
+
+/**
+ * Render energy and mood statistics (simplified view)
  * @param {Object} activityStats - Activity statistics containing energy and mood
  */
 function renderEnergyMoodStats(activityStats) {
@@ -387,54 +400,26 @@ function renderEnergyMoodStats(activityStats) {
         return;
     }
 
-    let html = '<div class="energy-mood-grid">';
+    let html = '<div class="energy-mood-simple">';
 
-    // Energy distribution
-    if (energy.totalDays > 0) {
-        const maxCount = Math.max(...energy.distribution, 1);
-        const bars = energy.distribution
-            .map((count, i) => {
-                const height = (count / maxCount) * 100;
-                const label = energy.labels[i];
-                return `
-                <div class="distribution-bar-wrapper">
-                    <div class="distribution-bar" style="height: ${height}%" title="${count} dagen"></div>
-                    <span class="distribution-label">${label}</span>
-                </div>
-            `;
-            })
-            .join('');
-
+    // Energy - simple average with emoji
+    if (energy.totalDays > 0 && energy.average !== null) {
+        const emoji = getLevelEmoji(energy.average, 'energy');
         html += `
-            <div class="distribution-card">
-                <h4>Energie</h4>
-                <div class="distribution-chart">${bars}</div>
-                <div class="distribution-avg">Gem: ${energy.average !== null ? energy.average.toFixed(1) : '--'}/5</div>
+            <div class="stat-row">
+                <span class="stat-label">Energie</span>
+                <span class="stat-value-emoji">${emoji} ${energy.average.toFixed(1)}/5</span>
             </div>
         `;
     }
 
-    // Mood distribution
-    if (mood.totalDays > 0) {
-        const maxCount = Math.max(...mood.distribution, 1);
-        const bars = mood.distribution
-            .map((count, i) => {
-                const height = (count / maxCount) * 100;
-                const label = mood.labels[i];
-                return `
-                <div class="distribution-bar-wrapper">
-                    <div class="distribution-bar mood" style="height: ${height}%" title="${count} dagen"></div>
-                    <span class="distribution-label">${label}</span>
-                </div>
-            `;
-            })
-            .join('');
-
+    // Mood - simple average with emoji
+    if (mood.totalDays > 0 && mood.average !== null) {
+        const emoji = getLevelEmoji(mood.average, 'mood');
         html += `
-            <div class="distribution-card">
-                <h4>Stemming</h4>
-                <div class="distribution-chart">${bars}</div>
-                <div class="distribution-avg">Gem: ${mood.average !== null ? mood.average.toFixed(1) : '--'}/5</div>
+            <div class="stat-row">
+                <span class="stat-label">Stemming</span>
+                <span class="stat-value-emoji">${emoji} ${mood.average.toFixed(1)}/5</span>
             </div>
         `;
     }
