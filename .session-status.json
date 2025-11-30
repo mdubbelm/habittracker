@@ -22,13 +22,17 @@
     ],
     "created": [
       "#41 - Update banner naar Settings",
-      "#43 - Custom habits in statistieken"
+      "#43 - Custom habits in statistieken",
+      "#44 - Cafeïne statistiek bug",
+      "#45 - Energie/habits persistentie bug"
     ],
     "open": [
       "#24 - Health Score Visualisatie",
       "#27 - Obsidian integratie",
       "#41 - Update banner naar Settings",
-      "#43 - Custom habits in statistieken"
+      "#43 - Custom habits in statistieken",
+      "#44 - Cafeïne statistiek bug",
+      "#45 - Energie/habits persistentie bug"
     ]
   },
   "completedThisSession": [
@@ -45,9 +49,10 @@
     "e369ad4 - fix: simplify statistics UX (#39, #40)"
   ],
   "nextSteps": [
+    "#44 - Cafeïne statistiek bug fixen (PRIORITEIT)",
+    "#45 - Energie/habits persistentie bug fixen (PRIORITEIT)",
     "#43 - Custom habits in statistieken weergeven",
-    "#24 - Health Score visualisatie verbeteren",
-    "#41 - Update banner naar Settings verplaatsen"
+    "#24 - Health Score visualisatie verbeteren"
   ],
   "tests": {
     "total": 51,
@@ -59,6 +64,6 @@
     "app": "https://daily.modub.nl/"
   },
   "version": "0.3.0",
-  "nextSessionFocus": "#43 Custom habits in statistieken - completion percentages tonen",
-  "reminders": []
+  "nextSessionFocus": "#44 en #45 - Bug fixes voor cafeïne stats en energie/habits persistentie",
+  "reminders": ["Bugs eerst fixen voordat nieuwe features worden gebouwd"]
 }
