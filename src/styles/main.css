@@ -2393,9 +2393,10 @@ a:focus-visible,
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
+    text-align: center;
 }
 
 .fallback-banner p {
@@ -2406,7 +2407,7 @@ a:focus-visible,
 }
 
 .fallback-banner .btn-secondary {
-    flex-shrink: 0;
+    width: 100%;
 }
 
 /* ============================================
