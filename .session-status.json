@@ -58,5 +58,9 @@
     "app": "https://daily.modub.nl/"
   },
   "version": "0.2.0",
-  "nextSessionFocus": "#36 Pull-to-refresh bug - bewaar tab state na refresh"
+  "nextSessionFocus": "#36 Pull-to-refresh bug - bewaar tab state na refresh",
+  "reminders": [
+    "README.md bijwerken (nieuwe URLs, public repo)",
+    "README check toevoegen aan standaard sessie checklist"
+  ]
 }
