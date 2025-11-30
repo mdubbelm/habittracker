@@ -233,10 +233,29 @@ function setupUpdateBanner() {
             if (waitingServiceWorker) {
                 // Tell the waiting service worker to activate
                 waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
-                // Reload once the new service worker is active
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    window.location.reload();
-                });
+
+                // iOS Safari doesn't reliably fire 'controllerchange' event (issue #33)
+                // Use timeout fallback to ensure reload happens
+                let reloaded = false;
+                const reloadTimeout = window.setTimeout(() => {
+                    if (!reloaded) {
+                        reloaded = true;
+                        window.location.reload();
+                    }
+                }, 1500);
+
+                // Try standard approach first (works on desktop)
+                navigator.serviceWorker.addEventListener(
+                    'controllerchange',
+                    () => {
+                        window.clearTimeout(reloadTimeout);
+                        if (!reloaded) {
+                            reloaded = true;
+                            window.location.reload();
+                        }
+                    },
+                    { once: true }
+                );
             } else {
                 // Fallback: just reload
                 window.location.reload();

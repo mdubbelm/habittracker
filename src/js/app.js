@@ -10,6 +10,8 @@ import {
     getTodayData,
     saveTodayData,
     getTodayDate,
+    getDataForDate,
+    saveDataForDate,
     deleteAllData,
     hasAcceptedPrivacy,
     acceptPrivacy,
@@ -43,6 +45,7 @@ let weightPicker = null;
 let currentView = 'tracker-view';
 let statisticsInitialized = false;
 let autoSaveTimeout = null;
+let selectedDate = getTodayDate(); // Track which date is being edited (issue #32)
 
 /**
  * Initialize app
@@ -97,8 +100,11 @@ function showPrivacyNotice() {
 function initApp() {
     console.log('✅ Privacy accepted. Initializing app...');
 
-    // Set current date
-    updateCurrentDate();
+    // Setup date selector (issue #32: backfill)
+    setupDateSelector();
+
+    // Set current date display
+    updateDateDisplay();
 
     // Update time-based section visibility
     updateSectionVisibility();
@@ -106,8 +112,8 @@ function initApp() {
     // Initialize wheel picker for weight (before loading data)
     weightPicker = initWeightPicker();
 
-    // Load today's data (if exists)
-    loadTodayData();
+    // Load data for selected date (defaults to today)
+    loadDataForDate();
 
     // Update health score
     updateHealthScore();
@@ -153,28 +159,200 @@ function setupFieldToggles() {
 }
 
 /**
- * Update current date display
+ * Update date display for selected date
+ * @param {string} dateStr - Date in YYYY-MM-DD format (defaults to selectedDate)
  */
-function updateCurrentDate() {
+function updateDateDisplay(dateStr = selectedDate) {
     const dateEl = document.getElementById('current-date');
-    const today = new Date();
+    const datePicker = document.getElementById('date-picker');
+    const dateIndicator = document.getElementById('date-indicator');
+
+    const date = new Date(dateStr + 'T00:00:00');
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    dateEl.textContent = today.toLocaleDateString('nl-NL', options);
+    dateEl.textContent = date.toLocaleDateString('nl-NL', options);
+
+    // Update date picker value
+    if (datePicker) {
+        datePicker.value = dateStr;
+    }
+
+    // Show indicator and today button if not today
+    const isToday = dateStr === getTodayDate();
+    if (dateIndicator) {
+        dateIndicator.classList.toggle('hidden', isToday);
+    }
+
+    // Show/hide "Vandaag" button
+    const todayBtn = document.getElementById('back-to-today');
+    if (todayBtn) {
+        todayBtn.classList.toggle('hidden', isToday);
+    }
+
+    // Add visual feedback when editing past date
+    const header = document.querySelector('.app-header-compact');
+    if (header) {
+        header.classList.toggle('editing-past', !isToday);
+    }
 }
 
 /**
- * Load today's data from storage and populate form
+ * Clear all form inputs to default values
  */
-function loadTodayData() {
-    const data = getTodayData();
+function clearForm() {
+    // Morning fields
+    const sleepInput = document.getElementById('sleep-score');
+    if (sleepInput) {
+        sleepInput.value = 7;
+        document.getElementById('sleep-output').textContent = '7';
+    }
+
+    const painInput = document.getElementById('back-pain');
+    if (painInput) {
+        painInput.value = 0;
+        document.getElementById('pain-output').textContent = '0';
+    }
+
+    document.getElementById('dreamed-value').value = '';
+    document.querySelectorAll('.pill-option').forEach(btn => {
+        btn.setAttribute('aria-checked', 'false');
+    });
+
+    // Weight
+    if (weightPicker) {
+        weightPicker.setValue(70.0);
+    } else {
+        const weightInput = document.getElementById('weight');
+        if (weightInput) {
+            weightInput.value = '';
+        }
+    }
+
+    // Water
+    document.getElementById('water-intake').value = 0;
+    document.getElementById('water-count').textContent = '0';
+    updateWaterProgress(0);
+
+    // Evening fields
+    const walkedCheckbox = document.getElementById('walked');
+    if (walkedCheckbox) {
+        walkedCheckbox.checked = false;
+    }
+
+    const readingCheckbox = document.getElementById('reading');
+    if (readingCheckbox) {
+        readingCheckbox.checked = false;
+    }
+
+    document.getElementById('sugar-portions').value = 0;
+    document.getElementById('caffeine-count').value = 0;
+    document.getElementById('alcohol-count').value = 0;
+
+    // Energy and mood
+    document.getElementById('energy-value').value = '';
+    document.querySelectorAll('.energy-option').forEach(btn => {
+        btn.setAttribute('aria-checked', 'false');
+    });
+
+    document.getElementById('mood-value').value = '';
+    document.querySelectorAll('.mood-option').forEach(btn => {
+        btn.setAttribute('aria-checked', 'false');
+    });
+}
+
+/**
+ * Setup date selector for backfill feature (issue #32)
+ */
+function setupDateSelector() {
+    const datePicker = document.getElementById('date-picker');
+    const prevDateBtn = document.getElementById('prev-date');
+    const nextDateBtn = document.getElementById('next-date');
+    const todayBtn = document.getElementById('back-to-today');
+
+    if (!datePicker) {
+        return;
+    }
+
+    // Set max date to today (no future dates)
+    datePicker.max = getTodayDate();
+    datePicker.value = selectedDate;
+
+    // Date picker change
+    datePicker.addEventListener('change', e => {
+        switchToDate(e.target.value);
+    });
+
+    // Previous day button
+    prevDateBtn?.addEventListener('click', () => {
+        const date = new Date(selectedDate + 'T00:00:00');
+        date.setDate(date.getDate() - 1);
+        const newDate = date.toISOString().split('T')[0];
+        switchToDate(newDate);
+    });
+
+    // Next day button
+    nextDateBtn?.addEventListener('click', () => {
+        const date = new Date(selectedDate + 'T00:00:00');
+        date.setDate(date.getDate() + 1);
+        const newDate = date.toISOString().split('T')[0];
+
+        // Don't go beyond today
+        if (newDate <= getTodayDate()) {
+            switchToDate(newDate);
+        }
+    });
+
+    // Back to today button
+    todayBtn?.addEventListener('click', () => {
+        switchToDate(getTodayDate());
+    });
+}
+
+/**
+ * Switch to editing a different date
+ * @param {string} dateStr - Date in YYYY-MM-DD format
+ */
+function switchToDate(dateStr) {
+    // Validate date format
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        console.error('Invalid date format:', dateStr);
+        return;
+    }
+
+    // Don't allow future dates
+    if (dateStr > getTodayDate()) {
+        showWarning('Je kunt geen data voor de toekomst invoeren');
+        return;
+    }
+
+    selectedDate = dateStr;
+    updateDateDisplay(dateStr);
+    loadDataForDate(dateStr);
+    updateHealthScore();
+
+    // Show feedback when switching to past date
+    if (dateStr !== getTodayDate()) {
+        showInfo(
+            `Data voor ${new Date(dateStr + 'T00:00:00').toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}`
+        );
+    }
+}
+
+/**
+ * Load data for a specific date and populate form
+ * @param {string} dateStr - Date in YYYY-MM-DD format (defaults to selectedDate)
+ */
+function loadDataForDate(dateStr = selectedDate) {
+    const data = getDataForDate(dateStr);
+    const isToday = dateStr === getTodayDate();
 
     if (!data) {
-        console.log('📋 Nog geen data voor vandaag');
+        console.log(`📋 Nog geen data voor ${isToday ? 'vandaag' : dateStr}`);
+        clearForm();
         updateSectionVisibility();
         return;
     }
 
-    console.log('📥 Data van vandaag laden:', data);
+    console.log(`📥 Data laden voor ${dateStr}:`, data);
 
     // === MORNING FIELDS ===
     if (data.sleepScore !== undefined) {
@@ -516,17 +694,17 @@ function setupEventListeners() {
 }
 
 /**
- * Save current form data
+ * Save current form data for selected date
  * Only saves data from visible sections, preserves existing data for hidden sections
  * @param {boolean} silent - If true, don't show feedback
  */
 function saveData(silent = false) {
     if (!silent) {
-        console.log('💾 Data opslaan...');
+        console.log(`💾 Data opslaan voor ${selectedDate}...`);
     }
 
     // Get existing data first (to preserve hidden section data)
-    const existingData = getTodayData() || {};
+    const existingData = getDataForDate(selectedDate) || {};
 
     // Check which sections are visible
     const morningVisible = !document
@@ -569,8 +747,8 @@ function saveData(silent = false) {
         console.log('📍 Zichtbaar - Ochtend:', morningVisible, '| Avond:', eveningVisible);
     }
 
-    // Save to storage
-    const success = saveTodayData(data);
+    // Save to storage for selected date
+    const success = saveDataForDate(selectedDate, data);
 
     if (success) {
         // Update health score
@@ -745,6 +923,12 @@ function setupNavigation() {
             switchView(targetView);
         });
     });
+
+    // Restore view after page refresh (issue #36: pull-to-refresh fix)
+    const savedView = sessionStorage.getItem('currentView');
+    if (savedView && document.getElementById(savedView)) {
+        switchView(savedView);
+    }
 }
 
 /**
@@ -784,6 +968,9 @@ function switchView(viewId) {
     }
 
     currentView = viewId;
+
+    // Persist current view for pull-to-refresh (issue #36)
+    sessionStorage.setItem('currentView', viewId);
 }
 
 /**
@@ -907,7 +1094,7 @@ function handleGenerateDemo(days) {
         showImportStatus(result.message, result.success);
 
         if (result.success) {
-            loadTodayData();
+            loadDataForDate();
             updateHealthScore();
             updateDataStats();
             if (statisticsInitialized) {
@@ -1009,7 +1196,7 @@ if (import.meta.env?.DEV) {
         };
 
         saveTodayData(testData);
-        loadTodayData();
+        loadDataForDate();
         updateHealthScore();
 
         console.log('✅ Test data toegevoegd voor vandaag');

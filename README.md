@@ -212,7 +212,7 @@ We verwelkomen contributions! Zie de volgende documenten:
 | **Testing** | Playwright (E2E), Vitest (Unit) |
 | **Build** | Vite (future) |
 | **CI/CD** | GitHub Actions |
-| **Deployment** | Netlify/Vercel (planned) |
+| **Deployment** | GitHub Pages (daily.modub.nl) |
 
 ---
 

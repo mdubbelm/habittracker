@@ -109,7 +109,47 @@
             <header class="app-header-compact">
                 <div class="header-left">
                     <h1>Health Tracker</h1>
+                    <div class="date-selector">
+                        <button id="prev-date" class="date-nav-btn" aria-label="Vorige dag">
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <input
+                            type="date"
+                            id="date-picker"
+                            class="date-picker-input"
+                            aria-label="Selecteer datum"
+                        />
+                        <button id="next-date" class="date-nav-btn" aria-label="Volgende dag">
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                        <button
+                            id="back-to-today"
+                            class="today-btn hidden"
+                            aria-label="Terug naar vandaag"
+                        >
+                            Vandaag
+                        </button>
+                    </div>
                     <p class="date" id="current-date"></p>
+                    <span id="date-indicator" class="date-indicator hidden">Eerdere datum</span>
                 </div>
                 <div class="header-score" role="img" aria-label="Gezondheidscore">
                     <!-- Mini circular progress -->
