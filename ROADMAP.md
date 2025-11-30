@@ -87,16 +87,18 @@ Phase 3: Scale & Optimize    ░░░░░░░░░░░░░░░░░
 - [x] #33 - PWA update button iOS (timeout fallback)
 - [x] #36 - Pull-to-refresh tab state fix
 - [x] #37 - README update
+- [x] #38 - Statistieken redesign (trends, streak dots, energie/stemming)
 
 ### In Progress
 - [ ] #23 - Custom Habits Management System
 - [ ] #24 - Health Score Visualisatie verbeteringen
+- [ ] #39 - Energie/stemming UX verduidelijken
 - [ ] Test coverage verhogen (nu ~51 tests)
 
 ### Nice-to-haves
 - [ ] #27 - Obsidian integratie/export
 - [ ] Dark mode
-- [ ] Streak tracking
+- [x] Streak tracking (done in #38)
 - [ ] Weekly summaries
 
 ---
@@ -141,13 +143,24 @@ Phase 3: Scale & Optimize    ░░░░░░░░░░░░░░░░░
 
 ---
 
-## Open Issues
+## Open Issues (Phase 2)
 
-| # | Titel | Type | Prioriteit |
-|---|-------|------|------------|
-| 23 | Custom Habits System | Feature | Hoog |
-| 24 | Health Score Visualisatie | Polish | Medium |
-| 27 | Obsidian integratie | Niche | Laag |
+| # | Titel | Type | Prioriteit | Labels |
+|---|-------|------|------------|--------|
+| 23 | Custom Habits System | Feature | 🔴 Hoog | `priority: high` |
+| 24 | Health Score Visualisatie | Polish | 🟡 Medium | `area: design` |
+| 39 | Energie/stemming UX | UX | 🟡 Medium | `area: design` |
+| 27 | Obsidian integratie | Niche | 🟢 Laag | `enhancement` |
+
+---
+
+## Milestones
+
+| Milestone | Status | Issues |
+|-----------|--------|--------|
+| Phase 0: Foundation | ✅ Closed | 8 closed |
+| Phase 1: MVP | ✅ Closed | 9 closed |
+| Phase 2: Enhancement | 🔄 Open | 4 open |
 
 ---
 
