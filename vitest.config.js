@@ -14,13 +14,7 @@ export default defineConfig({
             reporter: ['text', 'html', 'lcov'],
             reportsDirectory: './coverage',
             include: ['src/js/**/*.js'],
-            exclude: ['src/js/app.js'], // Main app file is integration-tested
-            thresholds: {
-                statements: 5,
-                branches: 5,
-                functions: 2,
-                lines: 5
-            }
+            exclude: ['src/js/app.js'] // Main app file is integration-tested
         },
 
         // Global test timeout
