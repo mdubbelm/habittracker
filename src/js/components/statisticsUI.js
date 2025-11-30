@@ -213,13 +213,21 @@ function renderActivityStats(activityStats) {
         sleepBarEl.style.width = sleepAvg !== null ? `${sleepAvg * 10}%` : '0%';
     }
 
-    // Water
+    // Water - show goal completion instead of average
     const waterAvgEl = document.getElementById('stats-water-avg');
     const waterBarEl = document.getElementById('stats-water-bar');
     if (waterAvgEl && waterBarEl) {
-        const waterAvg = activityStats.water.average;
-        waterAvgEl.textContent = waterAvg !== null ? `${waterAvg}/8` : '--';
-        waterBarEl.style.width = waterAvg !== null ? `${Math.min(waterAvg / 8, 1) * 100}%` : '0%';
+        const waterEntries = activityStats.water.entries || [];
+        const daysGoalMet = waterEntries.filter(e => e.glasses >= 8).length;
+        const totalDays = waterEntries.length;
+
+        if (totalDays > 0) {
+            waterAvgEl.textContent = `${daysGoalMet}/${totalDays}`;
+            waterBarEl.style.width = `${(daysGoalMet / totalDays) * 100}%`;
+        } else {
+            waterAvgEl.textContent = '--';
+            waterBarEl.style.width = '0%';
+        }
     }
 
     // Back pain
@@ -237,33 +245,55 @@ function renderActivityStats(activityStats) {
  * @param {Object} consumptionStats - Consumption statistics
  */
 function renderConsumptionStats(consumptionStats) {
-    const totalDays = consumptionStats.totalDays || 1;
+    const totalDays = consumptionStats.totalDays || 0;
 
-    // Sugar
+    // Sugar - show days clean (positive framing)
     const sugarBarEl = document.getElementById('stats-sugar-bar');
     const sugarDetailEl = document.getElementById('stats-sugar-detail');
     if (sugarBarEl && sugarDetailEl) {
-        const pct = consumptionStats.sugar.percentage || 0;
-        sugarBarEl.style.width = `${pct}%`;
-        sugarDetailEl.textContent = `${consumptionStats.sugar.daysConsumed} van ${totalDays} dagen`;
+        const daysClean = consumptionStats.sugar.daysClean || 0;
+        const cleanPct = totalDays > 0 ? (daysClean / totalDays) * 100 : 0;
+        sugarBarEl.style.width = `${cleanPct}%`;
+
+        if (totalDays === 0) {
+            sugarDetailEl.textContent = 'Geen data';
+        } else if (daysClean === totalDays) {
+            sugarDetailEl.textContent = `${daysClean} dagen clean ✓`;
+        } else {
+            sugarDetailEl.textContent = `${daysClean}/${totalDays} dagen clean`;
+        }
     }
 
-    // Alcohol
+    // Alcohol - show days clean (positive framing)
     const alcoholBarEl = document.getElementById('stats-alcohol-bar');
     const alcoholDetailEl = document.getElementById('stats-alcohol-detail');
     if (alcoholBarEl && alcoholDetailEl) {
-        const pct = consumptionStats.alcohol.percentage || 0;
-        alcoholBarEl.style.width = `${pct}%`;
-        alcoholDetailEl.textContent = `${consumptionStats.alcohol.daysConsumed} van ${totalDays} dagen`;
+        const daysClean = consumptionStats.alcohol.daysClean || 0;
+        const cleanPct = totalDays > 0 ? (daysClean / totalDays) * 100 : 0;
+        alcoholBarEl.style.width = `${cleanPct}%`;
+
+        if (totalDays === 0) {
+            alcoholDetailEl.textContent = 'Geen data';
+        } else if (daysClean === totalDays) {
+            alcoholDetailEl.textContent = `${daysClean} dagen clean ✓`;
+        } else {
+            alcoholDetailEl.textContent = `${daysClean}/${totalDays} dagen clean`;
+        }
     }
 
-    // Caffeine
+    // Caffeine - show frequency (neutral, caffeine is not inherently bad)
     const caffeineBarEl = document.getElementById('stats-caffeine-bar');
     const caffeineDetailEl = document.getElementById('stats-caffeine-detail');
     if (caffeineBarEl && caffeineDetailEl) {
-        const pct = consumptionStats.caffeine.percentage || 0;
+        const daysConsumed = consumptionStats.caffeine.daysConsumed || 0;
+        const pct = totalDays > 0 ? (daysConsumed / totalDays) * 100 : 0;
         caffeineBarEl.style.width = `${pct}%`;
-        caffeineDetailEl.textContent = `${consumptionStats.caffeine.daysConsumed} van ${totalDays} dagen`;
+
+        if (totalDays === 0) {
+            caffeineDetailEl.textContent = 'Geen data';
+        } else {
+            caffeineDetailEl.textContent = `${daysConsumed}/${totalDays} dagen`;
+        }
     }
 }
 
