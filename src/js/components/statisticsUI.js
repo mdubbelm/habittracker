@@ -50,10 +50,34 @@ export function renderStatistics(days) {
     const stats = getAllStats(days);
 
     renderSummaryCards(stats);
-    renderHealthScoreChart(stats.healthScore);
+    renderHealthScoreChart(stats.healthScore, stats.trends);
     renderWeightChart(stats.weight);
-    renderActivityStats(stats.activity);
+    renderActivityStats(stats.activity, stats.trends);
     renderConsumptionStats(stats.consumption);
+    renderEnergyMoodStats(stats.activity);
+}
+
+/**
+ * Get trend arrow HTML
+ * @param {Object} trend - Trend object with direction and diff
+ * @returns {string} HTML for trend indicator
+ */
+function getTrendHTML(trend) {
+    if (!trend) {
+        return '';
+    }
+
+    const { direction, diff } = trend;
+    if (direction === 'stable') {
+        return '<span class="trend-indicator trend-stable" aria-label="Stabiel">→</span>';
+    }
+    if (direction === 'up') {
+        return `<span class="trend-indicator trend-up" aria-label="Omhoog ${Math.abs(diff)}">↑</span>`;
+    }
+    if (direction === 'down') {
+        return `<span class="trend-indicator trend-down" aria-label="Omlaag ${Math.abs(diff)}">↓</span>`;
+    }
+    return '';
 }
 
 /**
@@ -66,8 +90,10 @@ function renderSummaryCards(stats) {
     const walkPctEl = document.getElementById('stats-walk-pct');
 
     if (avgScoreEl) {
-        avgScoreEl.textContent =
+        const scoreValue =
             stats.healthScore.average !== null ? `${stats.healthScore.average}%` : '--';
+        const trendHTML = stats.trends?.healthScore ? getTrendHTML(stats.trends.healthScore) : '';
+        avgScoreEl.innerHTML = `${scoreValue} ${trendHTML}`;
     }
 
     if (totalDaysEl) {
@@ -75,10 +101,12 @@ function renderSummaryCards(stats) {
     }
 
     if (walkPctEl) {
-        walkPctEl.textContent =
+        const walkValue =
             stats.activity.walking.percentage !== null
                 ? `${stats.activity.walking.percentage}%`
                 : '--';
+        const trendHTML = stats.trends?.walking ? getTrendHTML(stats.trends.walking) : '';
+        walkPctEl.innerHTML = `${walkValue} ${trendHTML}`;
     }
 }
 
@@ -202,14 +230,16 @@ function renderWeightChart(weightStats) {
 /**
  * Render activity statistics
  * @param {Object} activityStats - Activity statistics
+ * @param {Object} trends - Trend data
  */
-function renderActivityStats(activityStats) {
+function renderActivityStats(activityStats, trends) {
     // Sleep
     const sleepAvgEl = document.getElementById('stats-sleep-avg');
     const sleepBarEl = document.getElementById('stats-sleep-bar');
     if (sleepAvgEl && sleepBarEl) {
         const sleepAvg = activityStats.sleep.average;
-        sleepAvgEl.textContent = sleepAvg !== null ? `${sleepAvg}/10` : '--';
+        const trendHTML = trends?.sleep ? getTrendHTML(trends.sleep) : '';
+        sleepAvgEl.innerHTML = sleepAvg !== null ? `${sleepAvg}/10 ${trendHTML}` : '--';
         sleepBarEl.style.width = sleepAvg !== null ? `${sleepAvg * 10}%` : '0%';
     }
 
@@ -220,9 +250,10 @@ function renderActivityStats(activityStats) {
         const waterEntries = activityStats.water.entries || [];
         const daysGoalMet = waterEntries.filter(e => e.glasses >= 8).length;
         const totalDays = waterEntries.length;
+        const trendHTML = trends?.water ? getTrendHTML(trends.water) : '';
 
         if (totalDays > 0) {
-            waterAvgEl.textContent = `${daysGoalMet}/${totalDays}`;
+            waterAvgEl.innerHTML = `${daysGoalMet}/${totalDays} ${trendHTML}`;
             waterBarEl.style.width = `${(daysGoalMet / totalDays) * 100}%`;
         } else {
             waterAvgEl.textContent = '--';
@@ -235,9 +266,38 @@ function renderActivityStats(activityStats) {
     const painBarEl = document.getElementById('stats-pain-bar');
     if (painAvgEl && painBarEl) {
         const painAvg = activityStats.backPain.average;
-        painAvgEl.textContent = painAvg !== null ? `${painAvg}/10` : '--';
+        const trendHTML = trends?.backPain ? getTrendHTML(trends.backPain) : '';
+        painAvgEl.innerHTML = painAvg !== null ? `${painAvg}/10 ${trendHTML}` : '--';
         painBarEl.style.width = painAvg !== null ? `${painAvg * 10}%` : '0%';
     }
+}
+
+/**
+ * Generate streak dots HTML
+ * @param {Array} recentDays - Array of recent days with clean status
+ * @returns {string} HTML for streak dots
+ */
+function getStreakDotsHTML(recentDays) {
+    if (!recentDays || recentDays.length === 0) {
+        return '';
+    }
+
+    const dots = recentDays
+        .map(day => {
+            if (day.isToday) {
+                return `<span class="streak-dot streak-dot-today" title="Vandaag" aria-label="Vandaag">◐</span>`;
+            }
+            if (day.clean === true) {
+                return `<span class="streak-dot streak-dot-clean" title="Clean" aria-label="Clean dag">●</span>`;
+            }
+            if (day.clean === false) {
+                return `<span class="streak-dot streak-dot-consumed" title="Geconsumeerd" aria-label="Niet clean">○</span>`;
+            }
+            return `<span class="streak-dot streak-dot-nodata" title="Geen data" aria-label="Geen data">·</span>`;
+        })
+        .join('');
+
+    return `<div class="streak-dots">${dots}</div>`;
 }
 
 /**
@@ -247,37 +307,49 @@ function renderActivityStats(activityStats) {
 function renderConsumptionStats(consumptionStats) {
     const totalDays = consumptionStats.totalDays || 0;
 
-    // Sugar - show days clean (positive framing)
+    // Sugar - show current streak with dots
     const sugarBarEl = document.getElementById('stats-sugar-bar');
     const sugarDetailEl = document.getElementById('stats-sugar-detail');
     if (sugarBarEl && sugarDetailEl) {
-        const daysClean = consumptionStats.sugar.daysClean || 0;
-        const cleanPct = totalDays > 0 ? (daysClean / totalDays) * 100 : 0;
+        const currentStreak = consumptionStats.sugar.currentStreak || 0;
+        const bestStreak = consumptionStats.sugar.bestStreak || 0;
+        const cleanPct = totalDays > 0 ? (consumptionStats.sugar.daysClean / totalDays) * 100 : 0;
         sugarBarEl.style.width = `${cleanPct}%`;
 
         if (totalDays === 0) {
-            sugarDetailEl.textContent = 'Geen data';
-        } else if (daysClean === totalDays) {
-            sugarDetailEl.textContent = `${daysClean} dagen clean ✓`;
+            sugarDetailEl.innerHTML = 'Geen data';
         } else {
-            sugarDetailEl.textContent = `${daysClean}/${totalDays} dagen clean`;
+            const streakDots = getStreakDotsHTML(consumptionStats.sugar.recentDays);
+            sugarDetailEl.innerHTML = `
+                <div class="streak-info">
+                    <span class="streak-current">🎯 ${currentStreak} dagen clean</span>
+                    <span class="streak-best">Best: ${bestStreak}</span>
+                </div>
+                ${streakDots}
+            `;
         }
     }
 
-    // Alcohol - show days clean (positive framing)
+    // Alcohol - show current streak with dots
     const alcoholBarEl = document.getElementById('stats-alcohol-bar');
     const alcoholDetailEl = document.getElementById('stats-alcohol-detail');
     if (alcoholBarEl && alcoholDetailEl) {
-        const daysClean = consumptionStats.alcohol.daysClean || 0;
-        const cleanPct = totalDays > 0 ? (daysClean / totalDays) * 100 : 0;
+        const currentStreak = consumptionStats.alcohol.currentStreak || 0;
+        const bestStreak = consumptionStats.alcohol.bestStreak || 0;
+        const cleanPct = totalDays > 0 ? (consumptionStats.alcohol.daysClean / totalDays) * 100 : 0;
         alcoholBarEl.style.width = `${cleanPct}%`;
 
         if (totalDays === 0) {
-            alcoholDetailEl.textContent = 'Geen data';
-        } else if (daysClean === totalDays) {
-            alcoholDetailEl.textContent = `${daysClean} dagen clean ✓`;
+            alcoholDetailEl.innerHTML = 'Geen data';
         } else {
-            alcoholDetailEl.textContent = `${daysClean}/${totalDays} dagen clean`;
+            const streakDots = getStreakDotsHTML(consumptionStats.alcohol.recentDays);
+            alcoholDetailEl.innerHTML = `
+                <div class="streak-info">
+                    <span class="streak-current">🎯 ${currentStreak} dagen clean</span>
+                    <span class="streak-best">Best: ${bestStreak}</span>
+                </div>
+                ${streakDots}
+            `;
         }
     }
 
@@ -295,6 +367,80 @@ function renderConsumptionStats(consumptionStats) {
             caffeineDetailEl.textContent = `${daysConsumed}/${totalDays} dagen`;
         }
     }
+}
+
+/**
+ * Render energy and mood statistics
+ * @param {Object} activityStats - Activity statistics containing energy and mood
+ */
+function renderEnergyMoodStats(activityStats) {
+    const container = document.getElementById('energy-mood-stats');
+    if (!container) {
+        return;
+    }
+
+    const { energy, mood } = activityStats;
+
+    // Check if we have data
+    if (energy.totalDays === 0 && mood.totalDays === 0) {
+        container.innerHTML = '<p class="no-data">Nog geen energie/stemming geregistreerd</p>';
+        return;
+    }
+
+    let html = '<div class="energy-mood-grid">';
+
+    // Energy distribution
+    if (energy.totalDays > 0) {
+        const maxCount = Math.max(...energy.distribution, 1);
+        const bars = energy.distribution
+            .map((count, i) => {
+                const height = (count / maxCount) * 100;
+                const label = energy.labels[i];
+                return `
+                <div class="distribution-bar-wrapper">
+                    <div class="distribution-bar" style="height: ${height}%" title="${count} dagen"></div>
+                    <span class="distribution-label">${label}</span>
+                </div>
+            `;
+            })
+            .join('');
+
+        html += `
+            <div class="distribution-card">
+                <h4>Energie</h4>
+                <div class="distribution-chart">${bars}</div>
+                <div class="distribution-avg">Gem: ${energy.average !== null ? energy.average.toFixed(1) : '--'}/5</div>
+            </div>
+        `;
+    }
+
+    // Mood distribution
+    if (mood.totalDays > 0) {
+        const maxCount = Math.max(...mood.distribution, 1);
+        const bars = mood.distribution
+            .map((count, i) => {
+                const height = (count / maxCount) * 100;
+                const label = mood.labels[i];
+                return `
+                <div class="distribution-bar-wrapper">
+                    <div class="distribution-bar mood" style="height: ${height}%" title="${count} dagen"></div>
+                    <span class="distribution-label">${label}</span>
+                </div>
+            `;
+            })
+            .join('');
+
+        html += `
+            <div class="distribution-card">
+                <h4>Stemming</h4>
+                <div class="distribution-chart">${bars}</div>
+                <div class="distribution-avg">Gem: ${mood.average !== null ? mood.average.toFixed(1) : '--'}/5</div>
+            </div>
+        `;
+    }
+
+    html += '</div>';
+    container.innerHTML = html;
 }
 
 /**

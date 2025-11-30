@@ -1592,6 +1592,137 @@ button:focus-visible {
     color: var(--text-muted);
 }
 
+/* Change consumption bar colors to positive (green for clean days) */
+.consumption-bar-fill.sugar,
+.consumption-bar-fill.alcohol {
+    background: var(--color-success);
+}
+
+/* Trend Indicators */
+.trend-indicator {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 0.875em;
+    margin-left: var(--spacing-xs);
+}
+
+.trend-indicator.trend-up {
+    color: var(--color-success);
+}
+
+.trend-indicator.trend-down {
+    color: var(--color-error);
+}
+
+.trend-indicator.trend-stable {
+    color: var(--text-muted);
+}
+
+/* Streak Info */
+.streak-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.streak-current {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.streak-best {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Streak Dots */
+.streak-dots {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+    line-height: 1;
+}
+
+.streak-dot {
+    font-size: 0.625rem;
+    cursor: default;
+}
+
+.streak-dot-clean {
+    color: var(--color-success);
+}
+
+.streak-dot-consumed {
+    color: var(--color-error);
+}
+
+.streak-dot-today {
+    color: var(--color-primary);
+}
+
+.streak-dot-nodata {
+    color: var(--color-gray-300);
+}
+
+/* Energy & Mood Distribution */
+.energy-mood-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.distribution-card {
+    text-align: center;
+}
+
+.distribution-card h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.distribution-chart {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: var(--spacing-xs);
+    height: 60px;
+    margin-bottom: var(--spacing-xs);
+}
+
+.distribution-bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+    max-width: 32px;
+}
+
+.distribution-bar {
+    width: 100%;
+    min-height: 4px;
+    background: var(--color-primary);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    transition: height 0.3s ease;
+}
+
+.distribution-bar.mood {
+    background: var(--color-secondary);
+}
+
+.distribution-label {
+    font-size: 0.875rem;
+}
+
+.distribution-avg {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-xs);
+}
+
 /* ============================================
    PULL TO REFRESH
    ============================================ */

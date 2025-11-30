@@ -225,23 +225,98 @@ export function getWeightStats(days) {
 }
 
 /**
+ * Calculate current streak for a boolean field (consecutive days where field is false)
+ * @param {string} field - Field name (e.g., 'sugarConsumed')
+ * @returns {Object} Current streak and best streak
+ */
+function calculateStreak(field) {
+    const allData = getAllData();
+    const allDates = Object.keys(allData).sort().reverse(); // Most recent first
+
+    if (allDates.length === 0) {
+        return { current: 0, best: 0, recentDays: [] };
+    }
+
+    // Calculate current streak (consecutive days from today where field is false)
+    let currentStreak = 0;
+    for (const date of allDates) {
+        const entry = allData[date];
+        if (entry[field] === false) {
+            currentStreak++;
+        } else if (entry[field] === true) {
+            break; // Streak broken
+        }
+        // If undefined, continue checking (gap in data)
+    }
+
+    // Calculate best streak ever
+    let bestStreak = 0;
+    let tempStreak = 0;
+    const sortedDates = Object.keys(allData).sort(); // Oldest first for best calc
+
+    for (const date of sortedDates) {
+        const entry = allData[date];
+        if (entry[field] === false) {
+            tempStreak++;
+            bestStreak = Math.max(bestStreak, tempStreak);
+        } else if (entry[field] === true) {
+            tempStreak = 0;
+        }
+    }
+
+    // Get recent 20 days for dot visualization
+    const today = new Date();
+    const recentDays = [];
+    for (let i = 19; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        const entry = allData[dateStr];
+
+        if (entry && entry[field] !== undefined) {
+            recentDays.push({
+                date: dateStr,
+                clean: entry[field] === false,
+                isToday: i === 0
+            });
+        } else {
+            recentDays.push({
+                date: dateStr,
+                clean: null, // No data
+                isToday: i === 0
+            });
+        }
+    }
+
+    return { current: currentStreak, best: Math.max(bestStreak, currentStreak), recentDays };
+}
+
+/**
  * Get consumption statistics for a period
  * @param {number} days - Period in days
  * @returns {Object} Consumption stats
  */
 export function getConsumptionStats(days) {
     const entries = getDataForPeriod(days);
+    const sugarStreak = calculateStreak('sugarConsumed');
+    const alcoholStreak = calculateStreak('alcoholConsumed');
 
     return {
         sugar: {
             percentage: calculatePercentage(entries, 'sugarConsumed'),
             daysConsumed: entries.filter(e => e.sugarConsumed === true).length,
-            daysClean: entries.filter(e => e.sugarConsumed === false).length
+            daysClean: entries.filter(e => e.sugarConsumed === false).length,
+            currentStreak: sugarStreak.current,
+            bestStreak: sugarStreak.best,
+            recentDays: sugarStreak.recentDays
         },
         alcohol: {
             percentage: calculatePercentage(entries, 'alcoholConsumed'),
             daysConsumed: entries.filter(e => e.alcoholConsumed === true).length,
-            daysClean: entries.filter(e => e.alcoholConsumed === false).length
+            daysClean: entries.filter(e => e.alcoholConsumed === false).length,
+            currentStreak: alcoholStreak.current,
+            bestStreak: alcoholStreak.best,
+            recentDays: alcoholStreak.recentDays
         },
         caffeine: {
             percentage: calculatePercentage(entries, 'caffeineConsumed'),
@@ -259,6 +334,26 @@ export function getConsumptionStats(days) {
  */
 export function getActivityStats(days) {
     const entries = getDataForPeriod(days);
+
+    // Calculate energy distribution (1-5 scale)
+    const energyEntries = entries.filter(
+        e => e.energyLevel !== undefined && e.energyLevel !== null
+    );
+    const energyDistribution = [0, 0, 0, 0, 0]; // Counts for levels 1-5
+    energyEntries.forEach(e => {
+        if (e.energyLevel >= 1 && e.energyLevel <= 5) {
+            energyDistribution[e.energyLevel - 1]++;
+        }
+    });
+
+    // Calculate mood distribution (1-5 scale)
+    const moodEntries = entries.filter(e => e.mood !== undefined && e.mood !== null);
+    const moodDistribution = [0, 0, 0, 0, 0]; // Counts for levels 1-5
+    moodEntries.forEach(e => {
+        if (e.mood >= 1 && e.mood <= 5) {
+            moodDistribution[e.mood - 1]++;
+        }
+    });
 
     return {
         walking: {
@@ -287,6 +382,18 @@ export function getActivityStats(days) {
         dreaming: {
             percentage: calculatePercentage(entries, 'dreamed'),
             daysDreamed: entries.filter(e => e.dreamed === true).length
+        },
+        energy: {
+            average: calculateAverage(entries, 'energyLevel'),
+            distribution: energyDistribution,
+            totalDays: energyEntries.length,
+            labels: ['😫', '😴', '😐', '😊', '💪']
+        },
+        mood: {
+            average: calculateAverage(entries, 'mood'),
+            distribution: moodDistribution,
+            totalDays: moodEntries.length,
+            labels: ['😢', '😕', '😐', '🙂', '😄']
         }
     };
 }
@@ -297,7 +404,7 @@ export function getActivityStats(days) {
  * @returns {Object} All statistics
  */
 export function getAllStats(days) {
-    return {
+    const currentStats = {
         period: days,
         periodLabel: getPeriodLabel(days),
         healthScore: getHealthScoreStats(days),
@@ -305,6 +412,146 @@ export function getAllStats(days) {
         consumption: getConsumptionStats(days),
         activity: getActivityStats(days),
         totalEntries: getDataForPeriod(days).length
+    };
+
+    // Calculate trends by comparing with previous period
+    if (days > 0) {
+        currentStats.trends = calculateTrends(days);
+    }
+
+    return currentStats;
+}
+
+/**
+ * Calculate trends comparing current period to previous period
+ * @param {number} days - Current period in days
+ * @returns {Object} Trend data
+ */
+function calculateTrends(days) {
+    const allData = getAllData();
+    const allDates = Object.keys(allData).sort();
+
+    if (allDates.length === 0) {
+        return null;
+    }
+
+    const today = new Date();
+
+    // Current period dates
+    const currentStart = new Date(today);
+    currentStart.setDate(today.getDate() - days + 1);
+
+    // Previous period dates
+    const prevEnd = new Date(currentStart);
+    prevEnd.setDate(prevEnd.getDate() - 1);
+    const prevStart = new Date(prevEnd);
+    prevStart.setDate(prevEnd.getDate() - days + 1);
+
+    // Get data for both periods
+    const currentEntries = allDates
+        .filter(dateStr => {
+            const date = new Date(dateStr);
+            return date >= currentStart && date <= today;
+        })
+        .map(date => ({ date, ...allData[date] }));
+
+    const prevEntries = allDates
+        .filter(dateStr => {
+            const date = new Date(dateStr);
+            return date >= prevStart && date <= prevEnd;
+        })
+        .map(date => ({ date, ...allData[date] }));
+
+    // Calculate averages for comparison
+    const calcAvg = (entries, field) => {
+        const values = entries
+            .map(e => e[field])
+            .filter(v => v !== undefined && v !== null && !isNaN(v));
+        return values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : null;
+    };
+
+    const calcPct = (entries, field) => {
+        const values = entries.map(e => e[field]).filter(v => v !== undefined);
+        if (values.length === 0) {
+            return null;
+        }
+        return (values.filter(v => v === true).length / values.length) * 100;
+    };
+
+    // Calculate health score averages
+    const calcHealthScore = entries => {
+        const scores = entries
+            .map(entry => {
+                let score = 0,
+                    maxScore = 0;
+                if (entry.sleepScore !== undefined) {
+                    score += (entry.sleepScore / 10) * 20;
+                    maxScore += 20;
+                }
+                if (entry.backPain !== undefined) {
+                    score += ((10 - entry.backPain) / 10) * 15;
+                    maxScore += 15;
+                }
+                if (entry.waterIntake !== undefined) {
+                    score += Math.min(entry.waterIntake / 8, 1) * 15;
+                    maxScore += 15;
+                }
+                if (entry.walked !== undefined) {
+                    score += entry.walked ? 10 : 0;
+                    maxScore += 10;
+                }
+                if (entry.dreamed !== undefined) {
+                    score += entry.dreamed ? 5 : 0;
+                    maxScore += 5;
+                }
+                if (entry.sugarConsumed !== undefined) {
+                    score += entry.sugarConsumed ? 0 : 10;
+                    maxScore += 10;
+                }
+                if (entry.alcoholConsumed !== undefined) {
+                    score += entry.alcoholConsumed ? 0 : 10;
+                    maxScore += 10;
+                }
+                if (entry.caffeineConsumed !== undefined) {
+                    score += 5;
+                    maxScore += 5;
+                }
+                return maxScore > 0 ? (score / maxScore) * 100 : null;
+            })
+            .filter(s => s !== null);
+        return scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+    };
+
+    // Get trend direction
+    const getTrend = (current, previous, inverse = false) => {
+        if (current === null || previous === null) {
+            return null;
+        }
+        const diff = current - previous;
+        const threshold = 0.5; // Minimum difference to show trend
+        if (Math.abs(diff) < threshold) {
+            return { direction: 'stable', diff: 0 };
+        }
+        if (inverse) {
+            // For metrics where lower is better (like pain)
+            return { direction: diff < 0 ? 'up' : 'down', diff: Math.round(diff * 10) / 10 };
+        }
+        return { direction: diff > 0 ? 'up' : 'down', diff: Math.round(diff * 10) / 10 };
+    };
+
+    return {
+        healthScore: getTrend(calcHealthScore(currentEntries), calcHealthScore(prevEntries)),
+        sleep: getTrend(calcAvg(currentEntries, 'sleepScore'), calcAvg(prevEntries, 'sleepScore')),
+        backPain: getTrend(
+            calcAvg(currentEntries, 'backPain'),
+            calcAvg(prevEntries, 'backPain'),
+            true
+        ),
+        water: getTrend(
+            calcAvg(currentEntries, 'waterIntake'),
+            calcAvg(prevEntries, 'waterIntake')
+        ),
+        walking: getTrend(calcPct(currentEntries, 'walked'), calcPct(prevEntries, 'walked'))
     };
 }
 
