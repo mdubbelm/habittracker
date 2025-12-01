@@ -789,7 +789,10 @@ function saveData(silent = false) {
         }
     }
 
+    // Mark as explicitly saved only when user clicks "Bewaar" button (not autoSave)
+    // This prevents sections from hiding prematurely during autoSave
     if (!silent) {
+        data.explicitSave = true;
         console.log('📊 Op te slaan data:', data);
         console.log('📍 Zichtbaar - Ochtend:', morningVisible, '| Avond:', eveningVisible);
     }

@@ -81,22 +81,24 @@ export function isSectionComplete(todayData, section) {
 
     if (section === 'morning') {
         // Ochtend is compleet als slaap, rugpijn, dreamed EN expliciet opgeslagen
-        // We checken op timestamp EN alle velden
+        // We checken op explicitSave flag (niet timestamp - die wordt ook door autoSave gezet)
         const hasAllFields =
             data.sleepScore !== undefined &&
             data.backPain !== undefined &&
             data.dreamed !== undefined &&
             data.dreamed !== null &&
             data.dreamed !== '';
-        // Alleen complete als er een timestamp is (= expliciet opgeslagen)
-        const wasSaved = data.timestamp !== undefined;
-        return hasAllFields && wasSaved;
+        // Alleen complete als expliciet op "Bewaar" is geklikt (niet autoSave)
+        const wasSavedExplicitly = data.explicitSave === true;
+        return hasAllFields && wasSavedExplicitly;
     }
 
     if (section === 'evening') {
-        // Avond is compleet als walked, mood en alle counters zijn ingevuld
-        // (counters hebben default 0, dus checken of ze bestaan of expliciet gezet zijn)
-        return data.walked !== undefined && data.mood !== undefined && data.mood !== null;
+        // Avond is compleet als walked, mood en alle counters zijn ingevuld EN expliciet opgeslagen
+        const hasAllFields =
+            data.walked !== undefined && data.mood !== undefined && data.mood !== null;
+        const wasSavedExplicitly = data.explicitSave === true;
+        return hasAllFields && wasSavedExplicitly;
     }
 
     return false;
