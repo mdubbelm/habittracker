@@ -213,6 +213,12 @@ function sanitizeTrackerData(data) {
         sanitized.customHabits = data.customHabits;
     }
 
+    // Explicit save flag - indicates user clicked "Bewaar" button (not autoSave)
+    // Used to determine if a section should be considered "complete" and hidden
+    if (data.explicitSave === true) {
+        sanitized.explicitSave = true;
+    }
+
     return sanitized;
 }
 

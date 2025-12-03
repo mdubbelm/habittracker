@@ -148,7 +148,9 @@ function renderWeightChart(weightStats) {
     // Update current weight
     if (currentEl) {
         currentEl.textContent =
-            weightStats.current !== null ? `${weightStats.current} kg` : '-- kg';
+            weightStats.current !== null && weightStats.current !== undefined
+                ? `${weightStats.current} kg`
+                : '-- kg';
     }
 
     // Update weight change

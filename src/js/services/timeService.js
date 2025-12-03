@@ -60,12 +60,12 @@ export function getMissedWindows(todayData) {
     const hour = getCurrentHour();
     const data = todayData || {};
 
-    // Check of ochtend data is ingevuld (any field)
-    const hasMorningData =
-        data.sleepScore !== undefined || data.backPain !== undefined || data.dreamed !== undefined;
+    // Check of ochtend VOLLEDIG is ingevuld EN expliciet opgeslagen
+    // Dit voorkomt dat de fallback banner verdwijnt na invullen van 1 veld
+    const morningComplete = isSectionComplete(data, 'morning');
 
-    // Gemiste ochtend: het is na 10:00 EN geen ochtend data
-    const missedMorning = hour >= TIME_WINDOWS.morning.end && !hasMorningData;
+    // Gemiste ochtend: het is na 10:00 EN ochtend niet volledig afgerond
+    const missedMorning = hour >= TIME_WINDOWS.morning.end && !morningComplete;
 
     return { missedMorning };
 }
@@ -81,22 +81,24 @@ export function isSectionComplete(todayData, section) {
 
     if (section === 'morning') {
         // Ochtend is compleet als slaap, rugpijn, dreamed EN expliciet opgeslagen
-        // We checken op timestamp EN alle velden
+        // We checken op explicitSave flag (niet timestamp - die wordt ook door autoSave gezet)
         const hasAllFields =
             data.sleepScore !== undefined &&
             data.backPain !== undefined &&
             data.dreamed !== undefined &&
             data.dreamed !== null &&
             data.dreamed !== '';
-        // Alleen complete als er een timestamp is (= expliciet opgeslagen)
-        const wasSaved = data.timestamp !== undefined;
-        return hasAllFields && wasSaved;
+        // Alleen complete als expliciet op "Bewaar" is geklikt (niet autoSave)
+        const wasSavedExplicitly = data.explicitSave === true;
+        return hasAllFields && wasSavedExplicitly;
     }
 
     if (section === 'evening') {
-        // Avond is compleet als walked, mood en alle counters zijn ingevuld
-        // (counters hebben default 0, dus checken of ze bestaan of expliciet gezet zijn)
-        return data.walked !== undefined && data.mood !== undefined && data.mood !== null;
+        // Avond is compleet als walked, mood en alle counters zijn ingevuld EN expliciet opgeslagen
+        const hasAllFields =
+            data.walked !== undefined && data.mood !== undefined && data.mood !== null;
+        const wasSavedExplicitly = data.explicitSave === true;
+        return hasAllFields && wasSavedExplicitly;
     }
 
     return false;
@@ -113,9 +115,9 @@ export function getSectionVisibility(todayData) {
     const morningComplete = isSectionComplete(todayData, 'morning');
     const eveningComplete = isSectionComplete(todayData, 'evening');
 
-    // Morning: visible if in time window OR missed, BUT hidden if complete
-    const morningVisible =
-        !morningComplete && (currentWindow === 'morning' || missed.missedMorning);
+    // Morning: visible ONLY if in time window, NOT if missed (fallback banner handles that)
+    // When missed, user must click "Alles invullen" to show the section
+    const morningVisible = !morningComplete && currentWindow === 'morning';
 
     // Weight: visible if within weight time window (05:00-12:00), independent of morning section
     const hour = getCurrentHour();

@@ -247,9 +247,9 @@ function clearForm() {
         btn.setAttribute('aria-checked', 'false');
     });
 
-    // Weight
+    // Weight - clear to show placeholder "-- kg", not default 70kg
     if (weightPicker) {
-        weightPicker.setValue(70.0);
+        weightPicker.setValue(null);
     } else {
         const weightInput = document.getElementById('weight');
         if (weightInput) {
@@ -789,7 +789,10 @@ function saveData(silent = false) {
         }
     }
 
+    // Mark as explicitly saved only when user clicks "Bewaar" button (not autoSave)
+    // This prevents sections from hiding prematurely during autoSave
     if (!silent) {
+        data.explicitSave = true;
         console.log('📊 Op te slaan data:', data);
         console.log('📍 Zichtbaar - Ochtend:', morningVisible, '| Avond:', eveningVisible);
     }
