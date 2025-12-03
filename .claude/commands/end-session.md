@@ -13,7 +13,7 @@ habittracker/          ← App development
 ├── blog/              ← Symlink naar devblog/content/habittracker/
 └── ...
 
-devblog/               ← Hugo blog site (vibemo.netlify.app)
+devblog/               ← Hugo blog site (blog.modub.nl)
 ├── content/
 │   └── habittracker/  ← Blog posts over het bouwproces
 └── ...
@@ -156,9 +156,9 @@ git commit -m "content: habittracker session X"
 git push
 ```
 
-Dit triggert automatisch een Netlify deploy.
+Dit triggert automatisch een GitHub Pages deploy.
 
-**Check:** https://vibemo.netlify.app/habittracker/
+**Check:** https://blog.modub.nl/habittracker/
 
 ---
 
