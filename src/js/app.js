@@ -247,9 +247,9 @@ function clearForm() {
         btn.setAttribute('aria-checked', 'false');
     });
 
-    // Weight
+    // Weight - clear to show placeholder "-- kg", not default 70kg
     if (weightPicker) {
-        weightPicker.setValue(70.0);
+        weightPicker.setValue(null);
     } else {
         const weightInput = document.getElementById('weight');
         if (weightInput) {

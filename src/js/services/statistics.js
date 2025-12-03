@@ -95,6 +95,25 @@ function calculatePercentage(entries, field) {
 }
 
 /**
+ * Check if caffeine was consumed for an entry (supports both old and new format)
+ * Old format: caffeineConsumed (boolean)
+ * New format: caffeineCount (number > 0 means consumed)
+ * @param {Object} entry - Data entry
+ * @returns {boolean|undefined} true if consumed, false if not, undefined if no data
+ */
+function hasCaffeineConsumed(entry) {
+    // New format: caffeineCount
+    if (entry.caffeineCount !== undefined) {
+        return entry.caffeineCount > 0;
+    }
+    // Old format: caffeineConsumed
+    if (entry.caffeineConsumed !== undefined) {
+        return entry.caffeineConsumed;
+    }
+    return undefined;
+}
+
+/**
  * Get health score statistics for a period
  * @param {number} days - Period in days
  * @returns {Object} Health score stats
@@ -151,8 +170,8 @@ export function getHealthScoreStats(days) {
                 maxScore += 10;
             }
 
-            // Caffeine (5 points for moderate, defined as having consumed some)
-            if (entry.caffeineConsumed !== undefined) {
+            // Caffeine (5 points for tracking - supports both old and new format)
+            if (hasCaffeineConsumed(entry) !== undefined) {
                 score += 5; // Simplified: just tracking
                 maxScore += 5;
             }
@@ -319,9 +338,18 @@ export function getConsumptionStats(days) {
             recentDays: alcoholStreak.recentDays
         },
         caffeine: {
-            percentage: calculatePercentage(entries, 'caffeineConsumed'),
-            daysConsumed: entries.filter(e => e.caffeineConsumed === true).length,
-            daysWithout: entries.filter(e => e.caffeineConsumed === false).length
+            percentage: (() => {
+                const caffeineEntries = entries.filter(e => hasCaffeineConsumed(e) !== undefined);
+                if (caffeineEntries.length === 0) {
+                    return null;
+                }
+                const consumedCount = caffeineEntries.filter(
+                    e => hasCaffeineConsumed(e) === true
+                ).length;
+                return Math.round((consumedCount / caffeineEntries.length) * 100);
+            })(),
+            daysConsumed: entries.filter(e => hasCaffeineConsumed(e) === true).length,
+            daysWithout: entries.filter(e => hasCaffeineConsumed(e) === false).length
         },
         totalDays: entries.length
     };
@@ -512,7 +540,7 @@ function calculateTrends(days) {
                     score += entry.alcoholConsumed ? 0 : 10;
                     maxScore += 10;
                 }
-                if (entry.caffeineConsumed !== undefined) {
+                if (hasCaffeineConsumed(entry) !== undefined) {
                     score += 5;
                     maxScore += 5;
                 }

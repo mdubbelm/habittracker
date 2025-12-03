@@ -60,12 +60,12 @@ export function getMissedWindows(todayData) {
     const hour = getCurrentHour();
     const data = todayData || {};
 
-    // Check of ochtend data is ingevuld (any field)
-    const hasMorningData =
-        data.sleepScore !== undefined || data.backPain !== undefined || data.dreamed !== undefined;
+    // Check of ochtend VOLLEDIG is ingevuld EN expliciet opgeslagen
+    // Dit voorkomt dat de fallback banner verdwijnt na invullen van 1 veld
+    const morningComplete = isSectionComplete(data, 'morning');
 
-    // Gemiste ochtend: het is na 10:00 EN geen ochtend data
-    const missedMorning = hour >= TIME_WINDOWS.morning.end && !hasMorningData;
+    // Gemiste ochtend: het is na 10:00 EN ochtend niet volledig afgerond
+    const missedMorning = hour >= TIME_WINDOWS.morning.end && !morningComplete;
 
     return { missedMorning };
 }
@@ -115,9 +115,9 @@ export function getSectionVisibility(todayData) {
     const morningComplete = isSectionComplete(todayData, 'morning');
     const eveningComplete = isSectionComplete(todayData, 'evening');
 
-    // Morning: visible if in time window OR missed, BUT hidden if complete
-    const morningVisible =
-        !morningComplete && (currentWindow === 'morning' || missed.missedMorning);
+    // Morning: visible ONLY if in time window, NOT if missed (fallback banner handles that)
+    // When missed, user must click "Alles invullen" to show the section
+    const morningVisible = !morningComplete && currentWindow === 'morning';
 
     // Weight: visible if within weight time window (05:00-12:00), independent of morning section
     const hour = getCurrentHour();
