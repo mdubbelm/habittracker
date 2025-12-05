@@ -474,9 +474,40 @@ git push
 **Preventie**:
 1. Houd README en CLAUDE.md up-to-date met huidige hosting info
 2. Verwijder legacy config files (netlify.toml) als niet in gebruik
-3. Check GitHub Actions tab voor deploy status na elke push naar main
+3. Check GitHub Actions tab voor deploy status na elke merge naar main
 
-**Tags**: #deployment #github-pages #ci-cd #documentation
+**BELANGRIJK - PR workflow is verplicht**:
+De `main` branch is protected met required status checks. Direct pushen naar main is **niet mogelijk**. Elke wijziging moet via een Pull Request:
+
+```bash
+# 1. Maak feature branch
+git checkout main && git pull
+git checkout -b feat/beschrijving
+
+# 2. Ontwikkel en commit
+# ... maak wijzigingen ...
+git add . && git commit -m "feat: beschrijving"
+
+# 3. Push feature branch
+git push -u origin feat/beschrijving
+
+# 4. Maak PR via GitHub CLI
+gh pr create --title "Titel" --body "Beschrijving"
+
+# 5. Wacht op CI checks (lint, test, build)
+gh pr view --json statusCheckRollup
+
+# 6. Merge PR (triggert automatisch deploy)
+gh pr merge --squash --delete-branch
+```
+
+**Waarom PR's verplicht zijn**:
+- CI checks draaien automatisch op elke PR
+- Voorkomt dat kapotte code naar productie gaat
+- Branch protection blokkeert directe pushes naar main
+- Squash merge houdt git history schoon
+
+**Tags**: #deployment #github-pages #ci-cd #documentation #workflow
 
 ---
 
