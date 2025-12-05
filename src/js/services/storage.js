@@ -142,6 +142,13 @@ export function saveTodayData(data) {
  * Ensures all values are valid and safe
  * Supports both old boolean format and new numeric format
  *
+ * ⚠️  BELANGRIJK: Dit is een WHITELIST functie!
+ * Alleen velden die hier expliciet staan worden opgeslagen.
+ * Bij het toevoegen van een nieuw form veld MOET je het hier ook toevoegen,
+ * anders wordt de data stilzwijgend gefilterd en niet opgeslagen!
+ *
+ * Zie LEARNINGS.md voor meer context over deze bug.
+ *
  * @param {Object} data - Raw tracker data
  * @returns {Object} Sanitized data
  */

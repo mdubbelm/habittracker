@@ -571,4 +571,52 @@ function saveData(silent = false) {
 
 ---
 
+### [2025-12-05] sanitizeTrackerData whitelist - KRITIEK
+
+**Context**: Nieuwe velden (reading, energyLevel) toegevoegd aan de UI en saveData() functie.
+
+**Probleem**: Data werd correct verzameld in saveData(), maar na opslaan en teruggaan naar het scherm waren de velden leeg. Data leek te "verdwijnen".
+
+**Root cause**: De `sanitizeTrackerData()` functie in `storage.js` werkt als een **whitelist**. Alleen velden die expliciet in deze functie staan worden doorgelaten naar localStorage. Nieuwe velden werden stilzwijgend gefilterd.
+
+**De sanitize flow**:
+```
+saveData() → saveDataForDate() → sanitizeTrackerData() → localStorage
+     ↑                                    ↑
+   Verzamelt alle data              FILTERT onbekende velden!
+```
+
+**Fout**:
+```javascript
+// storage.js - sanitizeTrackerData()
+// HAD GEEN:
+if (data.reading !== undefined) {
+    sanitized.reading = sanitizeBoolean(data.reading);
+}
+if (data.energyLevel !== undefined) {
+    sanitized.energyLevel = sanitizeNumber(data.energyLevel, 1, 5, null);
+}
+```
+
+**Oplossing**: Voeg ALTIJD nieuwe velden toe aan sanitizeTrackerData() wanneer je een nieuw form veld toevoegt.
+
+**Checklist bij toevoegen nieuw veld**:
+1. [ ] HTML element toevoegen (index.html)
+2. [ ] Event listener toevoegen (app.js - initEventListeners)
+3. [ ] Veld verzamelen in saveData() (app.js)
+4. [ ] Veld laden in loadDataForDate() (app.js)
+5. [ ] **KRITIEK: Veld toevoegen aan sanitizeTrackerData() (storage.js)**
+6. [ ] Statistieken updaten indien nodig (statistics.js)
+7. [ ] UI updaten indien nodig (statisticsUI.js)
+
+**Waarom dit zo lastig te debuggen was**:
+- De alert toonde dat data correct werd verzameld: `energyLevel: 2`
+- Maar na opslaan was het weg
+- Geen error messages - de sanitize functie filtert stilzwijgend
+- console.log in saveData() toonde correcte data, maar dat was VOOR sanitize
+
+**Tags**: #critical #storage #whitelist #data-persistence #bug
+
+---
+
 **Laatste update**: 5 december 2025
