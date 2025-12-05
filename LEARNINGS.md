@@ -430,4 +430,114 @@ function calculateHealthScore(data) {
 
 ---
 
-**Laatste update**: 29 november 2025
+---
+
+### [2025-12-05] Deployment verwarring: Netlify vs GitHub Pages
+
+**Context**: App werd oorspronkelijk op Netlify gedeployed (dailymo.netlify.app), later gemigreerd naar GitHub Pages (daily.modub.nl).
+
+**Probleem**: Documentatie bevatte conflicterende info:
+- SESSION_006: "GitHub Pages deploy workflow verwijderd - App draait op Netlify"
+- README: "Live op daily.modub.nl" (GitHub Pages)
+- netlify.toml nog aanwezig maar niet in gebruik
+
+De deploy workflow in `.github/workflows/deploy.yml` was wel aanwezig maar miste lint/test stappen.
+
+**Huidige situatie (december 2025)**:
+- **Productie**: GitHub Pages op `daily.modub.nl`
+- **Workflow**: `.github/workflows/deploy.yml` → lint → test → build → deploy
+- **Trigger**: Push naar `main` branch
+- **netlify.toml**: Kan verwijderd worden (legacy)
+
+**Deployment workflow**:
+```bash
+# 1. Ontwikkel op feature branch
+git checkout -b feat/nieuwe-feature
+
+# 2. Test lokaal
+npm run lint && npm run test && npm run build
+
+# 3. Commit en push feature branch
+git add . && git commit -m "feat: beschrijving"
+git push -u origin feat/nieuwe-feature
+
+# 4. Merge naar main (triggert automatische deploy)
+git checkout main
+git pull
+git merge feat/nieuwe-feature
+git push
+
+# 5. Check GitHub Actions voor deploy status
+# https://github.com/mdubbelm/habittracker/actions
+```
+
+**Preventie**:
+1. Houd README en CLAUDE.md up-to-date met huidige hosting info
+2. Verwijder legacy config files (netlify.toml) als niet in gebruik
+3. Check GitHub Actions tab voor deploy status na elke push naar main
+
+**Tags**: #deployment #github-pages #ci-cd #documentation
+
+---
+
+### [2025-12-05] Data persistence buiten tijdvensters
+
+**Context**: Evening fields (energyLevel, reading, mood) werden alleen opgeslagen als de evening-section HTML element zichtbaar was (20:00-24:00).
+
+**Probleem**: Gebruiker vulde data in, maar bij opslaan werden evening fields niet meegenomen omdat de sectie "hidden" was volgens de CSS class check.
+
+**Oude code**:
+```javascript
+// FOUT: Checkt HTML visibility
+const eveningVisible = !document.getElementById('evening-section')
+    ?.classList.contains('hidden');
+
+if (eveningVisible) {
+    data.energyLevel = ...  // Niet opgeslagen buiten tijdvenster!
+}
+```
+
+**Oplossing**:
+```javascript
+// GOED: Sla altijd op als element bestaat en waarde heeft
+const energyEl = document.getElementById('energy-value');
+if (energyEl && energyEl.value !== '') {
+    data.energyLevel = parseInt(energyEl.value);
+}
+```
+
+**Waarom**: De visibility van de HTML sectie bepaalt wat de gebruiker ZIET, niet wat er OPGESLAGEN wordt. Door te checken of het element bestaat en een waarde heeft, wordt data altijd correct opgeslagen.
+
+**Tags**: #data-persistence #bug #form-data #time-based
+
+---
+
+### [2025-12-05] AutoSave mag visibility niet updaten
+
+**Context**: Na elke keystroke/click triggert autoSave, die ook `updateSectionVisibility()` aanriep.
+
+**Probleem**: Terwijl gebruiker data invulde, kon de sectie plotseling verdwijnen omdat visibility opnieuw werd berekend.
+
+**Oplossing**:
+```javascript
+function saveData(silent = false) {
+    // ... save logic ...
+
+    if (success) {
+        updateHealthScore();
+
+        // ALLEEN bij expliciete save (niet autoSave)
+        if (!silent) {
+            updateSectionVisibility();
+        }
+    }
+}
+```
+
+**Waarom**: AutoSave is "silent" (true), handmatige save is niet silent (false). Visibility update alleen bij handmatige save voorkomt dat secties verdwijnen tijdens invullen.
+
+**Tags**: #ux #autosave #visibility #bug
+
+---
+
+**Laatste update**: 5 december 2025
