@@ -54,7 +54,8 @@ export function renderStatistics(days) {
     renderWeightChart(stats.weight);
     renderActivityStats(stats.activity, stats.trends);
     renderConsumptionStats(stats.consumption);
-    renderEnergyMoodStats(stats.activity);
+    renderEnergyMoodStats(stats.activity, stats.trends);
+    renderCustomHabitsStats(stats.customHabits); // #43
 }
 
 /**
@@ -107,6 +108,17 @@ function renderSummaryCards(stats) {
                 : '--';
         const trendHTML = stats.trends?.walking ? getTrendHTML(stats.trends.walking) : '';
         walkPctEl.innerHTML = `${walkValue} ${trendHTML}`;
+    }
+
+    // Reading percentage
+    const readPctEl = document.getElementById('stats-read-pct');
+    if (readPctEl) {
+        const readValue =
+            stats.activity.reading.percentage !== null
+                ? `${stats.activity.reading.percentage}%`
+                : '--';
+        const trendHTML = stats.trends?.reading ? getTrendHTML(stats.trends.reading) : '';
+        readPctEl.innerHTML = `${readValue} ${trendHTML}`;
     }
 }
 
@@ -387,8 +399,9 @@ function getLevelEmoji(level, type) {
 /**
  * Render energy and mood statistics (simplified view)
  * @param {Object} activityStats - Activity statistics containing energy and mood
+ * @param {Object} trends - Trend data including energy and mood (#50)
  */
-function renderEnergyMoodStats(activityStats) {
+function renderEnergyMoodStats(activityStats, trends) {
     const container = document.getElementById('energy-mood-stats');
     if (!container) {
         return;
@@ -404,27 +417,90 @@ function renderEnergyMoodStats(activityStats) {
 
     let html = '<div class="energy-mood-simple">';
 
-    // Energy - simple average with emoji
+    // Energy - simple average with emoji and trend (#50)
     if (energy.totalDays > 0 && energy.average !== null) {
         const emoji = getLevelEmoji(energy.average, 'energy');
+        const trendHTML = trends?.energy ? getTrendHTML(trends.energy) : '';
         html += `
             <div class="stat-row">
                 <span class="stat-label">Energie</span>
-                <span class="stat-value-emoji">${emoji} ${energy.average.toFixed(1)}/5</span>
+                <span class="stat-value-emoji">${emoji} ${energy.average.toFixed(1)}/5 ${trendHTML}</span>
             </div>
         `;
     }
 
-    // Mood - simple average with emoji
+    // Mood - simple average with emoji and trend (#50)
     if (mood.totalDays > 0 && mood.average !== null) {
         const emoji = getLevelEmoji(mood.average, 'mood');
+        const trendHTML = trends?.mood ? getTrendHTML(trends.mood) : '';
         html += `
             <div class="stat-row">
                 <span class="stat-label">Stemming</span>
-                <span class="stat-value-emoji">${emoji} ${mood.average.toFixed(1)}/5</span>
+                <span class="stat-value-emoji">${emoji} ${mood.average.toFixed(1)}/5 ${trendHTML}</span>
             </div>
         `;
     }
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+/**
+ * Render custom habits statistics (#43)
+ * @param {Object} customHabitsStats - Custom habits statistics from getAllStats
+ */
+function renderCustomHabitsStats(customHabitsStats) {
+    const container = document.getElementById('custom-habits-stats');
+    const card = document.getElementById('custom-habits-stats-card');
+
+    if (!container) {
+        return;
+    }
+
+    // Hide card if no habits configured
+    if (!customHabitsStats.hasHabits) {
+        if (card) {
+            card.style.display = 'none';
+        }
+        return;
+    }
+
+    // Show card
+    if (card) {
+        card.style.display = '';
+    }
+
+    const { habits } = customHabitsStats;
+
+    let html = '<div class="custom-habits-stats-list">';
+
+    habits.forEach(habit => {
+        // Determine completion bar color based on percentage
+        let barClass = 'low';
+        if (habit.completionPct >= 80) {
+            barClass = 'high';
+        } else if (habit.completionPct >= 50) {
+            barClass = 'medium';
+        }
+
+        html += `
+            <div class="habit-stat-item">
+                <div class="habit-stat-header">
+                    <span class="habit-stat-emoji">${habit.emoji}</span>
+                    <span class="habit-stat-name">${habit.name}</span>
+                </div>
+                <div class="habit-stat-bar-track">
+                    <div class="habit-stat-bar-fill ${barClass}" style="width: ${habit.completionPct}%"></div>
+                </div>
+                <div class="habit-stat-details">
+                    <span class="habit-stat-pct">${habit.completionPct}%</span>
+                    <span class="habit-stat-streak" title="Huidige streak / Beste streak">
+                        🔥 ${habit.currentStreak}${habit.bestStreak > habit.currentStreak ? ` (beste: ${habit.bestStreak})` : ''}
+                    </span>
+                </div>
+            </div>
+        `;
+    });
 
     html += '</div>';
     container.innerHTML = html;

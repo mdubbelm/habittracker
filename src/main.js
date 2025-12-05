@@ -188,13 +188,13 @@ async function registerServiceWorker() {
             // Listen for new service worker waiting
             registration.addEventListener('waiting', () => {
                 waitingServiceWorker = registration.waiting;
-                showUpdateBanner();
+                showUpdateAvailable();
             });
 
             // Also check if there's already a waiting worker
             if (registration.waiting) {
                 waitingServiceWorker = registration.waiting;
-                showUpdateBanner();
+                showUpdateAvailable();
             }
 
             // Listen for new service worker installing
@@ -204,7 +204,7 @@ async function registerServiceWorker() {
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                         // New version available
                         waitingServiceWorker = newWorker;
-                        showUpdateBanner();
+                        showUpdateAvailable();
                     }
                 });
             });
@@ -214,22 +214,38 @@ async function registerServiceWorker() {
     }
 }
 
-// Show the update banner
-function showUpdateBanner() {
-    const updateBanner = document.getElementById('update-banner');
-    if (updateBanner) {
-        updateBanner.classList.remove('hidden');
+// Show the update available indicator in Settings (#41)
+function showUpdateAvailable() {
+    const installButton = document.getElementById('install-update');
+    const statusEl = document.getElementById('update-status');
+
+    if (installButton) {
+        installButton.classList.remove('hidden');
+    }
+
+    if (statusEl) {
+        statusEl.textContent = '🆕 Nieuwe versie beschikbaar!';
+        statusEl.className = 'update-status info';
     }
 }
 
-// Setup update banner handlers
-function setupUpdateBanner() {
-    const updateBanner = document.getElementById('update-banner');
-    const updateButton = document.getElementById('update-button');
-    const dismissButton = document.getElementById('dismiss-update');
+// Setup update install button in Settings (#41)
+function setupUpdateInstall() {
+    const installButton = document.getElementById('install-update');
 
-    if (updateButton) {
-        updateButton.addEventListener('click', () => {
+    if (installButton) {
+        installButton.addEventListener('click', () => {
+            const btnText = installButton.querySelector('.btn-text');
+            const spinner = installButton.querySelector('.btn-spinner');
+            const statusEl = document.getElementById('update-status');
+
+            // Show loading state
+            installButton.disabled = true;
+            if (btnText) {
+                btnText.textContent = 'Installeren...';
+            }
+            spinner?.classList.remove('hidden');
+
             if (waitingServiceWorker) {
                 // Tell the waiting service worker to activate
                 waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
@@ -258,14 +274,11 @@ function setupUpdateBanner() {
                 );
             } else {
                 // Fallback: just reload
-                window.location.reload();
+                if (statusEl) {
+                    statusEl.textContent = 'Geen update beschikbaar, pagina wordt herladen...';
+                }
+                window.setTimeout(() => window.location.reload(), 500);
             }
-        });
-    }
-
-    if (dismissButton) {
-        dismissButton.addEventListener('click', () => {
-            updateBanner?.classList.add('hidden');
         });
     }
 }
@@ -325,11 +338,9 @@ function setupCheckForUpdates() {
                     await new Promise(resolve => window.setTimeout(resolve, 1500));
 
                     if (registration.waiting || waitingServiceWorker) {
-                        // New version available
-                        statusEl.textContent =
-                            '🆕 Nieuwe versie beschikbaar! Gebruik de banner bovenaan om te updaten.';
-                        statusEl.className = 'update-status info';
-                        showUpdateBanner();
+                        // New version available - show install button (#41)
+                        waitingServiceWorker = registration.waiting || waitingServiceWorker;
+                        showUpdateAvailable();
                     } else if (registration.installing) {
                         // Update in progress
                         statusEl.textContent = '⏳ Update wordt geïnstalleerd...';
@@ -386,7 +397,7 @@ function setupOfflineIndicator() {
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
     setupInstallPrompt();
-    setupUpdateBanner();
+    setupUpdateInstall();
     setupPullToRefresh();
     setupOfflineIndicator();
     displayVersionInfo();

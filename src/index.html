@@ -50,14 +50,7 @@
             <span class="pull-refresh-text">Trek naar beneden om te verversen</span>
         </div>
 
-        <!-- PWA Update Banner -->
-        <div id="update-banner" class="update-banner hidden">
-            <div class="update-content">
-                <span>🆕 Nieuwe versie beschikbaar!</span>
-                <button id="update-button" class="btn-primary btn-small">Updaten</button>
-                <button id="dismiss-update" class="btn-dismiss" aria-label="Later">×</button>
-            </div>
-        </div>
+        <!-- PWA Update Banner - moved to Settings (#41) -->
 
         <!-- PWA Install Banner -->
         <div id="install-banner" class="install-banner hidden">
@@ -677,6 +670,13 @@
                             <span class="summary-label">Gelopen</span>
                         </div>
                     </div>
+                    <div class="summary-card">
+                        <div class="summary-icon" aria-hidden="true">📖</div>
+                        <div class="summary-data">
+                            <span class="summary-value" id="stats-read-pct">--</span>
+                            <span class="summary-label">Gelezen</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Health Score Chart -->
@@ -750,6 +750,14 @@
                     <h3>Energie & Stemming</h3>
                     <div id="energy-mood-stats">
                         <p class="no-data">Nog geen energie/stemming geregistreerd</p>
+                    </div>
+                </div>
+
+                <!-- Custom Habits Stats (#43) -->
+                <div class="stats-card" id="custom-habits-stats-card">
+                    <h3>Gewoontes</h3>
+                    <div id="custom-habits-stats">
+                        <p class="no-data">Geen gewoontes geconfigureerd</p>
                     </div>
                 </div>
 
@@ -997,6 +1005,10 @@
                     <div class="settings-buttons" style="margin-top: var(--spacing-md)">
                         <button id="check-update" class="btn-secondary">
                             <span class="btn-text">Controleer op updates</span>
+                            <span class="btn-spinner hidden"></span>
+                        </button>
+                        <button id="install-update" class="btn-primary hidden">
+                            <span class="btn-text">🆕 Update installeren</span>
                             <span class="btn-spinner hidden"></span>
                         </button>
                     </div>

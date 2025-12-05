@@ -8,6 +8,7 @@
  */
 
 import { getAllData } from './storage.js';
+import { getCustomHabits } from './customHabits.js';
 
 /**
  * Available time periods for statistics
@@ -389,6 +390,11 @@ export function getActivityStats(days) {
             daysWalked: entries.filter(e => e.walked === true).length,
             totalDays: entries.length
         },
+        reading: {
+            percentage: calculatePercentage(entries, 'reading'),
+            daysRead: entries.filter(e => e.reading === true).length,
+            totalDays: entries.length
+        },
         sleep: {
             average: calculateAverage(entries, 'sleepScore'),
             entries: entries
@@ -439,6 +445,7 @@ export function getAllStats(days) {
         weight: getWeightStats(days),
         consumption: getConsumptionStats(days),
         activity: getActivityStats(days),
+        customHabits: getCustomHabitsStats(days), // #43
         totalEntries: getDataForPeriod(days).length
     };
 
@@ -582,7 +589,14 @@ function calculateTrends(days) {
             calcAvg(currentEntries, 'waterIntake'),
             calcAvg(prevEntries, 'waterIntake')
         ),
-        walking: getTrend(calcPct(currentEntries, 'walked'), calcPct(prevEntries, 'walked'))
+        walking: getTrend(calcPct(currentEntries, 'walked'), calcPct(prevEntries, 'walked')),
+        reading: getTrend(calcPct(currentEntries, 'reading'), calcPct(prevEntries, 'reading')),
+        // #50: Add energy and mood trends
+        energy: getTrend(
+            calcAvg(currentEntries, 'energyLevel'),
+            calcAvg(prevEntries, 'energyLevel')
+        ),
+        mood: getTrend(calcAvg(currentEntries, 'mood'), calcAvg(prevEntries, 'mood'))
     };
 }
 
@@ -606,6 +620,93 @@ export function getPeriodLabel(days) {
         default:
             return `Afgelopen ${days} dagen`;
     }
+}
+
+/**
+ * Get custom habits statistics for a period (#43)
+ * @param {number} days - Number of days (-1 for all time)
+ * @returns {Object} Custom habits statistics
+ */
+export function getCustomHabitsStats(days) {
+    const habits = getCustomHabits();
+
+    if (habits.length === 0) {
+        return { habits: [], hasHabits: false };
+    }
+
+    const data = getDataForPeriod(days);
+    const allData = getAllData();
+    const allDates = Object.keys(allData).sort();
+
+    // Calculate stats per habit
+    const habitStats = habits.map(habit => {
+        // Count completions in period
+        let completedDays = 0;
+        const totalDays = data.length;
+
+        data.forEach(entry => {
+            if (entry.customHabits && entry.customHabits[habit.id] === true) {
+                completedDays++;
+            }
+        });
+
+        const completionPct = totalDays > 0 ? Math.round((completedDays / totalDays) * 100) : 0;
+
+        // Calculate current streak (consecutive days ending today or most recent)
+        let currentStreak = 0;
+        let bestStreak = 0;
+        let tempStreak = 0;
+
+        // Iterate from oldest to newest for streak calculation
+        for (let i = 0; i < allDates.length; i++) {
+            const dateData = allData[allDates[i]];
+            const isCompleted = dateData.customHabits && dateData.customHabits[habit.id] === true;
+
+            if (isCompleted) {
+                tempStreak++;
+                if (tempStreak > bestStreak) {
+                    bestStreak = tempStreak;
+                }
+            } else {
+                tempStreak = 0;
+            }
+        }
+
+        // Current streak: count backwards from today
+        const today = new Date().toISOString().split('T')[0];
+        for (let i = allDates.length - 1; i >= 0; i--) {
+            const dateStr = allDates[i];
+            // Skip future dates
+            if (dateStr > today) {
+                continue;
+            }
+
+            const dateData = allData[dateStr];
+            const isCompleted = dateData.customHabits && dateData.customHabits[habit.id] === true;
+
+            if (isCompleted) {
+                currentStreak++;
+            } else {
+                break;
+            }
+        }
+
+        return {
+            id: habit.id,
+            name: habit.name,
+            emoji: habit.emoji,
+            completedDays,
+            totalDays,
+            completionPct,
+            currentStreak,
+            bestStreak
+        };
+    });
+
+    return {
+        habits: habitStats,
+        hasHabits: true
+    };
 }
 
 /**

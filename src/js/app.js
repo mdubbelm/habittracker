@@ -731,7 +731,7 @@ function setupEventListeners() {
 
 /**
  * Save current form data for selected date
- * Only saves data from visible sections, preserves existing data for hidden sections
+ * Saves ALL form data regardless of section visibility (fixes data loss issue)
  * @param {boolean} silent - If true, don't show feedback
  */
 function saveData(silent = false) {
@@ -739,26 +739,31 @@ function saveData(silent = false) {
         console.log(`💾 Data opslaan voor ${selectedDate}...`);
     }
 
-    // Get existing data first (to preserve hidden section data)
+    // Get existing data first (to preserve any manually set data)
     const existingData = getDataForDate(selectedDate) || {};
 
-    // Check which sections are visible
-    const morningVisible = !document
-        .getElementById('morning-section')
-        ?.classList.contains('hidden');
-    const eveningVisible = !document
-        .getElementById('evening-section')
-        ?.classList.contains('hidden');
-
-    // Start with existing data, then update visible sections
+    // Start with existing data, then update ALL fields that have values
     const data = { ...existingData };
 
-    // Morning fields - only update if section is visible
-    if (morningVisible) {
-        data.sleepScore = parseInt(document.getElementById('sleep-score')?.value) || 7;
-        data.backPain = parseInt(document.getElementById('back-pain')?.value) || 0;
-        data.dreamed = document.getElementById('dreamed-value')?.value || null;
-        const weightValue = parseFloat(document.getElementById('weight')?.value);
+    // Morning fields - always save if elements exist
+    const sleepEl = document.getElementById('sleep-score');
+    if (sleepEl) {
+        data.sleepScore = parseInt(sleepEl.value) || 7;
+    }
+
+    const painEl = document.getElementById('back-pain');
+    if (painEl) {
+        data.backPain = parseInt(painEl.value) || 0;
+    }
+
+    const dreamedEl = document.getElementById('dreamed-value');
+    if (dreamedEl && dreamedEl.value) {
+        data.dreamed = dreamedEl.value;
+    }
+
+    const weightEl = document.getElementById('weight');
+    if (weightEl) {
+        const weightValue = parseFloat(weightEl.value);
         if (!isNaN(weightValue) && weightValue > 0) {
             data.weight = weightValue;
         }
@@ -767,26 +772,47 @@ function saveData(silent = false) {
     // Water (always visible)
     data.waterIntake = parseInt(document.getElementById('water-intake')?.value) || 0;
 
-    // Evening fields - only update if section is visible
-    if (eveningVisible) {
-        data.walked = document.getElementById('walked')?.checked || false;
-        data.reading = document.getElementById('reading')?.checked || false;
-        data.sugarPortions = parseInt(document.getElementById('sugar-portions')?.value) || 0;
-        data.caffeineCount = parseInt(document.getElementById('caffeine-count')?.value) || 0;
-        data.alcoholCount = parseInt(document.getElementById('alcohol-count')?.value) || 0;
+    // Evening fields - always save if elements exist (fixes data loss outside time window)
+    const walkedEl = document.getElementById('walked');
+    if (walkedEl) {
+        data.walked = walkedEl.checked;
+    }
 
-        // Energy and mood: check for empty string before parsing
-        const energyValue = document.getElementById('energy-value')?.value;
-        data.energyLevel = energyValue !== '' ? parseInt(energyValue) : null;
+    const readingEl = document.getElementById('reading');
+    if (readingEl) {
+        data.reading = readingEl.checked;
+    }
 
-        const moodValue = document.getElementById('mood-value')?.value;
-        data.mood = moodValue !== '' ? parseInt(moodValue) : null;
+    const sugarEl = document.getElementById('sugar-portions');
+    if (sugarEl) {
+        data.sugarPortions = parseInt(sugarEl.value) || 0;
+    }
 
-        // Custom habits
-        const habitValues = getHabitValues();
-        if (Object.keys(habitValues).length > 0) {
-            data.customHabits = habitValues;
-        }
+    const caffeineEl = document.getElementById('caffeine-count');
+    if (caffeineEl) {
+        data.caffeineCount = parseInt(caffeineEl.value) || 0;
+    }
+
+    const alcoholEl = document.getElementById('alcohol-count');
+    if (alcoholEl) {
+        data.alcoholCount = parseInt(alcoholEl.value) || 0;
+    }
+
+    // Energy and mood: check for empty string before parsing
+    const energyEl = document.getElementById('energy-value');
+    if (energyEl && energyEl.value !== '') {
+        data.energyLevel = parseInt(energyEl.value);
+    }
+
+    const moodEl = document.getElementById('mood-value');
+    if (moodEl && moodEl.value !== '') {
+        data.mood = parseInt(moodEl.value);
+    }
+
+    // Custom habits
+    const habitValues = getHabitValues();
+    if (Object.keys(habitValues).length > 0) {
+        data.customHabits = habitValues;
     }
 
     // Mark as explicitly saved only when user clicks "Bewaar" button (not autoSave)
@@ -794,7 +820,6 @@ function saveData(silent = false) {
     if (!silent) {
         data.explicitSave = true;
         console.log('📊 Op te slaan data:', data);
-        console.log('📍 Zichtbaar - Ochtend:', morningVisible, '| Avond:', eveningVisible);
     }
 
     // Save to storage for selected date
@@ -804,8 +829,11 @@ function saveData(silent = false) {
         // Update health score
         updateHealthScore();
 
-        // Update section visibility
-        updateSectionVisibility();
+        // Only update section visibility on explicit save (not autoSave)
+        // This prevents sections from closing while user is still filling in data
+        if (!silent) {
+            updateSectionVisibility();
+        }
 
         // Refresh statistics if initialized
         if (statisticsInitialized) {
@@ -1232,6 +1260,16 @@ function updateDataStats() {
 if (import.meta.env?.DEV) {
     console.log('🔧 Development mode');
 
+    // Debug: show what's in storage
+    window.debugStorage = function () {
+        const data = JSON.parse(localStorage.getItem('healthTracker_data') || '{}');
+        const dates = Object.keys(data).sort().reverse();
+        console.log('📦 Total entries:', dates.length);
+        dates.slice(0, 3).forEach(date => {
+            console.log(`📅 ${date}:`, data[date]);
+        });
+    };
+
     // Add some test data helper
     window.addTestData = function () {
         const testData = {
@@ -1239,10 +1277,13 @@ if (import.meta.env?.DEV) {
             backPain: 2,
             waterIntake: 8,
             walked: true,
+            reading: true,
             dreamed: true,
             sugarConsumed: false,
             alcoholConsumed: false,
-            caffeineConsumed: true
+            caffeineConsumed: true,
+            energyLevel: 4,
+            mood: 4
         };
 
         saveTodayData(testData);
@@ -1252,5 +1293,5 @@ if (import.meta.env?.DEV) {
         console.log('✅ Test data toegevoegd voor vandaag');
     };
 
-    console.log('💡 Tip: Use window.addTestData() to add test data');
+    console.log('💡 Tip: Use window.debugStorage() to see stored data');
 }

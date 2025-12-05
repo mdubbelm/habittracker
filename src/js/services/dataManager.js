@@ -254,10 +254,13 @@ export function generateDemoData(days = 7) {
             backPain: randomInt(0, 5),
             waterIntake: randomInt(4, 10),
             walked: Math.random() > 0.3,
+            reading: Math.random() > 0.4, // ~60% chance of reading
             dreamed: Math.random() > 0.5,
             sugarConsumed: Math.random() > 0.6,
             alcoholConsumed: Math.random() > 0.7,
-            caffeineConsumed: Math.random() > 0.2
+            caffeineConsumed: Math.random() > 0.2,
+            energyLevel: randomInt(1, 5),
+            mood: randomInt(1, 5)
         };
 
         // Occasionally add weight (morning measurement simulation)
