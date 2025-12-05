@@ -200,6 +200,19 @@ function sanitizeTrackerData(data) {
         sanitized.alcoholCount = data.alcoholConsumed ? 1 : 0;
     }
 
+    // === READING (new field) ===
+    if (data.reading !== undefined) {
+        sanitized.reading = sanitizeBoolean(data.reading);
+    }
+
+    // === ENERGY LEVEL (new field) ===
+    if (data.energyLevel !== undefined && data.energyLevel !== null) {
+        const energyValue = sanitizeNumber(data.energyLevel, 1, 5, null);
+        if (energyValue !== null) {
+            sanitized.energyLevel = energyValue;
+        }
+    }
+
     // === MOOD (new field) ===
     if (data.mood !== undefined && data.mood !== null) {
         const moodValue = sanitizeNumber(data.mood, 1, 5, null);
