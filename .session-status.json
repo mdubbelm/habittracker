@@ -1,17 +1,19 @@
 {
-  "timestamp": "2025-12-05T17:45:00+01:00",
-  "sessionNumber": 14,
-  "duration": "~2 uur",
-  "summary": "Kritieke bug opgelost: sanitizeTrackerData whitelist filterde reading en energyLevel velden. Deployment workflow gedocumenteerd. PR-based workflow nu verplicht.",
+  "timestamp": "2025-12-05T17:05:00+01:00",
+  "sessionNumber": 15,
+  "duration": "~30 min",
+  "summary": "Sessie 14 afgerond: ontbrekende sessie tracking bestanden aangemaakt (009-014), blog post geschreven over sanitizeTrackerData whitelist bug met eerlijke reflectie over AI proces-betrouwbaarheid, blog index geüpdatet (sessienummers vervangen door datums).",
   "filesModified": [
-    "src/js/services/storage.js - reading en energyLevel toegevoegd aan sanitize whitelist + warning comment",
-    "src/js/app.js - saveData fix voor data persistence buiten tijdvensters",
-    "src/js/services/statistics.js - reading statistieken toegevoegd",
-    "src/js/components/statisticsUI.js - reading percentage weergave",
-    "src/index.html - reading summary card toegevoegd",
-    ".github/workflows/deploy.yml - lint en test stappen toegevoegd",
-    "LEARNINGS.md - 4 nieuwe learnings gedocumenteerd",
-    "CLAUDE.md - deployment sectie geüpdatet"
+    ".time-tracking/SESSION_009.md - feature rush sessie",
+    ".time-tracking/SESSION_010.md - weight bug fix sessie",
+    ".time-tracking/SESSION_011.md - GitHub Pages migratie",
+    ".time-tracking/SESSION_012.md - custom habits sessie",
+    ".time-tracking/SESSION_013.md - pre-push hook sessie",
+    ".time-tracking/SESSION_014.md - whitelist bug fix sessie"
+  ],
+  "devblogFilesModified": [
+    "content/blog/habittracker/2025-12-05-de-onzichtbare-poortwachter.md - nieuwe blog post",
+    "content/blog/habittracker/_index.md - sessienummers vervangen door datums"
   ],
   "issuesManaged": {
     "closed": [],
@@ -19,43 +21,41 @@
     "open": [
       "#24 - Health Score Visualisatie",
       "#27 - Obsidian integratie",
-      "#41 - Update banner naar Settings",
-      "#43 - Custom habits in statistieken",
-      "#50 - Trend indicatoren energie/stemming"
+      "#52 - Dark mode",
+      "#53 - Weekly summary notificatie",
+      "#54 - Accessibility audit",
+      "#55 - Test coverage verhogen"
     ]
   },
   "completedThisSession": [
-    "PR #56: Fix data persistence and add reading stats",
-    "PR #57: Document PR workflow as mandatory",
-    "PR #58: Debug alert (tijdelijk, later verwijderd)",
-    "PR #59: Fix sanitizeTrackerData whitelist - DE ECHTE BUG",
-    "PR #60: Documentatie over whitelist pattern"
+    "SESSION_009-014.md bestanden aangemaakt",
+    "Blog post 'De onzichtbare poortwachter' geschreven",
+    "Blog post aangepast met correcte attributie (Claude schreef de code)",
+    "Sectie toegevoegd over proces-frustratie en onbetrouwbare end-session",
+    "Code block rendering fix (text language specifier)",
+    "PR #62 gemerged voor sessie tracking bestanden"
   ],
   "commits": [
-    "b21ff26 - Fix data persistence and add reading stats (#56)",
-    "a5b612b - docs: Document PR workflow as mandatory (#57)",
-    "c4a6ed7 - debug: Add alert to show save data (temporary) (#58)",
-    "0b5582f - fix: Add reading and energyLevel to sanitizeTrackerData whitelist (#59)",
-    "160ddbc - docs: Add critical warning about sanitizeTrackerData whitelist (#60)"
+    "cfa23bc - docs: Add missing session tracking files 009-014 (#62)",
+    "42c87fe - blog: Add post about sanitizeTrackerData whitelist bug (devblog)",
+    "cecd315 - blog: Update post with accurate attribution and process frustration (devblog)",
+    "7b99446 - fix: Replace unicode arrows with ASCII for better rendering (devblog)",
+    "0bb7939 - fix: Add text language to code block for Hugo rendering (devblog)"
   ],
   "keyLearnings": [
-    "sanitizeTrackerData() werkt als WHITELIST - nieuwe velden MOETEN worden toegevoegd",
-    "PR workflow is nu verplicht door branch protection op main",
-    "Deployment gaat via GitHub Pages, niet Netlify"
+    "Code blocks in Hugo/PaperMod hebben altijd een taalspecificatie nodig (bijv. 'text')",
+    "AI-gegenereerde code heeft patronen die de AI zelf vergeet",
+    "End-session checklist wordt niet consequent gevolgd - proces moet worden verbeterd"
   ],
-  "checklistNewField": [
-    "1. HTML element toevoegen (index.html)",
-    "2. Event listener toevoegen (app.js)",
-    "3. Veld verzamelen in saveData() (app.js)",
-    "4. Veld laden in loadDataForDate() (app.js)",
-    "5. KRITIEK: Veld toevoegen aan sanitizeTrackerData() (storage.js)",
-    "6. Statistieken updaten indien nodig"
-  ],
-  "nextSteps": [
-    "#50 - Trend indicatoren voor energie/stemming",
-    "#43 - Custom habits in statistieken weergeven",
-    "#24 - Health Score visualisatie verbeteren"
-  ],
+  "processFeedback": {
+    "issue": "End-session checklist in CLAUDE.md wordt niet automatisch gevolgd",
+    "impact": "Blogs en uren worden niet geschreven zonder expliciete reminder",
+    "suggestedFixes": [
+      "Hooks implementeren die checklist afdwingen",
+      "Strenger template voor sessie-afsluiting",
+      "Automatische validatie van voltooide stappen"
+    ]
+  },
   "tests": {
     "total": 51,
     "passing": 51,
@@ -63,12 +63,14 @@
   },
   "urls": {
     "blog": "https://blog.modub.nl/",
-    "app": "https://daily.modub.nl/"
+    "app": "https://daily.modub.nl/",
+    "newPost": "https://blog.modub.nl/blog/habittracker/2025-12-05-de-onzichtbare-poortwachter/"
   },
   "version": "0.3.0",
-  "nextSessionFocus": "Feature werk - #50 trend indicatoren of #43 custom habits stats",
+  "nextSessionFocus": "Feature werk - #54 accessibility audit of #52 dark mode",
   "reminders": [
     "Bij nieuw form veld: vergeet sanitizeTrackerData() niet!",
-    "Altijd via PR werken, direct push naar main is geblokkeerd"
+    "Altijd via PR werken, direct push naar main is geblokkeerd",
+    "Hugo code blocks: altijd taalspecificatie toevoegen"
   ]
 }
