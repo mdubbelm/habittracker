@@ -820,14 +820,6 @@ function saveData(silent = false) {
     if (!silent) {
         data.explicitSave = true;
         console.log('📊 Op te slaan data:', data);
-        // DEBUG: Toon wat er wordt opgeslagen (tijdelijk)
-        const debugInfo =
-            `Opslaan voor ${selectedDate}:\n` +
-            `- reading: ${data.reading}\n` +
-            `- energyLevel: ${data.energyLevel}\n` +
-            `- mood: ${data.mood}\n` +
-            `- energy-value input: "${document.getElementById('energy-value')?.value}"`;
-        alert(debugInfo);
     }
 
     // Save to storage for selected date
