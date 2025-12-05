@@ -1910,6 +1910,78 @@ button:focus-visible {
 }
 
 /* ============================================
+   CUSTOM HABITS STATISTICS (#43)
+   ============================================ */
+.custom-habits-stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.habit-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.habit-stat-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.habit-stat-emoji {
+    font-size: 1.125rem;
+}
+
+.habit-stat-name {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.habit-stat-bar-track {
+    height: 8px;
+    background: var(--bg-muted);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.habit-stat-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease-out;
+}
+
+.habit-stat-bar-fill.high {
+    background: var(--color-success);
+}
+
+.habit-stat-bar-fill.medium {
+    background: var(--color-warning, #f59e0b);
+}
+
+.habit-stat-bar-fill.low {
+    background: var(--color-error, #ef4444);
+}
+
+.habit-stat-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8125rem;
+}
+
+.habit-stat-pct {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.habit-stat-streak {
+    color: var(--text-secondary);
+}
+
+/* ============================================
    PULL TO REFRESH
    ============================================ */
 .pull-refresh {
@@ -2161,61 +2233,7 @@ button:focus-visible {
 /* ============================================
    PWA INSTALL BANNER
    ============================================ */
-/* Update Banner */
-.update-banner {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: var(--color-primary);
-    color: white;
-    padding: var(--spacing-sm) var(--spacing-md);
-    padding-top: calc(var(--spacing-sm) + env(safe-area-inset-top, 0px));
-    z-index: var(--z-modal);
-    animation: slideDown 0.3s ease-out;
-}
-
-.update-banner.hidden {
-    display: none;
-}
-
-.update-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-md);
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.update-content .btn-primary {
-    padding: var(--spacing-xs) var(--spacing-md);
-    font-size: 0.85rem;
-}
-
-.update-content .btn-dismiss {
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.25rem;
-    cursor: pointer;
-    opacity: 0.8;
-}
-
-.update-content .btn-dismiss:hover {
-    opacity: 1;
-}
-
-@keyframes slideDown {
-    from {
-        transform: translateY(-100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
+/* Update Banner - Removed, update moved to Settings (#41) */
 
 .install-banner {
     position: fixed;
