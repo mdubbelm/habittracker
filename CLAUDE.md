@@ -515,16 +515,37 @@ function validateSleepScore(value) {
 
 ## Deployment
 
-### Staging
-- **URL:** TBD (Netlify preview)
-- **Trigger:** Every PR
-- **Purpose:** QA and stakeholder review
+### Productie
+- **URL:** https://daily.modub.nl
+- **Platform:** GitHub Pages
+- **Trigger:** Merge naar main (via PR)
 
-### Production
-- **URL:** TBD
-- **Trigger:** Merge to main
-- **CDN:** Cloudflare or similar
-- **Monitoring:** Error tracking (Sentry) + analytics (privacy-friendly)
+### Workflow (PR verplicht!)
+
+De `main` branch is protected. Direct pushen is niet mogelijk.
+
+```bash
+# 1. Feature branch maken
+git checkout main && git pull
+git checkout -b feat/beschrijving
+
+# 2. Ontwikkelen, testen, committen
+npm run lint && npm run test && npm run build
+git add . && git commit -m "feat: beschrijving"
+
+# 3. Push en PR maken
+git push -u origin feat/beschrijving
+gh pr create --title "Titel" --body "Beschrijving"
+
+# 4. Na CI checks: merge (triggert deploy)
+gh pr merge --squash --delete-branch
+```
+
+### CI/CD Pipeline
+- **Op PR:** Lint → Test → Build verification
+- **Op merge naar main:** Lint → Test → Build → Deploy to GitHub Pages
+
+Zie LEARNINGS.md voor meer details over de deployment workflow.
 
 ---
 
