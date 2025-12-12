@@ -1424,6 +1424,14 @@ button:focus-visible {
     border: none;
 }
 
+/* Feedback Link */
+.feedback-link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin-top: var(--spacing-sm);
+}
+
 .version-info {
     display: flex;
     flex-direction: column;

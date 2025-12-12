@@ -1,0 +1,49 @@
+name: Feedback
+description: Deel je feedback, ideeën of meld een probleem
+title: "Feedback: "
+labels: ["feedback", "status: needs-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Bedankt dat je feedback wilt geven! Elk idee of probleem is welkom.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Wat voor feedback heb je?
+      options:
+        - Iets werkt niet goed
+        - Idee voor verbetering
+        - Nieuwe functie gewenst
+        - Overig
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Vertel meer
+      description: Beschrijf wat je hebt ervaren of wat je graag zou willen
+      placeholder: |
+        Bijvoorbeeld:
+        - "De app slaat mijn data niet op"
+        - "Het zou fijn zijn als ik X kon doen"
+        - "Ik snap niet hoe Y werkt"
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot (optioneel)
+      description: Een plaatje zegt soms meer dan woorden
+      placeholder: Sleep een afbeelding hierheen
+
+  - type: checkboxes
+    id: contact
+    attributes:
+      label: Mag ik contact opnemen?
+      options:
+        - label: Ja, je mag reageren op deze feedback
+          required: false
