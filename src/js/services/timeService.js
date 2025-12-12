@@ -105,6 +105,40 @@ export function isSectionComplete(todayData, section) {
 }
 
 /**
+ * Check of er enige betekenisvolle data is ingevuld voor vandaag
+ * (los van of secties "complete" zijn met explicitSave)
+ * @param {Object|null} todayData - Data van vandaag uit storage
+ * @returns {boolean}
+ */
+export function hasAnyData(todayData) {
+    if (!todayData || typeof todayData !== 'object') {
+        return false;
+    }
+
+    // Velden die tellen als "echte data" (niet metadata)
+    const dataFields = [
+        'sleepScore',
+        'backPain',
+        'dreamed',
+        'weight',
+        'walked',
+        'mood',
+        'waterIntake',
+        'sugarConsumed',
+        'alcoholConsumed',
+        'caffeineConsumed',
+        'reading',
+        'energyLevel'
+    ];
+
+    // Check of minstens één dataveld is ingevuld
+    return dataFields.some(field => {
+        const value = todayData[field];
+        return value !== undefined && value !== null && value !== '';
+    });
+}
+
+/**
  * Bepaal de zichtbaarheid van alle secties
  * @param {Object|null} todayData - Data van vandaag uit storage
  * @returns {Object} Visibility configuratie per sectie

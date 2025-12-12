@@ -33,7 +33,8 @@ import {
 import {
     getSectionVisibility,
     getMissedWindows,
-    getTimeWindowLabel
+    getTimeWindowLabel,
+    hasAnyData
 } from './services/timeService.js';
 
 import { initWeightPicker } from './components/wheelPicker.js';
@@ -525,12 +526,12 @@ function updateSectionVisibility() {
         }
     }
 
-    // Show edit button if any section is complete OR if in edit mode
+    // Show edit button if any data exists OR if in edit mode
     const editBtn = document.getElementById('edit-today-btn');
     if (editBtn) {
-        const hasCompleteSection = visibility.morning.complete || visibility.evening.complete;
-        // Show if: complete section exists OR currently in edit mode
-        editBtn.classList.toggle('hidden', !hasCompleteSection && !editMode);
+        const hasData = hasAnyData(todayData);
+        // Show if: any data exists OR currently in edit mode
+        editBtn.classList.toggle('hidden', !hasData && !editMode);
         // Update button text
         editBtn.textContent = editMode ? '✓ Klaar met bewerken' : '✏️ Bewerk ingevulde secties';
     }
