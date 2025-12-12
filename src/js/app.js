@@ -15,7 +15,8 @@ import {
     deleteAllData,
     hasAcceptedPrivacy,
     acceptPrivacy,
-    getStorageStats
+    getStorageStats,
+    getAllData
 } from './services/storage.js';
 
 import { calculateHealthScore, getScoreMessage, getScoreColor } from './services/healthScore.js';
@@ -46,13 +47,24 @@ import {
 } from './components/trackerHabits.js';
 import { showSuccess, showError, showWarning, showInfo } from './services/toast.js';
 import { getSettings, setFieldEnabled, applyFieldVisibility } from './services/settings.js';
+import {
+    generateCalendarMonth,
+    getMonthName,
+    getPreviousMonth,
+    getNextMonth
+} from './services/calendarService.js';
 
 // State
 let weightPicker = null;
 let currentView = 'tracker-view';
 let statisticsInitialized = false;
+let calendarInitialized = false;
 let autoSaveTimeout = null;
 let selectedDate = getTodayDate(); // Track which date is being edited (issue #32)
+
+// Calendar state
+let currentCalendarYear = new Date().getFullYear();
+let currentCalendarMonth = new Date().getMonth();
 
 /**
  * Format a Date object to YYYY-MM-DD in local timezone
@@ -1046,6 +1058,16 @@ function switchView(viewId) {
         updateDataStats();
     }
 
+    // Initialize or refresh calendar when switching to history view
+    if (viewId === 'history-view') {
+        if (!calendarInitialized) {
+            initCalendar();
+            calendarInitialized = true;
+        } else {
+            renderCalendar();
+        }
+    }
+
     currentView = viewId;
 
     // Persist current view for pull-to-refresh (issue #36)
@@ -1252,6 +1274,207 @@ function updateDataStats() {
     const demoCard = document.getElementById('demo-data-card');
     if (demoCard) {
         demoCard.style.display = stats.totalEntries > 0 ? 'none' : 'block';
+    }
+}
+
+// ============================================
+// CALENDAR (HISTORY VIEW)
+// ============================================
+
+/**
+ * Initialize calendar view with navigation and click handlers
+ */
+function initCalendar() {
+    // Navigation buttons
+    const prevBtn = document.getElementById('prev-month');
+    const nextBtn = document.getElementById('next-month');
+    const closeDetailBtn = document.getElementById('close-day-detail');
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            const prev = getPreviousMonth(currentCalendarYear, currentCalendarMonth);
+            currentCalendarYear = prev.year;
+            currentCalendarMonth = prev.month;
+            renderCalendar();
+            hideDayDetail();
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            const next = getNextMonth(currentCalendarYear, currentCalendarMonth);
+            currentCalendarYear = next.year;
+            currentCalendarMonth = next.month;
+            renderCalendar();
+            hideDayDetail();
+        });
+    }
+
+    if (closeDetailBtn) {
+        closeDetailBtn.addEventListener('click', hideDayDetail);
+    }
+
+    // Initial render
+    renderCalendar();
+}
+
+/**
+ * Render calendar grid for current month
+ */
+function renderCalendar() {
+    const grid = document.getElementById('calendar-grid');
+    const titleEl = document.getElementById('calendar-month-year');
+
+    if (!grid || !titleEl) {
+        return;
+    }
+
+    // Update title
+    titleEl.textContent = `${getMonthName(currentCalendarMonth)} ${currentCalendarYear}`;
+
+    // Get all tracker data
+    const allData = getAllData();
+
+    // Generate calendar data
+    const weeks = generateCalendarMonth(currentCalendarYear, currentCalendarMonth, allData);
+
+    // Render grid
+    grid.innerHTML = '';
+
+    weeks.forEach(week => {
+        week.forEach(day => {
+            if (day === null) {
+                // Empty cell
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day calendar-day--empty';
+                grid.appendChild(emptyCell);
+            } else {
+                // Day cell
+                const dayCell = document.createElement('button');
+                dayCell.className = 'calendar-day';
+                dayCell.setAttribute('data-date', day.date);
+
+                if (day.isToday) {
+                    dayCell.classList.add('calendar-day--today');
+                }
+                if (day.isFuture) {
+                    dayCell.classList.add('calendar-day--future');
+                }
+
+                // Day number
+                const dayNumber = document.createElement('span');
+                dayNumber.className = 'calendar-day__number';
+                dayNumber.textContent = day.day;
+                dayCell.appendChild(dayNumber);
+
+                // Score dot (only for past/today)
+                if (!day.isFuture) {
+                    const dot = document.createElement('span');
+                    dot.className = 'calendar-day__dot';
+                    dot.style.backgroundColor = day.color;
+                    if (!day.hasData) {
+                        dot.style.border = '1px dashed var(--color-gray-300)';
+                    }
+                    dayCell.appendChild(dot);
+                }
+
+                // Click handler (only for days with data or today)
+                if (!day.isFuture) {
+                    dayCell.addEventListener('click', () => {
+                        showDayDetail(day.date, allData[day.date] || null);
+                    });
+                }
+
+                grid.appendChild(dayCell);
+            }
+        });
+    });
+}
+
+/**
+ * Show day detail panel
+ * @param {string} dateStr - ISO date string
+ * @param {Object|null} data - Day data or null if no data
+ */
+function showDayDetail(dateStr, data) {
+    const detailEl = document.getElementById('day-detail');
+    const dateEl = document.getElementById('day-detail-date');
+    const contentEl = document.getElementById('day-detail-content');
+
+    if (!detailEl || !dateEl || !contentEl) {
+        return;
+    }
+
+    // Format date for display
+    const [year, month, day] = dateStr.split('-');
+    const dateObj = new Date(year, month - 1, day);
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    dateEl.textContent = dateObj.toLocaleDateString('nl-NL', options);
+
+    if (!data) {
+        contentEl.innerHTML = `
+            <div class="day-detail-empty">
+                <p>Geen data voor deze dag</p>
+            </div>
+        `;
+    } else {
+        const score = calculateHealthScore(data);
+        const color = getScoreColor(score);
+
+        // Build metrics list
+        const metrics = [];
+
+        if (data.sleepScore !== undefined) {
+            metrics.push({ icon: '😴', label: `Slaap: ${data.sleepScore}/10` });
+        }
+        if (data.backPain !== undefined) {
+            metrics.push({ icon: '🔥', label: `Pijn: ${data.backPain}/10` });
+        }
+        if (data.waterIntake !== undefined) {
+            metrics.push({ icon: '💧', label: `Water: ${data.waterIntake} glazen` });
+        }
+        if (data.walked !== undefined) {
+            metrics.push({ icon: '🚶', label: data.walked ? 'Gewandeld' : 'Niet gewandeld' });
+        }
+        if (data.reading !== undefined) {
+            metrics.push({ icon: '📖', label: data.reading ? 'Gelezen' : 'Niet gelezen' });
+        }
+        if (data.mood !== undefined) {
+            const moodLabels = ['', 'Slecht', 'Matig', 'Oké', 'Goed', 'Geweldig'];
+            metrics.push({ icon: '😊', label: `Stemming: ${moodLabels[data.mood] || ''}` });
+        }
+        if (data.energyLevel !== undefined) {
+            metrics.push({ icon: '⚡', label: `Energie: ${data.energyLevel}/5` });
+        }
+
+        contentEl.innerHTML = `
+            <div class="day-detail-score">
+                <span class="day-detail-score__value" style="color: ${color}">${score}%</span>
+                <span class="day-detail-score__label">Health Score</span>
+            </div>
+            ${
+                metrics.length > 0
+                    ? `
+            <div class="day-detail-metrics">
+                ${metrics.map(m => `<div class="day-detail-metric"><span class="day-detail-metric__icon">${m.icon}</span><span>${m.label}</span></div>`).join('')}
+            </div>
+            `
+                    : ''
+            }
+        `;
+    }
+
+    // Show panel
+    detailEl.classList.remove('hidden');
+}
+
+/**
+ * Hide day detail panel
+ */
+function hideDayDetail() {
+    const detailEl = document.getElementById('day-detail');
+    if (detailEl) {
+        detailEl.classList.add('hidden');
     }
 }
 
