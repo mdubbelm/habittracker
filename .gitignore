@@ -63,3 +63,7 @@ workbox-*.js.map
 # Misc
 .cache/
 .parcel-cache/
+
+# Local symlinks (workspace-level agents)
+.claude/agents
+.claude/knowledge
