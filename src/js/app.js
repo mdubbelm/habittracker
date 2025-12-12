@@ -1288,7 +1288,6 @@ function initCalendar() {
     // Navigation buttons
     const prevBtn = document.getElementById('prev-month');
     const nextBtn = document.getElementById('next-month');
-    const closeDetailBtn = document.getElementById('close-day-detail');
 
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
@@ -1308,10 +1307,6 @@ function initCalendar() {
             renderCalendar();
             hideDayDetail();
         });
-    }
-
-    if (closeDetailBtn) {
-        closeDetailBtn.addEventListener('click', hideDayDetail);
     }
 
     // Initial render
@@ -1392,76 +1387,32 @@ function renderCalendar() {
 }
 
 /**
- * Show day detail panel
+ * Show compact day detail (date + score only)
  * @param {string} dateStr - ISO date string
  * @param {Object|null} data - Day data or null if no data
  */
 function showDayDetail(dateStr, data) {
     const detailEl = document.getElementById('day-detail');
     const dateEl = document.getElementById('day-detail-date');
-    const contentEl = document.getElementById('day-detail-content');
+    const scoreEl = document.getElementById('day-detail-score');
 
-    if (!detailEl || !dateEl || !contentEl) {
+    if (!detailEl || !dateEl || !scoreEl) {
         return;
     }
 
-    // Format date for display
+    // Format date for display (short format)
     const [year, month, day] = dateStr.split('-');
     const dateObj = new Date(year, month - 1, day);
-    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-    dateEl.textContent = dateObj.toLocaleDateString('nl-NL', options);
+    dateEl.textContent = dateObj.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' });
 
     if (!data) {
-        contentEl.innerHTML = `
-            <div class="day-detail-empty">
-                <p>Geen data voor deze dag</p>
-            </div>
-        `;
+        scoreEl.textContent = '—';
+        scoreEl.style.color = 'var(--text-muted)';
     } else {
         const score = calculateHealthScore(data);
         const color = getScoreColor(score);
-
-        // Build metrics list
-        const metrics = [];
-
-        if (data.sleepScore !== undefined) {
-            metrics.push({ icon: '😴', label: `Slaap: ${data.sleepScore}/10` });
-        }
-        if (data.backPain !== undefined) {
-            metrics.push({ icon: '🔥', label: `Pijn: ${data.backPain}/10` });
-        }
-        if (data.waterIntake !== undefined) {
-            metrics.push({ icon: '💧', label: `Water: ${data.waterIntake} glazen` });
-        }
-        if (data.walked !== undefined) {
-            metrics.push({ icon: '🚶', label: data.walked ? 'Gewandeld' : 'Niet gewandeld' });
-        }
-        if (data.reading !== undefined) {
-            metrics.push({ icon: '📖', label: data.reading ? 'Gelezen' : 'Niet gelezen' });
-        }
-        if (data.mood !== undefined) {
-            const moodLabels = ['', 'Slecht', 'Matig', 'Oké', 'Goed', 'Geweldig'];
-            metrics.push({ icon: '😊', label: `Stemming: ${moodLabels[data.mood] || ''}` });
-        }
-        if (data.energyLevel !== undefined) {
-            metrics.push({ icon: '⚡', label: `Energie: ${data.energyLevel}/5` });
-        }
-
-        contentEl.innerHTML = `
-            <div class="day-detail-score">
-                <span class="day-detail-score__value" style="color: ${color}">${score}%</span>
-                <span class="day-detail-score__label">Health Score</span>
-            </div>
-            ${
-                metrics.length > 0
-                    ? `
-            <div class="day-detail-metrics">
-                ${metrics.map(m => `<div class="day-detail-metric"><span class="day-detail-metric__icon">${m.icon}</span><span>${m.label}</span></div>`).join('')}
-            </div>
-            `
-                    : ''
-            }
-        `;
+        scoreEl.textContent = `${score}%`;
+        scoreEl.style.color = color;
     }
 
     // Show panel

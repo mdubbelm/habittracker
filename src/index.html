@@ -869,45 +869,10 @@
                     </div>
                 </div>
 
-                <!-- Legend -->
-                <div class="calendar-legend">
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background-color: #6b8e5e"></span>
-                        <span>Uitstekend</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background-color: #8aa67c"></span>
-                        <span>Goed</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background-color: #eab308"></span>
-                        <span>Matig</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background-color: #f59e0b"></span>
-                        <span>Let op</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background-color: #ef4444"></span>
-                        <span>Aandacht</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot legend-dot-empty"></span>
-                        <span>Geen data</span>
-                    </div>
-                </div>
-
-                <!-- Day Detail (shown when tapping a day) -->
-                <div id="day-detail" class="day-detail hidden">
-                    <div class="day-detail-header">
-                        <h4 id="day-detail-date"></h4>
-                        <button id="close-day-detail" class="day-detail-close" aria-label="Sluiten">
-                            ×
-                        </button>
-                    </div>
-                    <div id="day-detail-content" class="day-detail-content">
-                        <!-- Day details will be rendered by JavaScript -->
-                    </div>
+                <!-- Day Detail (compact tooltip, shown when tapping a day) -->
+                <div id="day-detail" class="day-detail-compact hidden">
+                    <span id="day-detail-date" class="day-detail-compact__date"></span>
+                    <span id="day-detail-score" class="day-detail-compact__score"></span>
                 </div>
             </section>
 
