@@ -812,67 +812,21 @@
                 </div>
             </section>
 
-            <!-- History View - Calendar Overview -->
+            <!-- History View - Dots Grid (minimal, no header) -->
             <section id="history-view" class="view">
-                <h2>Geschiedenis</h2>
-
-                <!-- Calendar Navigation -->
-                <div class="calendar-nav">
-                    <button id="prev-month" class="calendar-nav-btn" aria-label="Vorige maand">
-                        <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <path d="M15 18l-6-6 6-6" />
-                        </svg>
-                    </button>
-                    <h3 id="calendar-month-year" class="calendar-title">december 2025</h3>
-                    <button id="next-month" class="calendar-nav-btn" aria-label="Volgende maand">
-                        <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <path d="M9 18l6-6-6-6" />
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Calendar Grid -->
-                <div class="calendar-container">
-                    <!-- Weekday Headers -->
-                    <div class="calendar-weekdays">
-                        <span>ma</span>
-                        <span>di</span>
-                        <span>wo</span>
-                        <span>do</span>
-                        <span>vr</span>
-                        <span>za</span>
-                        <span>zo</span>
+                <p class="dots-intro">Dagscore overzicht</p>
+                <div class="dots-grid-wrapper">
+                    <div id="dots-timeline" class="dots-timeline">
+                        <!-- Timeline markers will be rendered by JavaScript -->
                     </div>
-
-                    <!-- Calendar Days Grid -->
                     <div
                         id="calendar-grid"
-                        class="calendar-grid"
-                        role="grid"
-                        aria-label="Kalender met dagscores"
+                        class="dots-grid"
+                        role="img"
+                        aria-label="Score overzicht"
                     >
-                        <!-- Days will be rendered by JavaScript -->
+                        <!-- Dots will be rendered by JavaScript -->
                     </div>
-                </div>
-
-                <!-- Day Detail (compact tooltip, shown when tapping a day) -->
-                <div id="day-detail" class="day-detail-compact hidden">
-                    <span id="day-detail-date" class="day-detail-compact__date"></span>
-                    <span id="day-detail-score" class="day-detail-compact__score"></span>
                 </div>
             </section>
 

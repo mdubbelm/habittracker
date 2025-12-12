@@ -47,12 +47,7 @@ import {
 } from './components/trackerHabits.js';
 import { showSuccess, showError, showWarning, showInfo } from './services/toast.js';
 import { getSettings, setFieldEnabled, applyFieldVisibility } from './services/settings.js';
-import {
-    generateCalendarMonth,
-    getMonthName,
-    getPreviousMonth,
-    getNextMonth
-} from './services/calendarService.js';
+// Calendar service no longer needed - dots grid uses simple data iteration
 
 // State
 let weightPicker = null;
@@ -61,10 +56,6 @@ let statisticsInitialized = false;
 let calendarInitialized = false;
 let autoSaveTimeout = null;
 let selectedDate = getTodayDate(); // Track which date is being edited (issue #32)
-
-// Calendar state
-let currentCalendarYear = new Date().getFullYear();
-let currentCalendarMonth = new Date().getMonth();
 
 /**
  * Format a Date object to YYYY-MM-DD in local timezone
@@ -1278,154 +1269,85 @@ function updateDataStats() {
 }
 
 // ============================================
-// CALENDAR (HISTORY VIEW)
+// DOTS GRID (HISTORY VIEW)
 // ============================================
 
 /**
- * Initialize calendar view with navigation and click handlers
+ * Initialize dots grid - just renders, no interaction needed
  */
 function initCalendar() {
-    // Navigation buttons
-    const prevBtn = document.getElementById('prev-month');
-    const nextBtn = document.getElementById('next-month');
-
-    if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            const prev = getPreviousMonth(currentCalendarYear, currentCalendarMonth);
-            currentCalendarYear = prev.year;
-            currentCalendarMonth = prev.month;
-            renderCalendar();
-            hideDayDetail();
-        });
-    }
-
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            const next = getNextMonth(currentCalendarYear, currentCalendarMonth);
-            currentCalendarYear = next.year;
-            currentCalendarMonth = next.month;
-            renderCalendar();
-            hideDayDetail();
-        });
-    }
-
-    // Initial render
     renderCalendar();
 }
 
 /**
- * Render calendar grid for current month
+ * Render dots grid showing all historical data
+ * Newest at top, oldest at bottom
  */
 function renderCalendar() {
     const grid = document.getElementById('calendar-grid');
-    const titleEl = document.getElementById('calendar-month-year');
+    const timeline = document.getElementById('dots-timeline');
 
-    if (!grid || !titleEl) {
+    if (!grid) {
         return;
     }
 
-    // Update title
-    titleEl.textContent = `${getMonthName(currentCalendarMonth)} ${currentCalendarYear}`;
-
-    // Get all tracker data
+    // Get all tracker data, sorted newest first
     const allData = getAllData();
+    const dates = Object.keys(allData).sort().reverse();
 
-    // Generate calendar data
-    const weeks = generateCalendarMonth(currentCalendarYear, currentCalendarMonth, allData);
-
-    // Render grid
+    // Render dots
     grid.innerHTML = '';
 
-    weeks.forEach(week => {
-        week.forEach(day => {
-            if (day === null) {
-                // Empty cell
-                const emptyCell = document.createElement('div');
-                emptyCell.className = 'calendar-day calendar-day--empty';
-                grid.appendChild(emptyCell);
-            } else {
-                // Day cell
-                const dayCell = document.createElement('button');
-                dayCell.className = 'calendar-day';
-                dayCell.setAttribute('data-date', day.date);
+    dates.forEach(date => {
+        const data = allData[date];
+        const score = calculateHealthScore(data);
+        const color = getScoreColor(score);
 
-                if (day.isToday) {
-                    dayCell.classList.add('calendar-day--today');
-                }
-                if (day.isFuture) {
-                    dayCell.classList.add('calendar-day--future');
-                }
-
-                // Day number
-                const dayNumber = document.createElement('span');
-                dayNumber.className = 'calendar-day__number';
-                dayNumber.textContent = day.day;
-                dayCell.appendChild(dayNumber);
-
-                // Score dot (only for past/today)
-                if (!day.isFuture) {
-                    const dot = document.createElement('span');
-                    dot.className = 'calendar-day__dot';
-                    dot.style.backgroundColor = day.color;
-                    if (!day.hasData) {
-                        dot.style.border = '1px dashed var(--color-gray-300)';
-                    }
-                    dayCell.appendChild(dot);
-                }
-
-                // Click handler (only for days with data or today)
-                if (!day.isFuture) {
-                    dayCell.addEventListener('click', () => {
-                        showDayDetail(day.date, allData[day.date] || null);
-                    });
-                }
-
-                grid.appendChild(dayCell);
-            }
-        });
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        dot.style.backgroundColor = color;
+        dot.setAttribute('title', `${date}: ${score}%`);
+        grid.appendChild(dot);
     });
-}
 
-/**
- * Show compact day detail (date + score only)
- * @param {string} dateStr - ISO date string
- * @param {Object|null} data - Day data or null if no data
- */
-function showDayDetail(dateStr, data) {
-    const detailEl = document.getElementById('day-detail');
-    const dateEl = document.getElementById('day-detail-date');
-    const scoreEl = document.getElementById('day-detail-score');
-
-    if (!detailEl || !dateEl || !scoreEl) {
+    // If no data, show placeholder
+    if (dates.length === 0) {
+        grid.innerHTML = '<p class="dots-empty">Nog geen data</p>';
+        if (timeline) {
+            timeline.innerHTML = '';
+        }
         return;
     }
 
-    // Format date for display (short format)
-    const [year, month, day] = dateStr.split('-');
-    const dateObj = new Date(year, month - 1, day);
-    dateEl.textContent = dateObj.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' });
+    // Render timeline markers
+    if (timeline && dates.length > 0) {
+        const newest = dates[0];
+        const oldest = dates[dates.length - 1];
 
-    if (!data) {
-        scoreEl.textContent = '—';
-        scoreEl.style.color = 'var(--text-muted)';
-    } else {
-        const score = calculateHealthScore(data);
-        const color = getScoreColor(score);
-        scoreEl.textContent = `${score}%`;
-        scoreEl.style.color = color;
-    }
+        // Format dates for display
+        const formatShort = dateStr => {
+            const [y, m] = dateStr.split('-');
+            const months = [
+                'jan',
+                'feb',
+                'mrt',
+                'apr',
+                'mei',
+                'jun',
+                'jul',
+                'aug',
+                'sep',
+                'okt',
+                'nov',
+                'dec'
+            ];
+            return `${months[parseInt(m) - 1]} '${y.slice(2)}`;
+        };
 
-    // Show panel
-    detailEl.classList.remove('hidden');
-}
-
-/**
- * Hide day detail panel
- */
-function hideDayDetail() {
-    const detailEl = document.getElementById('day-detail');
-    if (detailEl) {
-        detailEl.classList.add('hidden');
+        timeline.innerHTML = `
+            <span>${formatShort(newest)}</span>
+            <span>${formatShort(oldest)}</span>
+        `;
     }
 }
 
