@@ -1,76 +1,66 @@
 {
-  "timestamp": "2025-12-05T17:05:00+01:00",
-  "sessionNumber": 15,
-  "duration": "~30 min",
-  "summary": "Sessie 14 afgerond: ontbrekende sessie tracking bestanden aangemaakt (009-014), blog post geschreven over sanitizeTrackerData whitelist bug met eerlijke reflectie over AI proces-betrouwbaarheid, blog index geüpdatet (sessienummers vervangen door datums).",
+  "timestamp": "2025-12-12T10:45:00+01:00",
+  "sessionNumber": 16,
+  "duration": "~1.5 uur",
+  "summary": "Bug fix voor verdwenen bewerk-knop (#67) en test coverage significant verhoogd van 51 naar 157 tests. storage.js nu op 84%, timeService.js op 100%.",
   "filesModified": [
-    ".time-tracking/SESSION_009.md - feature rush sessie",
-    ".time-tracking/SESSION_010.md - weight bug fix sessie",
-    ".time-tracking/SESSION_011.md - GitHub Pages migratie",
-    ".time-tracking/SESSION_012.md - custom habits sessie",
-    ".time-tracking/SESSION_013.md - pre-push hook sessie",
-    ".time-tracking/SESSION_014.md - whitelist bug fix sessie"
+    "src/js/services/timeService.js - hasAnyData() functie toegevoegd",
+    "src/js/app.js - edit button logic aangepast",
+    "tests/timeService.test.js - uitgebreid naar 54 tests",
+    "tests/storage.test.js - nieuw, 41 tests",
+    "tests/dataManager.test.js - nieuw, 11 tests"
   ],
-  "devblogFilesModified": [
-    "content/blog/habittracker/2025-12-05-de-onzichtbare-poortwachter.md - nieuwe blog post",
-    "content/blog/habittracker/_index.md - sessienummers vervangen door datums"
+  "commits": [
+    "d214564 - fix: Show edit button when any data exists, not just complete sections (#69)",
+    "58daad0 - test: Add comprehensive tests for storage and time services (#70)"
   ],
   "issuesManaged": {
-    "closed": [],
-    "created": [],
-    "open": [
-      "#24 - Health Score Visualisatie",
-      "#27 - Obsidian integratie",
-      "#52 - Dark mode",
-      "#53 - Weekly summary notificatie",
-      "#54 - Accessibility audit",
+    "closed": [
+      "#67 - Bewerk data knop verdwenen",
       "#55 - Test coverage verhogen"
+    ],
+    "created": [
+      "#68 - Verwijder niet-getrackte metrics uit statistieken"
+    ],
+    "open": [
+      "#54 - Accessibility audit",
+      "#64 - Test coverage naar 70% core services",
+      "#65 - E2E tests weer inschakelen"
     ]
   },
   "completedThisSession": [
-    "SESSION_009-014.md bestanden aangemaakt",
-    "Blog post 'De onzichtbare poortwachter' geschreven",
-    "Blog post aangepast met correcte attributie (Claude schreef de code)",
-    "Sectie toegevoegd over proces-frustratie en onbetrouwbare end-session",
-    "Code block rendering fix (text language specifier)",
-    "PR #62 gemerged voor sessie tracking bestanden"
-  ],
-  "commits": [
-    "cfa23bc - docs: Add missing session tracking files 009-014 (#62)",
-    "42c87fe - blog: Add post about sanitizeTrackerData whitelist bug (devblog)",
-    "cecd315 - blog: Update post with accurate attribution and process frustration (devblog)",
-    "7b99446 - fix: Replace unicode arrows with ASCII for better rendering (devblog)",
-    "0bb7939 - fix: Add text language to code block for Hugo rendering (devblog)"
+    "Bug fix: edit button visibility met hasAnyData()",
+    "106 nieuwe tests toegevoegd",
+    "storage.js coverage: 0% -> 84%",
+    "timeService.js coverage: 15% -> 100%",
+    "dataManager.js coverage: 0% -> 25%"
   ],
   "keyLearnings": [
-    "Code blocks in Hugo/PaperMod hebben altijd een taalspecificatie nodig (bijv. 'text')",
-    "AI-gegenereerde code heeft patronen die de AI zelf vergeet",
-    "End-session checklist wordt niet consequent gevolgd - proces moet worden verbeterd"
+    "Date mocking in Vitest: extend Date class en override getHours()",
+    "File.text() API niet beschikbaar in jsdom - gebruik E2E voor import tests",
+    "hasAnyData() is robuster dan isSectionComplete() voor UI visibility"
   ],
-  "processFeedback": {
-    "issue": "End-session checklist in CLAUDE.md wordt niet automatisch gevolgd",
-    "impact": "Blogs en uren worden niet geschreven zonder expliciete reminder",
-    "suggestedFixes": [
-      "Hooks implementeren die checklist afdwingen",
-      "Strenger template voor sessie-afsluiting",
-      "Automatische validatie van voltooide stappen"
-    ]
-  },
   "tests": {
-    "total": 51,
-    "passing": 51,
+    "total": 157,
+    "passing": 157,
     "skipped": 2
   },
+  "coverage": {
+    "storage": "83.87%",
+    "timeService": "100%",
+    "sanitize": "79.41%",
+    "healthScore": "47.48%",
+    "dataManager": "25.4%"
+  },
   "urls": {
-    "blog": "https://blog.modub.nl/",
+    "blog": "https://blog.modub.nl/blog/habittracker/",
     "app": "https://daily.modub.nl/",
-    "newPost": "https://blog.modub.nl/blog/habittracker/2025-12-05-de-onzichtbare-poortwachter/"
+    "newPost": "https://blog.modub.nl/blog/habittracker/2025-12-12-106-tests-later/"
   },
   "version": "0.3.0",
-  "nextSessionFocus": "Feature werk - #54 accessibility audit of #52 dark mode",
+  "nextSessionFocus": "#65 E2E tests inschakelen of #54 accessibility audit",
   "reminders": [
     "Bij nieuw form veld: vergeet sanitizeTrackerData() niet!",
-    "Altijd via PR werken, direct push naar main is geblokkeerd",
-    "Hugo code blocks: altijd taalspecificatie toevoegen"
+    "Altijd via PR werken, direct push naar main is geblokkeerd"
   ]
 }
