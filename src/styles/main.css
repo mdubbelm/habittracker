@@ -3160,10 +3160,12 @@ a:focus-visible,
 }
 
 .dots-grid .dot {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     flex-shrink: 0;
+    /* NOTE: Als dots interactief worden (doorklikken naar dag),
+       verhoog naar 44x44px voor WCAG touch target compliance */
 }
 
 .dots-grid .dots-empty {
@@ -3182,7 +3184,7 @@ a:focus-visible,
     }
 
     .dots-grid .dot {
-        width: 18px;
-        height: 18px;
+        width: 24px;
+        height: 24px;
     }
 }
