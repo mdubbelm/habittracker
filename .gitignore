@@ -67,3 +67,16 @@ workbox-*.js.map
 # Local symlinks (workspace-level agents)
 .claude/agents
 .claude/knowledge
+
+# Claude Code (lokaal houden)
+CLAUDE.md
+LEARNINGS.md
+.claude/
+.session-status.json
+.time-tracking/
+
+# Screenshots (development)
+screenshots/
+
+# Netlify (niet meer in gebruik)
+netlify.toml
