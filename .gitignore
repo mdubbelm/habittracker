@@ -75,6 +75,23 @@ LEARNINGS.md
 .session-status.json
 .time-tracking/
 
+# Interne docs (niet in public repo)
+moodboard/
+blog_backup/
+blog
+docs/
+archive/
+.sprint-review/
+health-tracker-development.md
+PROJECT_STATUS.md
+SETUP_COMPLETE.md
+TEAM.md
+habittracker.html
+dev-preview.html
+.github/*.md
+.github/*.json
+.github/*.sh
+
 # Screenshots (development)
 screenshots/
 
